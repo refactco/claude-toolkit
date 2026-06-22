@@ -1,0 +1,19 @@
+{
+  "name": "refact-skills",
+  "owner": {
+    "name": "Refact Developer",
+    "email": "dev@refact.co"
+  },
+  "plugins": [
+    {
+      "name": "refact-skills",
+      "source": "./",
+      "description": "All Refact OS skills: git workflow, code development, document processing, ticket management, PHP/WordPress/TypeScript/JavaScript LSP, and more.",
+      "author": {
+        "name": "Refact Developer",
+        "email": "dev@refact.co"
+      },
+      "keywords": ["refact", "skills", "git", "workflow", "php", "wordpress", "typescript", "javascript", "lsp"]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "php": {
+    "command": "intelephense",
+    "args": ["--stdio"],
+    "extensionToLanguage": {
+      ".php": "php",
+      ".phtml": "php"
+    }
+  },
+  "typescript": {
+    "command": "vtsls",
+    "args": ["--stdio"],
+    "extensionToLanguage": {
+      ".ts": "typescript",
+      ".tsx": "typescriptreact",
+      ".js": "javascript",
+      ".jsx": "javascriptreact",
+      ".mjs": "javascript",
+      ".cjs": "javascript"
+    }
+  }
+}
