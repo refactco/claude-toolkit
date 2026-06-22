@@ -1,5 +1,6 @@
 {
   "name": "refact-os",
+  "version": "1.1.0",
   "owner": {
     "name": "Refact Developer",
     "email": "dev@refact.co"
@@ -7,6 +8,7 @@
   "plugins": [
     {
       "name": "dev-toolkit",
+      "version": "1.1.0",
       "source": "./plugins/dev-toolkit",
       "description": "Developer toolkit: Refact OS skills, PHP/WordPress/TypeScript/JavaScript LSP support.",
       "author": {

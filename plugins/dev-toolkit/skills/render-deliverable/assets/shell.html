@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>__DOC_TITLE__</title>
+
+<!-- Type: Inter (sans, workhorse) + Source Serif 4 (serif, editorial moments) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=block" rel="stylesheet">
+
+<style>
+  /* ─────────────────────────────────────────────────────────────────
+     Design system
+     Editorial Swiss + warm off-white + claret accent + serif companion.
+     ───────────────────────────────────────────────────────────────── */
+
+  :root {
+    --fg:          #1a1a1a;        /* near-black ink */
+    --fg-soft:     #2a2a2a;
+    --muted:       #6e6a62;        /* warm grey, sits on cream bg */
+    --muted-soft:  #9b958a;
+    --rule:        #1a1a1a;
+    --rule-soft:   #cdc6b9;
+    --rule-softer: #e4dfd2;
+    --bg:          #faf7ef;        /* warm off-white, near Mohawk Loop cream */
+    --bg-card:     #f3eee1;        /* slightly deeper card */
+    --bg-mute:     #efe9d9;        /* still deeper for callouts */
+    --accent:      #6e1f1f;        /* claret / oxblood */
+    --accent-soft: #b08a5a;        /* warm bronze for highlights */
+
+    --serif: "Source Serif 4", "Source Serif Pro", "Iowan Old Style", Georgia, "Times New Roman", serif;
+    --sans:  "Inter", "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    --mono:  ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+    --measure: 640px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--fg); }
+
+  body {
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.55;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'kern' 1, 'ss01' 1, 'cv11' 1;
+    letter-spacing: -0.006em;
+  }
+
+  main {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: 3rem 2rem 4rem;
+  }
+
+  /* ── Type scale ─────────────────────────────────────────────────── */
+
+  h1 {
+    font-family: var(--sans);
+    font-size: 2.4rem;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    margin: 0 0 1.5rem;
+  }
+  h2 {
+    font-family: var(--sans);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.018em;
+    line-height: 1.18;
+    margin: 2.75rem 0 1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--fg);
+  }
+  h2.has-number {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    align-items: baseline;
+    column-gap: 0.6rem;
+  }
+  h2 .sec-num {
+    font-family: var(--sans);
+    font-size: 0.6em;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    font-feature-settings: 'tnum' 1;
+    align-self: baseline;
+    padding-top: 0.2em;
+  }
+  h2 .sec-title { display: block; }
+
+  h3 {
+    font-family: var(--sans);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.008em;
+    line-height: 1.3;
+    margin: 1.75rem 0 0.5rem;
+  }
+  h4 {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 1.25rem 0 0.35rem;
+    color: var(--fg-soft);
+  }
+
+  p { margin: 0.7rem 0; }
+  ul, ol { padding-left: 1.25rem; margin: 0.7rem 0; }
+  li { margin: 0.25rem 0; line-height: 1.55; }
+  li > p { margin: 0.3rem 0; }
+  strong { font-weight: 600; }
+  em { font-style: italic; }
+
+  a {
+    color: var(--fg);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--rule-soft);
+    margin: 1.75rem 0;
+  }
+
+  /* ── Tables ─────────────────────────────────────────────────────── */
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.1rem 0;
+    font-size: 0.86rem;
+    font-feature-settings: 'tnum' 1, 'kern' 1;
+    letter-spacing: 0;
+  }
+  th, td {
+    padding: 0.55rem 0.6rem;
+    border-bottom: 1px solid var(--rule-soft);
+    text-align: left;
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  th {
+    font-weight: 600;
+    border-top: 1px solid var(--fg);
+    border-bottom: 1px solid var(--fg);
+    color: var(--fg);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  /* Right-align numeric / money columns whenever cells start with $ or digits */
+  td:last-child, th:last-child { /* default last col = fee */ }
+  table.pricing td:last-child,
+  table.pricing th:last-child,
+  table.pricing td:nth-last-child(2),
+  table.pricing th:nth-last-child(2) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  table.pricing tr:last-child td {
+    border-top: 1px solid var(--fg);
+    border-bottom: 2px solid var(--accent);
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-weight: 600;
+  }
+  table.pricing tr:last-child td:last-child {
+    color: var(--accent);
+    font-size: 1.05em;
+  }
+  td[align="right"], th[align="right"] { text-align: right; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.84em;
+    background: var(--bg-mute);
+    padding: 0.05em 0.35em;
+    border-radius: 2px;
+  }
+  pre {
+    background: var(--bg-card);
+    padding: 0.9rem 1rem;
+    overflow-x: auto;
+    border-radius: 2px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    margin: 1rem 0;
+  }
+  pre code { background: none; padding: 0; }
+
+  blockquote {
+    border-left: 2px solid var(--accent);
+    padding-left: 1.1rem;
+    margin: 1.2rem 0;
+    color: var(--fg-soft);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.5;
+  }
+
+  /* Body prose should use proportional figures, not tabular. */
+  p, li { font-variant-numeric: proportional-nums; }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Cover (page 1)
+     Type-as-image: huge wordmark, recipient set as a moment,
+     tagline elevated, founder/client logo footer.
+     ───────────────────────────────────────────────────────────────── */
+
+  .cover {
+    min-height: calc(100vh - 6rem);
+    display: grid;
+    grid-template-rows: auto auto 1fr auto auto;
+    row-gap: 0;
+    margin: 0 auto;
+    padding: 0;
+  }
+  .cover-masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--fg);
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+  }
+  .cover-masthead .refact-mark {
+    color: var(--fg);
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 1rem;
+  }
+  .cover-tagline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+    font-size: 1.65rem;
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+    margin: 3.5rem 0 0;
+    padding: 0;
+  }
+  .cover-title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem 0;
+  }
+  .cover-title h1 {
+    font-family: var(--sans);
+    font-size: 6.2rem;
+    font-weight: 500;
+    letter-spacing: -0.045em;
+    line-height: 0.92;
+    margin: 0;
+    color: var(--fg);
+  }
+  .cover-subtitle {
+    font-family: var(--sans);
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: -0.012em;
+    line-height: 1.25;
+    margin: 1.2rem 0 0;
+    max-width: 28ch;
+  }
+  .cover-recipient {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 2rem;
+    align-items: end;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--fg);
+    border-bottom: 1px solid var(--fg);
+  }
+  .cover-recipient-block .label {
+    display: block;
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .cover-recipient-block .name {
+    display: block;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 2rem;
+    letter-spacing: -0.015em;
+    line-height: 1.05;
+    color: var(--fg);
+    margin-bottom: 0.25rem;
+  }
+  .cover-recipient-block .role {
+    display: block;
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    color: var(--muted);
+    letter-spacing: 0;
+  }
+  .cover-recipient-logo {
+    background: #1a1a1a;
+    padding: 14px 18px;
+    display: inline-block;
+    line-height: 0;
+    align-self: end;
+  }
+  .cover-recipient-logo img,
+  .cover-recipient-logo svg {
+    display: block;
+    width: 170px;
+    height: auto;
+  }
+  .cover-footer {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 2rem;
+    align-items: baseline;
+    padding-top: 0.9rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--fg);
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .cover-footer .contact-block { display: flex; flex-direction: column; gap: 0.15rem; }
+  .cover-footer .contact-block .strong { color: var(--fg); font-weight: 600; }
+  .cover-footer .meta-block {
+    text-align: right;
+    color: var(--muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* Hide the first <hr> immediately after the cover */
+  .cover + hr { display: none; }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Cover letter page (page 2)
+     ───────────────────────────────────────────────────────────────── */
+
+  .cover-letter {
+    max-width: 580px;
+    margin: 0 auto;
+    padding: 1rem 0 0;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--fg);
+  }
+  .cover-letter + hr { display: none; }
+  .cover-letter .letter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--fg);
+    padding-bottom: 0.6rem;
+    margin-bottom: 2rem;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+  .cover-letter .letter-header .left {
+    font-weight: 700;
+    color: var(--fg);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 1rem;
+  }
+  .cover-letter .date {
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin: 0 0 1.5rem;
+  }
+  .cover-letter .recipient-address {
+    margin: 0 0 1.5rem;
+    line-height: 1.5;
+  }
+  .cover-letter .recipient-address .name { font-weight: 600; }
+  .cover-letter .re-line {
+    margin: 0 0 1.5rem;
+    font-weight: 600;
+  }
+  .cover-letter .salutation { margin: 0 0 1rem; }
+  .cover-letter p { margin: 0.6rem 0 0.9rem; }
+  .cover-letter .signature {
+    margin-top: 2rem;
+    font-family: var(--sans);
+  }
+  .cover-letter .signature .signed {
+    font-family: "Source Serif 4", Georgia, serif;
+    font-style: italic;
+    font-size: 1.7rem;
+    line-height: 1;
+    color: var(--accent);
+    margin: 0.3rem 0 0.6rem;
+  }
+  .cover-letter .signature .role-line {
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
+  .cover-letter .enclosure {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule-soft);
+    font-style: italic;
+    color: var(--muted);
+    font-size: 0.84rem;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     TOC
+     ───────────────────────────────────────────────────────────────── */
+
+  .toc {
+    margin: 0 0 3rem;
+  }
+  .toc + hr { display: none; }
+  .toc .toc-head {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--fg);
+    padding-bottom: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+  .toc ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .toc li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    column-gap: 1rem;
+    align-items: baseline;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--rule-softer);
+    font-size: 1rem;
+  }
+  .toc li:last-child { border-bottom: none; }
+  .toc li .num {
+    font-family: var(--sans);
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+  }
+  .toc li .title { color: var(--fg); }
+  .toc li .sub {
+    display: block;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-top: 0.15rem;
+    letter-spacing: 0;
+  }
+  .toc .appendix-head {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin: 2rem 0 0.6rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule-soft);
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Section dividers (full-page openers between numbered sections)
+     ───────────────────────────────────────────────────────────────── */
+
+  .section-divider {
+    min-height: calc(100vh - 6rem);
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 0;
+    margin: 4rem 0;
+  }
+  .section-divider + hr { display: none; }
+  .section-divider .divider-eyebrow {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--fg);
+  }
+  .section-divider .divider-eyebrow .accent { color: var(--accent); }
+  .section-divider .divider-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem 0;
+  }
+  .section-divider .divider-num {
+    display: block;
+    font-family: var(--sans);
+    font-size: 6rem;
+    font-weight: 300;
+    color: var(--accent);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .section-divider .divider-title {
+    font-family: var(--sans);
+    font-size: 3.2rem;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--fg);
+    margin: 0;
+  }
+  .section-divider .divider-thesis {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.4rem;
+    line-height: 1.35;
+    color: var(--fg-soft);
+    letter-spacing: -0.005em;
+    margin: 1.6rem 0 0;
+    max-width: 32ch;
+  }
+  .section-divider .divider-footer {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--fg);
+  }
+
+  /* When a divider is followed by an h2 we don't want a second mandatory
+     page break in print — that's handled by .section-divider's own break. */
+
+  /* ─────────────────────────────────────────────────────────────────
+     Pull quotes (editorial)
+     ───────────────────────────────────────────────────────────────── */
+
+  /* Reset generic blockquote styling for pull-quotes — they are editorial,
+     not regular quotations. Use <aside class="pull-quote"> in the markdown so
+     the generic blockquote rules don't apply, but also reset here for safety
+     when authors use <blockquote class="pull-quote">. */
+  .pull-quote,
+  blockquote.pull-quote {
+    margin: 2rem 0;
+    padding: 1.5rem 0;
+    border: none;
+    border-top: 1px solid var(--fg);
+    border-bottom: 1px solid var(--fg);
+    background: transparent;
+    color: var(--fg);
+    font-family: var(--sans);
+    font-style: normal;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  .pull-quote .q {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.45rem;
+    line-height: 1.32;
+    letter-spacing: -0.008em;
+    color: var(--fg);
+    margin: 0 0 0.9rem;
+  }
+  .pull-quote .attribution {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  .pull-quote .attribution .who {
+    color: var(--fg);
+    font-weight: 600;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Callout (guarantee, key commercial moments)
+     ───────────────────────────────────────────────────────────────── */
+
+  .callout {
+    margin: 1.75rem 0;
+    padding: 1.5rem 1.6rem;
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent);
+    border-radius: 2px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .callout .callout-eyebrow {
+    display: block;
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  .callout .callout-title {
+    font-family: var(--sans);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    line-height: 1.25;
+    margin: 0 0 0.5rem;
+    color: var(--fg);
+  }
+  .callout .callout-body {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--fg);
+    margin: 0;
+  }
+  .callout.major {
+    background: var(--bg-mute);
+    padding: 2rem 1.8rem;
+    border-left-width: 4px;
+  }
+  .callout.major .callout-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.7rem;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Portfolio plate (image grid, placeholders for client to swap)
+     ───────────────────────────────────────────────────────────────── */
+
+  .portfolio-plate {
+    margin: 1.5rem 0 2rem;
+  }
+  /* Horizontal portfolio cards: full width, thumb on the left at a fixed
+     pixel width, body on the right takes the rest. Six cards stack. */
+  .portfolio-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  .portfolio-card {
+    background: var(--bg-card);
+    border: 1px solid var(--rule-softer);
+    padding: 0;
+    display: flex;
+    align-items: stretch;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    overflow: hidden;
+    margin: 0;
+  }
+  .portfolio-card .thumb {
+    flex: 0 0 230px;
+    width: 230px;
+    min-height: 144px;        /* 16:10 of 230; stretches taller when card-body is longer */
+    align-self: stretch;
+    position: relative;
+    background: var(--bg-mute);
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        transparent, transparent 8px,
+        rgba(0,0,0,0.03) 8px, rgba(0,0,0,0.03) 16px
+      );
+    color: var(--muted-soft);
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    overflow: hidden;
+    border-right: 1px solid var(--rule-softer);
+  }
+  .portfolio-card .thumb img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .portfolio-card .thumb span {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    text-align: center;
+  }
+  .portfolio-card .card-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 1rem 1.2rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .portfolio-card .card-client {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-weight: 600;
+    margin: 0 0 0.35rem;
+  }
+  .portfolio-card .card-line {
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    color: var(--fg);
+    line-height: 1.5;
+    margin: 0;
+  }
+  .portfolio-card .card-line .lede { font-weight: 600; }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Custom inline SVG diagram & timeline
+     ───────────────────────────────────────────────────────────────── */
+
+  .figure {
+    margin: 1.5rem 0 1.25rem;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .figure svg { display: block; width: 100%; height: auto; }
+  .figure .figcap {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0;
+    margin: 0.4rem 0 0;
+    line-height: 1.4;
+  }
+  .figure .figcap .lbl {
+    color: var(--accent);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.72rem;
+    margin-right: 0.5rem;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Team grid (six dedicated roles)
+     ───────────────────────────────────────────────────────────────── */
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .team-card {
+    padding: 1rem 0 1rem;
+    border-top: 1px solid var(--rule-soft);
+    break-inside: avoid;
+  }
+  .team-card .role {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  .team-card .name {
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    margin: 0 0 0.35rem;
+  }
+  .team-card .bio {
+    font-family: var(--sans);
+    font-size: 0.86rem;
+    line-height: 1.5;
+    color: var(--fg-soft);
+    margin: 0;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Back cover (last spread)
+     ───────────────────────────────────────────────────────────────── */
+
+  .back-cover {
+    min-height: calc(100vh - 6rem);
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    margin-top: 4rem;
+  }
+  .back-cover + hr { display: none; }
+  .back-cover .top {
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--fg);
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+  .back-cover .mid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3rem 0;
+  }
+  .back-cover .mid .closing-tag {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 2.6rem;
+    line-height: 1.1;
+    color: var(--accent);
+    letter-spacing: -0.015em;
+    margin: 0 0 2rem;
+  }
+  .back-cover .mid .contact-block {
+    font-family: var(--sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--fg);
+  }
+  .back-cover .mid .contact-block .name {
+    font-weight: 600;
+    font-size: 1.15rem;
+  }
+  .back-cover .mid .contact-block .label {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 1.2rem;
+  }
+  .back-cover .colophon {
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--fg);
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.5;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 2rem;
+  }
+  .back-cover .colophon .right { text-align: right; }
+  .back-cover .colophon em {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--fg-soft);
+  }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Loading state
+     ───────────────────────────────────────────────────────────────── */
+
+  #status {
+    position: fixed;
+    bottom: 1rem; right: 1rem;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--bg);
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--rule-soft);
+  }
+  body[data-ready="true"] #status { display: none; }
+
+  /* ─────────────────────────────────────────────────────────────────
+     Print
+     ───────────────────────────────────────────────────────────────── */
+
+  @media print {
+    html, body { background: var(--bg); }
+    body { font-size: 10pt; line-height: 1.5; letter-spacing: 0; }
+    main { max-width: none; margin: 0; padding: 0; }
+
+    @page {
+      margin: 0.75in 0.7in 0.7in;
+      size: letter;
+      background: var(--bg);
+      @top-left {
+        content: "Refact";
+        font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+        font-size: 8.5pt;
+        font-weight: 700;
+        color: #1a1a1a;
+      }
+      @top-right {
+        content: "__RUNNING_HEADER__";
+        font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+        font-size: 8.5pt;
+        font-weight: 400;
+        color: #6e6a62;
+        letter-spacing: 0.06em;
+      }
+      @bottom-right {
+        content: counter(page);
+        font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+        font-size: 8.5pt;
+        color: #6e6a62;
+        font-variant-numeric: tabular-nums;
+      }
+      @bottom-left {
+        content: "refact.co";
+        font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+        font-size: 8.5pt;
+        color: #6e6a62;
+      }
+    }
+    /* Cover & cover letter: no running header / page number */
+    @page :first {
+      margin: 0.75in 0.7in 0.7in;
+      @top-left { content: none; }
+      @top-right { content: none; }
+      @bottom-left { content: none; }
+      @bottom-right { content: none; }
+    }
+    @page section-divider {
+      @top-left { content: none; }
+      @top-right { content: none; }
+      @bottom-left { content: none; }
+      @bottom-right { content: none; }
+    }
+    @page cover-letter {
+      @top-left { content: none; }
+      @top-right { content: none; }
+      @bottom-left { content: none; }
+      @bottom-right { content: none; }
+    }
+    @page back-cover {
+      @top-left { content: none; }
+      @top-right { content: none; }
+      @bottom-left { content: none; }
+      @bottom-right { content: none; }
+    }
+    .cover-letter { page: cover-letter; }
+
+    /* Print scale */
+    h1 { font-size: 22pt; }
+    h2 { font-size: 14pt; margin-top: 1.4rem; padding-top: 0.6rem; }
+    h3 { font-size: 11pt; margin-top: 1rem; }
+    h4 { font-size: 10pt; }
+    h1, h2, h3, h4 { break-after: avoid; page-break-after: avoid; }
+    .figure, pre { break-inside: avoid; page-break-inside: avoid; }
+    table { break-inside: auto; page-break-inside: auto; }
+    tr, thead { break-inside: avoid; page-break-inside: avoid; }
+    a { color: var(--fg); text-decoration-color: var(--accent); }
+    #status { display: none; }
+
+    /* Page breaks: every numbered section starts on a new page,
+       via its preceding section-divider, OR via the h2 if no divider exists. */
+    h2 { break-before: page; page-break-before: always; }
+    .cover-title h2 { break-before: avoid; page-break-before: avoid; }
+    .cover {
+      break-after: page; page-break-after: always;
+      min-height: auto; height: 9in;
+    }
+    .cover-letter {
+      break-before: page; page-break-before: always;
+      break-after: page; page-break-after: always;
+    }
+    .toc {
+      break-before: page; page-break-before: always;
+      break-after: page; page-break-after: always;
+    }
+    .section-divider {
+      break-before: page; page-break-before: always;
+      break-after: page; page-break-after: always;
+      min-height: auto;
+      height: auto;
+      page: section-divider;
+    }
+    .section-divider .divider-body { padding: 1.5rem 0; }
+    .section-divider .divider-footer { display: none; }
+    /* If a divider precedes an h2, that h2's auto page-break is fine —
+       the divider page + the section page is intentional. */
+    .back-cover {
+      break-before: page; page-break-before: always;
+      min-height: 8.5in;
+      height: auto;
+      page: back-cover;
+    }
+
+    /* Cover sizing in print */
+    .cover-title h1 { font-size: 72pt; }
+    .cover-subtitle { font-size: 14pt; }
+    .cover-tagline { font-size: 19pt; }
+    .cover-recipient-block .name { font-size: 22pt; }
+
+    /* Divider sizing in print */
+    .section-divider .divider-num { font-size: 64pt; }
+    .section-divider .divider-title { font-size: 36pt; }
+    .section-divider .divider-thesis { font-size: 16pt; }
+
+    /* Back cover sizing in print */
+    .back-cover .mid .closing-tag { font-size: 30pt; }
+
+    /* Pull quote sizing in print */
+    .pull-quote .q { font-size: 15pt; }
+
+    /* Callout sizing in print */
+    .callout.major .callout-title { font-size: 18pt; }
+
+    /* Generous breathing room */
+    h2.has-number, h2 { margin-top: 0; padding-top: 0.5rem; }
+    /* Widow / orphan control */
+    p, li { orphans: 3; widows: 3; }
+  }
+</style>
+</head>
+<body>
+<main id="content">Loading…</main>
+<div id="status">rendering…</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+<script>
+  /*
+    Single source of truth: __MD_FILE__ is fetched at runtime.
+    This file is a hand-editable render shell — CSS, JS, and the print
+    stylesheet live here; all content lives in the .md. (Refact design system;
+    generated by the render-deliverable skill — re-run it to regenerate.)
+
+    Viewing requires HTTP. From the project root:
+        python3 -m http.server 8765
+    then open this .html under http://localhost:8765/… in Chrome, Cmd+P → PDF.
+
+    If you cannot run a local server, read the .md file directly — it is
+    plain markdown.
+  */
+  (async function () {
+    var status = document.getElementById('status');
+    var content = document.getElementById('content');
+    function setStatus(s) { if (status) status.textContent = s; }
+
+    var mdSource;
+    try {
+      setStatus('fetching md…');
+      var res = await fetch('./__MD_FILE__', { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      mdSource = await res.text();
+    } catch (e) {
+      content.innerHTML =
+        '<h1>Serve this file over HTTP.</h1>' +
+        '<p>The content lives in <code>__MD_FILE__</code> ' +
+        'and is loaded at runtime, so this HTML must be opened from a local ' +
+        'web server, not via <code>file://</code>.</p>' +
+        '<p>From the project root, run:</p>' +
+        '<pre><code>python3 -m http.server 8765</code></pre>' +
+        '<p>then open this file under http://localhost:8765/. If you cannot run a ' +
+        'server, read <code>__MD_FILE__</code> directly &mdash; it is plain markdown.</p>';
+      setStatus('error · ' + (e && e.message || 'no http'));
+      return;
+    }
+
+    // Strip YAML frontmatter (only the first one).
+    mdSource = mdSource.replace(/^---\n[\s\S]*?\n---\n/, '');
+
+    // Render markdown (gfm tables, raw HTML allowed by default).
+    content.innerHTML = marked.parse(mdSource, {
+      gfm: true, breaks: false, mangle: false, headerIds: false
+    });
+
+    // Swiss numbering on h2: "1. Section Name" → [01] [Section Name]
+    content.querySelectorAll('h2').forEach(function (h2) {
+      var m = h2.textContent.match(/^(\d+)\.\s+(.+)$/);
+      if (m) {
+        var num = m[1].padStart(2, '0');
+        h2.classList.add('has-number');
+        h2.innerHTML =
+          '<span class="sec-num">' + num + '</span>' +
+          '<span class="sec-title">' + m[2] + '</span>';
+      }
+    });
+
+    // Pricing tables: mark by class for emphasized styling.
+    content.querySelectorAll('table').forEach(function (tbl) {
+      var lastTh = tbl.querySelector('thead tr th:last-child, tr:first-child th:last-child');
+      var label = (lastTh && lastTh.textContent || '').toLowerCase();
+      if (label.indexOf('fee') !== -1 || label.indexOf('payment') !== -1 || label.indexOf('cost') !== -1) {
+        tbl.classList.add('pricing');
+      }
+    });
+
+    // Document title from first h1.
+    var h1 = content.querySelector('h1');
+    if (h1) document.title = h1.textContent + ' | Refact';
+
+    document.body.dataset.ready = 'true';
+    setStatus('live');
+    if (status) setTimeout(function () { status.remove(); }, 800);
+  })();
+</script>
+</body>
+</html>
