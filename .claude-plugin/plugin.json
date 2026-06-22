@@ -1,9 +1,0 @@
-{
-  "name": "refact-skills",
-  "description": "All Refact OS skills: git workflow, code development, document processing, ticket management, and more.",
-  "version": "1.0.0",
-  "author": {
-    "name": "Refact Developer",
-    "email": "dev@refact.co"
-  }
-}

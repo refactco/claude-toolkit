@@ -1,0 +1,8 @@
+{
+  "name": "dev-toolkit",
+  "description": "Developer toolkit: Refact OS skills, PHP/WordPress/TypeScript/JavaScript LSP support.",
+  "author": {
+    "name": "Refact Developer",
+    "email": "dev@refact.co"
+  }
+}
