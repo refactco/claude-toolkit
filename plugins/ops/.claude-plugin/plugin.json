@@ -1,0 +1,10 @@
+{
+  "name": "ops",
+  "version": "1.0.0",
+  "description": "Ops integrations: Cloudflare client-zone operations and Sentry backlog triage.",
+  "author": {
+    "name": "Refact Developer",
+    "email": "dev@refact.co"
+  },
+  "keywords": ["refact", "skills", "cloudflare", "sentry", "ops", "waf", "dns"]
+}

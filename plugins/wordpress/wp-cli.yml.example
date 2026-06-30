@@ -1,0 +1,46 @@
+# wp-cli.yml — remote environment aliases for this engagement.
+#
+# Copy this file to `wp-cli.yml` and fill in the host-specific values for your
+# project. Keep `wp-cli.yml` committed; it is non-secret routing only. SSH keys,
+# tokens, and passwords stay out of this file (1Password, OS keychain, ~/.ssh/).
+#
+# Once configured, agents and engineers run remote WP-CLI like:
+#   wp @staging plugin list
+#   wp @development cache flush
+#
+# Host-specific setup (SSH config, key registration, dashboards) lives in
+# 1Password and the host's own docs. WP Engine uses an SSH gateway with a
+# /sites/<env>/ layout; Kinsta uses a custom port per site; Pantheon uses
+# Terminus instead of WP-CLI aliases (see the Pantheon block below).
+
+# --- WP Engine example ------------------------------------------------------
+# Requires `~/.ssh/config` entries `wpe-staging` and `wpe-development`.
+# @staging:
+#   ssh: wpe-staging:/sites/<staging-env>
+# @development:
+#   ssh: wpe-development:/sites/<dev-env>
+
+# --- Kinsta example ---------------------------------------------------------
+# Requires `~/.ssh/config` entries `kinsta-staging` and `kinsta-development`
+# (each with the custom port from MyKinsta).
+# @staging:
+#   ssh: kinsta-staging:~/public
+# @development:
+#   ssh: kinsta-development:~/public
+
+# --- Generic SSH host -------------------------------------------------------
+# @staging:
+#   ssh: deploy@staging.example.com:/var/www/staging/public_html
+# @development:
+#   ssh: deploy@dev.example.com:/var/www/dev/public_html
+
+# --- Pantheon ---------------------------------------------------------------
+# Pantheon uses Terminus rather than WP-CLI aliases. Do not add `@staging` /
+# `@development` here for Pantheon projects; use:
+#   terminus remote:wp <site>.<env> -- <command>
+
+# --- Production -------------------------------------------------------------
+# Intentionally NOT defined here. Production WP-CLI requires explicit owner
+# approval and a verified backup (per .cursor/rules/30-security.mdc). When
+# approved, run it manually in a one-off shell — do not commit a
+# `@production` alias.

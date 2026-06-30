@@ -1,0 +1,10 @@
+{
+  "name": "wordpress",
+  "version": "1.0.0",
+  "description": "WordPress: local wp-env stack, safe plugin updates with QA + rollback, Kinsta/WP Engine deploy workflows + PHP LSP.",
+  "author": {
+    "name": "Refact Developer",
+    "email": "dev@refact.co"
+  },
+  "keywords": ["refact", "skills", "wordpress", "wp-env", "kinsta", "wpengine", "php", "lsp"]
+}

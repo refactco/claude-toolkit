@@ -1,0 +1,10 @@
+{
+  "name": "seo",
+  "version": "1.0.0",
+  "description": "SEO & analytics: Ahrefs, Google Analytics 4, Search Console, Tag Manager, and PageSpeed/Core Web Vitals.",
+  "author": {
+    "name": "Refact Developer",
+    "email": "dev@refact.co"
+  },
+  "keywords": ["refact", "skills", "seo", "ahrefs", "ga4", "search-console", "gtm", "pagespeed"]
+}

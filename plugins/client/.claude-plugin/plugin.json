@@ -1,0 +1,10 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "Client deliverables & comms: discovery-first proposals, headline-first client updates, branded print-ready PDF rendering.",
+  "author": {
+    "name": "Refact Developer",
+    "email": "dev@refact.co"
+  },
+  "keywords": ["refact", "skills", "client", "proposal", "deliverable", "pdf"]
+}
