@@ -7,6 +7,15 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-02 — Removed stray `context-boundary-spec.md`
+
+A top-level design note on where project context lives (repo vs Refact Control). It was
+**unreferenced** by any skill, hook, or manifest and is not about the marketplace itself — it
+rode in with the initial 7-pack restructure commit (`b72a730`) by accident. Removed to keep the
+repo scoped to the marketplace. Recoverable from git history if it needs a home elsewhere.
+
+---
+
 ## 2026-07-02 — Renamed the `analytics` pack → `insights` (final name)
 
 Second rename in the same session — `analytics` was also judged not right (GTM is tag
