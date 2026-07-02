@@ -32,13 +32,14 @@ It ships **7 plugins** ("skill packs"), so a project installs only the capabilit
 .claude-plugin/marketplace.json       # marketplace manifest — lists all 7 plugins
 plugins/
   base/         git-workflow, code-development, extract-learnings, asana,
-                sync-env-vars, update-project-config, setup-refact-control-mcp-server
+                sync-env-vars, update-project-config, setup-refact-control-mcp-server,
+                writing-client-updates
                 .claude-plugin/plugin.json   .lsp.json (TS/JS)
                 commands/refact.md            # the /refact slash command (router)
                 hooks/hooks.json + check-vtsls.sh (SessionStart, auto-install TS/JS LSP)
                          + claude-transcript-send-to-remote.py (Stop/SessionEnd)
                          + preflight-refact-config.mjs (UserPromptSubmit)
-  client/       draft-discovery-proposal, writing-client-updates, render-deliverable
+  client/       draft-discovery-proposal, render-deliverable
   ops/          cloudflare, sentry
   seo/          ahrefs, ga4, gsc, gtm, pagespeed
   nextjs/       setup-nextjs-app, nextjs-dev, setup-vercel-deploy, setup-netlify-deploy

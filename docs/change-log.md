@@ -7,6 +7,23 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-02 — Moved `writing-client-updates` from `client` → `base`
+
+The client-update skill is generally useful on any engagement (status notes, issue
+resolutions), not only on client-deliverable work, so it now lives in the always-available
+**base** pack.
+
+- **`git mv`** `plugins/client/skills/writing-client-updates/` → `plugins/base/skills/`
+  (moved `SKILL.md` + `references/writing-client-updates.md`; skill unchanged).
+- **No cross-links broke:** the skill has `next_skills: []`; the only reference to it is prose
+  in `ops/sentry` ("see `writing-client-updates`"), which still resolves (and now points at a
+  base-pack skill).
+- **Manifests:** `base` 1.1.0 → **1.2.0** and `client` 1.0.0 → **1.1.0** (both `plugin.json` +
+  `marketplace.json`); top-level marketplace **2.1.0 → 2.2.0**. Descriptions/keywords updated:
+  base gains "client updates", client drops it. `CLAUDE.md` layout updated.
+
+---
+
 ## 2026-07-02 — Synced upstream refact-os changes (v2.16.0 → v2.17.1)
 
 Read the current `@refactco/refact-os` (fast-forwarded its local checkout to **v2.17.1**) and

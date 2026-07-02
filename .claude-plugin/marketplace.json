@@ -1,6 +1,6 @@
 {
   "name": "refact-os",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "owner": {
     "name": "Refact Developer",
     "email": "dev@refact.co"
@@ -8,17 +8,17 @@
   "plugins": [
     {
       "name": "base",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "source": "./plugins/base",
-      "description": "Base toolkit: git workflow, code-dev gates, Asana, env sync, learnings, slim project config, Refact Control MCP setup + the /refact command + TS/JS LSP.",
+      "description": "Base toolkit: git workflow, code-dev gates, Asana, env sync, learnings, client updates, slim project config, Refact Control MCP setup + the /refact command + TS/JS LSP.",
       "author": { "name": "Refact Developer", "email": "dev@refact.co" },
-      "keywords": ["refact", "skills", "git", "workflow", "asana", "env", "typescript", "javascript", "lsp"]
+      "keywords": ["refact", "skills", "git", "workflow", "asana", "env", "client-updates", "typescript", "javascript", "lsp"]
     },
     {
       "name": "client",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source": "./plugins/client",
-      "description": "Client deliverables & comms: discovery-first proposals, headline-first client updates, branded print-ready PDF rendering.",
+      "description": "Client deliverables: discovery-first proposals and branded print-ready PDF rendering.",
       "author": { "name": "Refact Developer", "email": "dev@refact.co" },
       "keywords": ["refact", "skills", "client", "proposal", "deliverable", "pdf"]
     },
