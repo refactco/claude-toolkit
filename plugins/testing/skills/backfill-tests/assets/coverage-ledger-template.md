@@ -13,8 +13,8 @@
 | ✅ covered | test written and green (incl. via a hand-written stub) | yes |
 | 🔌 integration | reachable, but a **complex** third-party dep (deep object graph) can't be faked without reimplementing the library — **dep named in Notes**; deferred to a separate integration suite this skill does not build | yes |
 | ⛔ blocked | untestable **as written** — no seam to control a non-deterministic / external effect without a source change (`time()`, `rand()`, direct socket) — **seam named in Notes** | yes |
-| ⚪ excluded | trivial glue (pure getter / `register_*` / config array) — no logic to pin | yes |
-| 🔲 deferred | reachable & carries real logic, not yet written — **incl. a surface blocked only by a _simple_ stubbable dep** — must resolve before done | no |
+| ⚪ excluded | a test would add no *meaningful* safety — **(A)** it would only **restate the source** (config glue, single-fallback getter, `wp_kses` pass-through, single literal op, boolean field read, literal regex), **(B)** already pinned by another row (wrapper/duplicate), or **(C)** **low blast radius** — genuine logic but admin-only chrome / cosmetic label / self-correcting editor convenience. Note the reason: `⚪ excluded (low-impact: <why>)` | yes |
+| 🔲 deferred | reachable, and clears **both axes** — real logic (pinning needs reasoning the source doesn't state: a winner among inputs, a parsed/accumulated result, a boundary/clamp, a built query) **and** real blast radius (front-end output, stored data, security, indexing, money, which-content) — even if short. Not yet written; **incl. a surface blocked only by a _simple_ stubbable dep**. Must resolve before done | no |
 
 **Surface kinds:** shortcode · filter · action · function · method · rest-route · render-callback
 
@@ -32,6 +32,7 @@ _Generated target: `tests/Unit/Generated/<Prefix><PascalName>/`_
 | `mepr_gate_content()` | filter | `inc/mepr.php:8` | 🔌 integration | — | complex `MeprUser` object graph — too costly to fake |
 | `cache_buster_token()` | function | `inc/assets.php:20` | ⛔ blocked | — | raw `time()` — no seam without a source change |
 | `register_theme_assets()` | action | `inc/setup.php:3` | ⚪ excluded | — | `wp_enqueue_*` glue, no logic |
+| `collapse_meta_box()` | filter | `inc/admin.php:14` | ⚪ excluded | — | low-impact: adds `closed` class to an admin postbox — no data/front-end effect |
 
 <!-- Repeat one ## section per confirmed folder. -->
 

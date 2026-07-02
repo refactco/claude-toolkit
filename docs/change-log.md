@@ -7,6 +7,35 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-02 — Synced upstream refact-os changes (v2.16.0 → v2.17.1)
+
+Read the current `@refactco/refact-os` (fast-forwarded its local checkout to **v2.17.1**) and
+brought the two post-lift changes into this marketplace. The lift baseline was v2.16.0, so the
+`templates/` diff `v2.16.0..v2.17.1` is the complete "what changed upstream" set — only two
+consumer-facing skills were touched.
+
+- **Added new skill `setup-refact-control-mcp-server`** → **base** pack. Wires the private
+  `@refactco/refact-control-mcp-server` (GitHub Packages) into a project's Claude Code via a
+  self-contained `.mcp.json` entry, pulling both secrets from 1Password. Copied verbatim from
+  upstream — it was already standalone-clean (no `agent/skills`, `refact:sync`, or `.cursor`).
+  Registered it in the `/refact` router (menu + routing table + "always available" list).
+- **Updated `backfill-tests`** (**testing** pack) to the v2.17.1 refresh: regenerated `SKILL.md`
+  from upstream and re-applied this repo's only customization — the `apps/wordpress` → `<wp-app>`
+  path abstraction (13 subs + the "locate the WordPress app directory" detection paragraph).
+  Copied the refreshed `references/characterization-tests.md` and `assets/coverage-ledger-template.md`
+  verbatim, and added the **new `references/coverage-deepening.md`** reference (linked from step 8).
+  `assets/generated-test-template.php` was untouched upstream, so left as-is.
+- **Version bumps:** `base` 1.0.0 → **1.1.0**, `testing` 1.0.0 → **1.1.0** (both in `plugin.json`
+  and `marketplace.json`); top-level marketplace **2.0.0 → 2.1.0**. `CLAUDE.md` layout updated.
+- **Not synced (intentional):** everything else upstream since the lift was maintainer-only or
+  already-dropped per the 7-pack triage (`docs/plugin-marketplace-plan.md`). No hook, LSP, or
+  manifest changes landed upstream in this range.
+- **Verified:** all JSON valid, both folder names == frontmatter `name`, no scaffold refs in the
+  touched files, `coverage-deepening.md` linked from the skill, `<wp-app>` abstraction complete
+  (0 stray `apps/wordpress` in `SKILL.md`).
+
+---
+
 ## 2026-06-30 — Stage 2: built the 7-pack marketplace
 
 Executed the build on branch `feat/marketplace-7-packs`.

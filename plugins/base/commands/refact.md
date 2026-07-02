@@ -17,6 +17,7 @@ Show this menu (and nothing else), then stop and wait for the user to pick:
 |---|---|---|
 | `config` | Record the project structure + tech stack in `.refact-os.json` | base (always available) |
 | `sync asana` | Sync / pull / comment on Asana tasks | base (always available) |
+| `setup refact-control` | Wire the Refact Control MCP server into this project | base (always available) |
 | `wp-env` | Manage the local WordPress stack | wordpress |
 | `install wp skills` | Vendor the WordPress/Gutenberg skills | wordpress |
 | `setup kinsta` / `setup wpengine` | Create the WP auto-deploy workflows | wordpress |
@@ -34,6 +35,7 @@ Match the action (case-insensitive, allow close paraphrases) to one row:
 |---|---|---|
 | config, set config, project config | `update-project-config` | base |
 | sync asana, asana, asana sync | `asana` | base |
+| setup refact-control, refact-control mcp, refact control mcp, add refact context | `setup-refact-control-mcp-server` | base |
 | wp-env, wp env | `wp-env` | wordpress |
 | install wp skills | `install-wp-skills` | wordpress |
 | setup kinsta, kinsta deploy | `setup-kinsta-deploy` | wordpress |
@@ -45,7 +47,7 @@ Match the action (case-insensitive, allow close paraphrases) to one row:
 
 Then:
 
-1. **base actions** (`config`, `sync asana`) are always available — invoke the skill directly.
+1. **base actions** (`config`, `sync asana`, `setup refact-control`) are always available — invoke the skill directly.
 2. **pack actions**: if the matching skill is available in this session, invoke it. If it is
    **not** installed, do not improvise — tell the user exactly:
    `That action needs the <pack> pack. Install it with: /plugin install <pack>@refact-os`

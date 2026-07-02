@@ -1,7 +1,7 @@
 {
   "name": "base",
-  "version": "1.0.0",
-  "description": "Base toolkit: git workflow, code-dev gates, Asana, env sync, learnings, slim project config + the /refact command + TS/JS LSP.",
+  "version": "1.1.0",
+  "description": "Base toolkit: git workflow, code-dev gates, Asana, env sync, learnings, slim project config, Refact Control MCP setup + the /refact command + TS/JS LSP.",
   "author": {
     "name": "Refact Developer",
     "email": "dev@refact.co"
