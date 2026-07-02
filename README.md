@@ -44,6 +44,52 @@ auto-discovers these by trigger; you don't call them by name.
 | **wordpress** | `wp-env`, `install-wp-skills`, `plugin-update`, `setup-kinsta-deploy`, `setup-wpengine-deploy` |
 | **testing** | `tdd`, `tdd-plan`, `red-green-refactor`, `backfill-tests`, `integration-tests` |
 
+## Enable or disable a pack (per project)
+
+Each pack turns on or off independently — per project, and per person.
+
+**From the menu:**
+
+```
+/plugin                            # browse, enable, disable, uninstall
+/plugin enable  wordpress@refact-os
+/plugin disable wordpress@refact-os
+```
+
+**From settings** (saves the choice with the project). In `.claude/settings.json`:
+
+```json
+{
+  "enabledPlugins": {
+    "base@refact-os": true,
+    "wordpress@refact-os": true,
+    "insights@refact-os": false
+  }
+}
+```
+
+- `.claude/settings.json` — shared, committed: the team's choice.
+- `.claude/settings.local.json` — personal, git-ignored: your own choice; it wins over the shared file.
+
+## Hooks
+
+Two packs ship hooks. They run automatically whenever that pack is enabled:
+
+| Pack | Runs on | What it does |
+|---|---|---|
+| **base** | `SessionStart` | install the TS/JS language server (`vtsls`) |
+| **base** | `UserPromptSubmit` | warn if `.refact-os.json` is missing |
+| **base** | `Stop`, `SessionEnd` | upload the session transcript to `REMOTE_API_URL` |
+| **wordpress** | `SessionStart` | install the PHP language server (`intelephense`) |
+
+Claude Code has **no switch for a single plugin hook**. To control them:
+
+- **Turn off a pack's hooks** → disable the whole pack (`/plugin disable base@refact-os`).
+- **Turn off every hook** (yours and all plugins') → set `"disableAllHooks": true` in `.claude/settings.json`.
+- **The transcript upload** → point it at your own server with the `REMOTE_API_URL` env var; to stop it entirely, disable `base` or use `disableAllHooks`.
+
+Plugin hooks **merge** with your own `.claude/settings.json` hooks — both run; neither replaces the other.
+
 ## `.refact-os.json` (optional, slim)
 
 Skills read an optional, non-secret project file holding only the **project structure** and
