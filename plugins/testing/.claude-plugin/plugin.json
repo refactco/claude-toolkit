@@ -1,0 +1,10 @@
+{
+  "name": "testing",
+  "version": "1.1.0",
+  "description": "Testing: TDD harness (plan -> red-green-refactor) plus WordPress characterization and real-plugin integration tests.",
+  "author": {
+    "name": "Refact Developer",
+    "email": "dev@refact.co"
+  },
+  "keywords": ["refact", "skills", "testing", "tdd", "phpunit", "wordpress", "integration"]
+}

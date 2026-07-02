@@ -1,21 +1,66 @@
 {
   "name": "refact-os",
-  "version": "1.1.0",
+  "version": "2.4.0",
   "owner": {
     "name": "Refact Developer",
     "email": "dev@refact.co"
   },
   "plugins": [
     {
-      "name": "dev-toolkit",
+      "name": "base",
+      "version": "1.2.0",
+      "source": "./plugins/base",
+      "description": "Base toolkit: git workflow, code-dev gates, Asana, env sync, learnings, client updates, slim project config, Refact Control MCP setup + the /refact command + TS/JS LSP.",
+      "author": { "name": "Refact Developer", "email": "dev@refact.co" },
+      "keywords": ["refact", "skills", "git", "workflow", "asana", "env", "client-updates", "typescript", "javascript", "lsp"]
+    },
+    {
+      "name": "client",
       "version": "1.1.0",
-      "source": "./plugins/dev-toolkit",
-      "description": "Developer toolkit: Refact OS skills, PHP/WordPress/TypeScript/JavaScript LSP support.",
-      "author": {
-        "name": "Refact Developer",
-        "email": "dev@refact.co"
-      },
-      "keywords": ["refact", "skills", "git", "workflow", "php", "wordpress", "typescript", "javascript", "lsp"]
+      "source": "./plugins/client",
+      "description": "Client deliverables: discovery-first proposals and branded print-ready PDF rendering.",
+      "author": { "name": "Refact Developer", "email": "dev@refact.co" },
+      "keywords": ["refact", "skills", "client", "proposal", "deliverable", "pdf"]
+    },
+    {
+      "name": "ops",
+      "version": "1.0.0",
+      "source": "./plugins/ops",
+      "description": "Ops integrations: Cloudflare client-zone operations and Sentry backlog triage.",
+      "author": { "name": "Refact Developer", "email": "dev@refact.co" },
+      "keywords": ["refact", "skills", "cloudflare", "sentry", "ops", "waf", "dns"]
+    },
+    {
+      "name": "insights",
+      "version": "1.0.0",
+      "source": "./plugins/insights",
+      "description": "Site insights: SEO (Ahrefs, Search Console), web analytics (GA4), tag management (GTM), and PageSpeed/Core Web Vitals.",
+      "author": { "name": "Refact Developer", "email": "dev@refact.co" },
+      "keywords": ["refact", "skills", "insights", "seo", "analytics", "ahrefs", "ga4", "search-console", "gtm", "pagespeed"]
+    },
+    {
+      "name": "nextjs",
+      "version": "1.0.0",
+      "source": "./plugins/nextjs",
+      "description": "Next.js: scaffold or adopt an app, run/diagnose it, and set up Vercel or Netlify deploys.",
+      "author": { "name": "Refact Developer", "email": "dev@refact.co" },
+      "keywords": ["refact", "skills", "nextjs", "vercel", "netlify", "deploy"]
+    },
+    {
+      "name": "wordpress",
+      "version": "1.0.0",
+      "source": "./plugins/wordpress",
+      "description": "WordPress: local wp-env stack, safe plugin updates with QA + rollback, Kinsta/WP Engine deploy workflows + PHP LSP.",
+      "author": { "name": "Refact Developer", "email": "dev@refact.co" },
+      "keywords": ["refact", "skills", "wordpress", "wp-env", "kinsta", "wpengine", "php", "lsp"]
+    },
+    {
+      "name": "testing",
+      "version": "1.1.0",
+      "source": "./plugins/testing",
+      "description": "Testing: TDD harness (plan -> red-green-refactor) plus WordPress characterization and real-plugin integration tests.",
+      "author": { "name": "Refact Developer", "email": "dev@refact.co" },
+      "keywords": ["refact", "skills", "testing", "tdd", "phpunit", "wordpress", "integration"]
     }
   ]
 }

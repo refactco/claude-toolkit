@@ -1,167 +1,325 @@
-# Plan — Refact skills as a Claude Code plugin marketplace
+# Plan — Refact skills as a Claude Code plugin marketplace (7 packs)
 
-> This is a planning document for review. Nothing here is built yet.
-> **Part 1** is the focus (do now). **Part 2** is deferred (do later).
+> Planning document. **Stage 1** (this triage + design) is recorded here.
+> **Stage 2** (the build) and the **Later** wind-down of the npm package are deferred.
+> This supersedes the earlier 6-pack version of this plan.
 
 ## Context
 
-Today the same skills live in **two** places:
+**Why this is happening.** The same skills live in two places: the `@refactco/refact-os`
+npm scaffolder (canonical source, now **v2.16.0**, 50 skills) and this repo — a Claude Code
+**plugin marketplace** (`refactco/claude-toolkit`, one `dev-toolkit` plugin with 25
+hand-copied skills). The hand-copies are drifting. The goal is to make the marketplace the
+single source of truth and split the skills into **separately installable / disable-able
+plugins** ("skill packs"), so any project installs just the capabilities it needs.
 
-1. **`refactco/refact-os`** — an npm scaffolder (a tool that sets up a project). It does three jobs: (a) lay a fixed folder layout (the *substrate* — `docs/`, `agent/`, `.refact-os.json`); (b) generate skill copies for **both Cursor and Claude Code** from one canonical `agent/skills/` folder; (c) ship capability *packs* (`code`, `client`, `wordpress`, `nextjs`, `seo`) on demand via `get-skill`.
-2. **This repo** — a Claude Code plugin marketplace. It hand-copies 29 of those skills into `plugins/dev-toolkit/skills/`, and adds real new value a scaffolder can't: **LSP config** (`.lsp.json` — language-server settings) and **SessionStart hooks** that auto-install language servers.
+**Confirmed decisions (this revision):**
+- **7 focused packs** — chosen for maximum install/disable control.
+- **Keep `/refact`** — rebuilt as a native slash command, not a skill.
+- **Keep `.refact-os.json`, but slim** — it holds only the canonical **project structure +
+  tech stack** (no secrets). Skills may read it; `update-project-config` (in `base`) writes it;
+  a preflight hook warns when it is missing/incomplete.
+- Account for skills the old doc missed: the **TDD harness** (`tdd`, `tdd-plan`,
+  `red-green-refactor`), `close-ticket`, `plugin-update`.
+- **Drop the `docs/`-as-memory methodology skills** (`ingest-input`, `process-docs`,
+  `open-ticket`, `close-ticket`, `update-canonical-record`, `project-status`,
+  `import-chat-history`) plus `create-deliverable` and `git-it` — keeping `extract-learnings`,
+  `draft-discovery-proposal`, and `render-deliverable` from the docs/client group.
 
-The hand-copies are **already drifting** (going out of sync): the plugin ships `release` and `write-update-note` (refact-os maintainer-only skills) and `code-development` (a refact-os *pack* skill), and is **missing** `close-ticket` and `get-skill`.
-
-## Decisions that drive this plan
-- **Drop Cursor** — Claude Code only.
-- **The plugin marketplace is canonical** (the single source of truth) — skills are authored here; no upstream to sync from.
-- **Pack-aligned plugins** — `dev-toolkit` (base) + `code`, `wordpress`, `nextjs`, `seo`, `client`.
-- **Retire the substrate** — ship only skills (plus LSP + hooks). No `docs/`+`agent/` standard, no `.refact-os.json`. Each skill creates any working folder it needs on demand.
-
-## Two parts
-- **Part 1 — Build the plugin marketplace (FOCUS — do now).** Make the marketplace usable on new projects.
-- **Part 2 — Deprecate `refact-os` (LATER — not now).** This is deferred. Part 1 does **not** touch or break `refact-os`; it only **copies** skill content out of it.
+**Two stages.**
+- **Stage 1 (this doc)** = decide. Triage all 50 skills (keep / fix / drop / rebuild), record
+  the 7-pack map, the `/refact` spec, the `.refact-os.json` schema, the hooks, and the rewrite
+  contract. No skills are moved.
+- **Stage 2 (later, needs go-ahead)** = build. Create the 7 plugin folders, move + rewrite the
+  surviving skills, register them in `marketplace.json`.
 
 ---
 
-# PART 1 — Plugin marketplace (NOW)
+## A. Disposition of all 50 refact-os skills
 
-## Goal
-A marketplace you can add to any new project and install per capability:
-```
-/plugin marketplace add <this repo>
-/plugin install dev-toolkit@refact-os
-/plugin install wordpress@refact-os      # was: get-skill wordpress
-/plugin install seo@refact-os
-```
+Source counts: 31 base + 17 packs (`client`/`code`/`nextjs`/`seo`/`wordpress`) + 2
+maintainer-only = 50. Result: **19 DROP, 1 REBUILD, 6 KEEP, 24 FIX** → 30 surviving skills
++ 1 `/refact` command across 7 packs.
 
-## Target layout
-```
-refact-os  (marketplace — keep this name)
-.claude-plugin/marketplace.json     ← lists every plugin below
-plugins/
-  dev-toolkit/   base move set + TS/JS LSP + auto-install hooks
-  code/          code-development, add-codebase, backfill-tests, integration-tests
-  wordpress/     wp-env, install-wp-skills, setup-kinsta-deploy, setup-wpengine-deploy (+ PHP LSP)
-  nextjs/        setup-nextjs-app, nextjs-dev, setup-vercel-deploy, setup-netlify-deploy
-  seo/           gsc, ga4, ahrefs, gtm, pagespeed (+ scripts/, references/)
-  client/        create-deliverable, render-deliverable, draft-discovery-proposal, writing-client-updates
-```
-Each plugin: `.claude-plugin/plugin.json` + `skills/<name>/SKILL.md`. Optional: `commands/`, `agents/`, `.mcp.json`.
+**DROP (19) — refact-os scaffold machinery, maintainer-only, or not needed.**
 
-Why it is clean: Claude Code auto-discovers `skills/<name>/SKILL.md`, so there is **no build/generation step**. Each plugin stays under 25 skills, so no generated index file is needed. `get-skill <pack>` maps to `/plugin install <pack>@refact-os`.
-
-## Skill disposition (the core work)
-Source: **P** = current plugin; **R** = refact-os `templates/packs/`. (The drop reasons are about what belongs in a consumer plugin for new projects — they do **not** depend on Part 2.)
-
-### → `dev-toolkit` (base)
-| Skill | Src | Action |
-|---|---|---|
-| git-workflow | P | Keep (core gate). Strip `.cursor`/`agent/` paths. |
-| git-it | P | Keep. |
-| sync-env-vars | P | Keep (self-contained). |
-| ingest-input | P | **Rewrite**: create `docs/sources/raw/` on demand. |
-| open-ticket | P | **Rewrite**: create `docs/task/open/` on demand. |
-| close-ticket | R | **Add** (missing today) + same rewrite. |
-| update-canonical-record | P | **Rewrite**: no fixed path; detect/ask. |
-| extract-learnings | P | **Rewrite**: drop the "promote to `agent/AGENTS.md`" step. |
-| process-docs | P | **Rewrite**: operate on `docs/` if present, create on demand. |
-| project-status | P | **Rewrite**: scan `docs/` if present (reuse `scripts/scan-status.mjs`). |
-| import-chat-history | P | **Rewrite**: default output dir; no substrate. |
-| list-skills | P | **Rewrite**: report installed plugins/skills, not `agent/skills/` + catalog. |
-| cloudflare, asana, sentry | P | Keep here for now (broadly useful). `asana` must drop its `.refact-os.json` read. |
-| LSP (`.lsp.json`) + `hooks/` | P | Keep TS/JS (vtsls) here; optionally move PHP (intelephense) to `wordpress`. |
-
-### → `code`
-code-development (P), add-codebase (R), backfill-tests (P), integration-tests (P). Keep existing `references/`+`assets/`.
-
-### → `wordpress`
-wp-env, install-wp-skills, setup-kinsta-deploy, setup-wpengine-deploy (R) + `wp-cli.yml.example`.
-
-### → `nextjs`
-setup-nextjs-app, nextjs-dev, setup-vercel-deploy, setup-netlify-deploy (R).
-
-### → `seo`
-gsc, ga4, ahrefs, gtm, pagespeed (R) — **move with their `scripts/*.mjs` and `references/`** (substantial; do not rewrite). Consider shipping the Ahrefs MCP server via `.mcp.json`.
-
-### → `client`
-create-deliverable (R), render-deliverable (P, reuse `render.mjs`), draft-discovery-proposal (P), writing-client-updates (P).
-
-### Drop (not for consumer plugins)
-| Skill | Why |
+| Skill | Why drop |
 |---|---|
-| release, write-update-note | Maintainer tooling for the refact-os npm package. |
-| update-package | Bumps that npm package; irrelevant to a plugin project. |
+| release | Maintainer-only: cuts the refact-os npm release. |
+| write-update-note | Maintainer-only: team note about refact-os releases. |
+| update-package | Bumps the refact-os npm package — irrelevant in a plugin project. |
+| contribute-skill | Opens a PR to the refact-os catalog (upstream-only). |
 | get-skill | Replaced by `/plugin install <pack>@refact-os`. |
-| setup-project, update-project-config | Manage `.refact-os.json`, which the substrate-free model drops. |
-| adopt | Brings a repo to the retired substrate standard. |
-| refact (router) | Depends on `.refact-os.json` preflight + `agent/` paths + a Cursor hook. Drop, or rebuild as a native `commands/refact.md`. |
-| contribute-skill, create-skill | Author into `agent/skills/` + `refact:sync`; meaningful only for maintainers of this marketplace, not consumers. |
+| create-skill | Authors into `agent/skills/` + `refact:sync` — that resolver is gone. |
+| list-skills | Reads the `agent/skills/` resolver; replaced by `/plugin` listing. |
+| setup-project | Heavy `.refact-os.json` checklist — replaced by the slim `update-project-config`. |
+| adopt | Plans migrating a repo to the **retired** `agent/`+`docs/`+full-`.refact-os.json` standard. |
+| add-codebase | Clones into an `apps/<slot>/` monorepo and strips `.git` — assumes that scaffold. |
+| import-chat-history | Not needed — imported Claude/Cursor chat logs into `docs/sources/`. |
+| process-docs | Not needed — digested `docs/sources/raw/` into `docs/context/`. |
+| git-it | Not needed — first-time git init + first commit + GitHub remote. |
+| create-deliverable | Not needed — promoted an approved draft to `docs/deliverables/`. |
+| ingest-input | Not needed — filed inbound material into `docs/sources/`. |
+| open-ticket | Not needed — made tracked to-dos under `docs/task/open/`. |
+| close-ticket | Not needed — closed/compressed tracked to-dos. |
+| update-canonical-record | Not needed — edited the project's master truth file. |
+| project-status | Not needed — reported pending docs items (little left to scan). |
 
-## Cross-cutting rewrite contract (apply to EVERY skill that moves)
-One repeated pattern, not per-file bespoke work:
-1. Remove `agent/skills/<x>/SKILL.md` path references → refer to skills by name.
-2. Remove `npm run refact:sync` / `refact:validate` → no adapters to regenerate.
-3. Remove `.cursor/` references and any Cursor hook mention.
-4. Remove `.refact-os.json` dependence → use an **env var** (e.g. `ASANA_PROJECT_ID`) or **ask-once-and-store** in a small skill-managed file — not a repo-wide standard.
-5. **Create working dirs on demand** rather than assuming a scaffold laid them.
-6. Fix `next_skills`/`sub_agents` to reference only skills in the **same** plugin; cross-plugin links must be optional.
+**REBUILD (1) — stays as a feature, but as a command not a skill.**
 
-Verification grep (must return nothing under `plugins/`):
+| Skill | Action |
+|---|---|
+| refact (router) | Rebuild as `commands/refact.md` in the **base** plugin. See section C. |
+
+**KEEP (6) — lift with only path/config repoints (no behaviour change).** Target pack in
+parens.
+
+`git-workflow` (base, drop the `agent/AGENTS.md` base-branch line) · `code-development`
+(base, repoint the git-workflow reference) · `sync-env-vars` (base, repoint `sync-env.sh`) ·
+`writing-client-updates` (client, pure prose) · `render-deliverable` (client, reuse
+`render.mjs` + `assets/shell.html`) · `cloudflare` (ops, strip the `.cursor` env path; keep
+all `references/`+`workflows/`).
+
+**FIX (24) — lift, then rewrite the body to remove scaffold assumptions** (apply the
+contract in section D). Grouped by target pack:
+
+- **base (3):** `extract-learnings` (append to a learnings file; drop the "promote to
+  `agent/AGENTS.md`" step); `asana` (read the project id from `.refact-os.json` or ask, secret
+  token via env; repoint `asana.mjs`); `update-project-config` (rewritten **slim** — write only
+  project structure + tech stack to `.refact-os.json`; see section B2).
+- **ops (1):** `sentry` (read DSN/org/project from `.refact-os.json` or ask, auth token via
+  env; repoint `sentry.mjs`).
+- **client (1):** `draft-discovery-proposal` (pull from `docs/sources/` if present; create any
+  output dir on demand).
+- **seo (5):** `ahrefs`, `ga4`, `gsc`, `gtm`, `pagespeed` — read property/site ids from
+  `.refact-os.json`, API tokens via env/1Password; **keep their `scripts/*.mjs` + `references/`**
+  (substantial, do not rewrite the API logic); evidence dir on demand. `ahrefs`'s fix-routing to
+  `code-development` becomes an **optional** cross-pack link.
+- **nextjs (4):** `setup-nextjs-app`, `nextjs-dev`, `setup-vercel-deploy`,
+  `setup-netlify-deploy` — read stack/hosting from `.refact-os.json`; `apps/<name>/` assumption
+  → detect/ask; drop `refact:sync` mentions; secrets via env.
+- **wordpress (5):** `wp-env`, `install-wp-skills` (drop the write into `.cursor/skills/`),
+  `plugin-update`, `setup-kinsta-deploy`, `setup-wpengine-deploy` — read stack/hosting from
+  `.refact-os.json`; `apps/wordpress/` monorepo → detect/ask.
+- **testing (5):** `tdd`, `tdd-plan`, `red-green-refactor`, `backfill-tests`,
+  `integration-tests` — de-hardcode `apps/wordpress/tests/...` to detect/ask; keep the
+  existing `assets/`+`references/`. (Stays WordPress/wp-env-flavoured by design.)
+
+## B. The 7 packs (Stage 2 target layout)
+
 ```
-grep -rlE "agent/skills|refact:sync|refact:validate|\.refact-os\.json|\.cursor" plugins/
+refact-os (marketplace — keep this name)
+.claude-plugin/marketplace.json     ← registers all 7 plugins
+plugins/
+  base/             git-workflow, code-development, extract-learnings,
+                    asana, sync-env-vars, update-project-config
+                    + commands/refact.md
+                    + TS/JS LSP (vtsls)
+                    + hooks: vtsls auto-install, transcript→server, preflight
+  client/           draft-discovery-proposal, writing-client-updates,
+                    render-deliverable   (+ render.mjs, assets/shell.html, references/)
+  ops/              cloudflare, sentry
+                    (+ scripts/sentry.mjs + cloudflare references/ & workflows/)
+  seo/              ahrefs, ga4, gsc, gtm, pagespeed
+                    (+ scripts/ + references/; optional .mcp.json for Ahrefs)
+  nextjs/           setup-nextjs-app, nextjs-dev,
+                    setup-vercel-deploy, setup-netlify-deploy
+  wordpress/        wp-env, install-wp-skills, plugin-update,
+                    setup-kinsta-deploy, setup-wpengine-deploy
+                    + PHP LSP (intelephense) + its auto-install hook
+  testing/          tdd, tdd-plan, red-green-refactor,
+                    backfill-tests, integration-tests
 ```
 
-## CLAUDE.md updates (this repo)
-1. **Reverse the canonical-source note**: this repo is canonical; no `agent/` source, no `refact:sync`, multiple plugins.
-2. **Add a plain-English response rule.** Exact text to add:
-```markdown
-## How to write your responses
+LSP split: TS/JS (`vtsls` + `check-vtsls.sh`) ship in **base**; PHP (`intelephense` +
+`check-intelephense.sh`) moves to **wordpress** (PHP is WP-specific here). Each plugin gets a
+`.claude-plugin/plugin.json` **with a `version` field** (none today).
 
-Always answer in plain, simple English at about A2 (basic / elementary) level. Easy to understand.
+**Hooks in `base`** (`hooks/hooks.json`):
+1. `check-vtsls.sh` — **SessionStart**: auto-install the TS/JS language server (existing).
+2. `claude-transcript-send-to-remote.py` — **Stop / SessionEnd**: POST the session chat
+   transcript to `REMOTE_API_URL` (default `https://159.223.97.72:8443/transcript`). Brought
+   from refact-os. Endpoint configurable; fire-and-forget; note it sends full transcripts
+   off-machine.
+3. `preflight-refact-config` — **UserPromptSubmit**: re-implemented from refact-os's Cursor
+   `preflight-metadata.mjs` for Claude Code — warn (do not block) when `.refact-os.json` is
+   missing or incomplete before a `/refact` action. Exits 0 so it never blocks a session.
 
-- Use short sentences. One idea per sentence.
-- Use common, everyday words. Avoid jargon (special hard words) and idioms.
-- Keep exact technical names, file names, commands, and code accurate — never simplify those.
-- If a word must stay as its exact technical term, keep the word and put its meaning in
-  parentheses right after it. Example: "Edit the manifest (the settings file) ...".
-- Prefer a small, concrete example over an abstract explanation.
-- Short headings, bullets, and small tables are fine.
+(Not brought: the `claude-transcript-copy-to-repo` hook — we are not keeping a local
+`docs/sources/` transcript store.)
 
-This rule is about the prose you write for the reader. It does not change code, file names,
-commands, or exact technical names.
+## B2. `.refact-os.json` (kept, slim)
+
+A small, non-secret file holding the **canonical project structure + tech stack** only. Skills
+**read** it to learn the stack (is this WordPress? Next.js? what hosting?); `update-project-config`
+**writes** it; the preflight hook **checks** it. Secrets/tokens never go here — they stay in env
+/ 1Password. Shape (kept deliberately simple):
+
+```jsonc
+{
+  "structure": { /* where things live, e.g. monorepo app slots if any */ },
+  "stack":     { /* languages, frameworks, hosting — the tech stack */ }
+}
 ```
 
-## Marketplace mechanics & versioning
-- Keep marketplace `name: "refact-os"` (npm name and marketplace name are different namespaces — no conflict).
-- Per-plugin `version` in each `plugin.json` (none today — add it) and in `marketplace.json`. Bump the changed plugin + the marketplace version on every change.
+## C. `/refact` spec (rebuilt as `commands/refact.md` in **base**)
 
-## What to consider (plugin-native options the scaffolder never had)
-- **Slash commands** (`commands/*.md`) and **sub-agents** (`agents/*.md`) — a cleaner home for the old `refact` router than a skill.
-- **MCP servers** (`.mcp.json`) can ship inside a plugin — good fit for `seo` (Ahrefs) and `sentry`/`asana`.
-- **No on-install file mutation** — substrate-dependent skills must self-create their dirs (contract item 5).
-- **Cross-plugin dependencies** are the sharp edge — keep `next_skills` within-plugin or optional.
+A menu/router. `/refact` with no args prints the action menu. Each action runs the matching
+skill **if its pack is installed**, else prints the `/plugin install <pack>@refact-os` hint.
 
-## Execution phases (Part 1)
-- **Phase 1 — Make `dev-toolkit` correct.** Remove the drop skills; add `close-ticket`; apply the rewrite contract to all base skills; add `version` to `plugin.json`; keep LSP+hooks; update `CLAUDE.md` (incl. the plain-English rule) + `marketplace.json`. *Ship-ready on its own.*
-- **Phase 2 — Carve the pack plugins.** Create `code/`, `wordpress/`, `nextjs/`, `seo/`, `client/`. Copy pack skills from refact-os `templates/packs/` (with `scripts/`/`references/`/`assets/`), apply the rewrite contract, register in `marketplace.json`, fix cross-plugin links.
-- **Phase 3 — Docs & verification.** Top-level `README.md` (per-plugin install commands); run the verification below.
+| `/refact …` | Routes to | Pack |
+|---|---|---|
+| config (set project structure / tech stack) | update-project-config | base |
+| sync asana | asana | base |
+| wp-env / install wp skills / setup kinsta / setup wpengine | matching skill | wordpress |
+| setup nextjs / setup vercel / setup netlify / nextjs dev | matching skill | nextjs |
 
-## Verification (Part 1)
-1. **Static:** the grep returns nothing; each `skills/<name>` folder name equals its frontmatter `name`; no plugin > 25 skills; no `next_skills` points outside its own plugin (or it is optional).
-2. **Load test on a fresh project:** `/plugin marketplace add "<repo path>"`, install each plugin, restart, confirm skills are selectable and the dropped skills are gone.
-3. **LSP/hooks:** new session → the `check-*.sh` hooks run and the servers attach to a PHP and a TS file.
-4. **Smoke each pack:** e.g. `open-ticket` creates `docs/task/open/...` from nothing; an `seo` script runs; `render-deliverable` renders a sample md.
+**Dropped actions** (no longer have a skill): init/setup, update package, list/get/create
+skill, add codebase, process docs, get chat history, git it, status. The command is graceful
+about not-installed packs.
+
+## D. Cross-cutting rewrite contract (applies to every FIX skill in Stage 2)
+
+1. Remove `agent/skills/<x>` path refs → refer to skills by name.
+2. Remove `npm run refact:sync` / `refact:validate` (no adapters to regenerate).
+3. Remove `.cursor/` refs and any Cursor-hook mention.
+4. **`.refact-os.json` is kept but slim** (project structure + tech stack, no secrets). FIX
+   skills may **read** it for the stack/structure. Move only **secrets/credentials** out → env
+   var or ask-once. `update-project-config` (base) is the only writer; the preflight hook warns
+   when it is missing/incomplete.
+5. **Create working dirs on demand** (`docs/sources/`, `plans/`, …) instead of assuming a
+   scaffold laid them.
+6. Repoint bundled scripts from `agent/scripts/` or `.claude/scripts/` → the plugin's own
+   `scripts/` dir; repoint config reads to `.refact-os.json` / env.
+7. Fix `next_skills`/`sub_agents` to reference only **same-pack** skills; cross-pack links
+   must be optional.
+8. De-hardcode WordPress paths in the testing pack to detect/ask (keep it WP-flavoured).
+
+Stage-2 verification grep (must return nothing under `plugins/`):
+```
+grep -rlE "agent/skills|refact:sync|refact:validate|\.cursor" plugins/
+```
+(`.refact-os.json` is intentionally **allowed** now and is not in the grep.)
+
+## E. Stage 2 build phases (deferred — not done yet)
+
+- **Phase 1 — base correct:** create `plugins/base/`; move git-workflow, code-development,
+  extract-learnings, asana, sync-env-vars, update-project-config; add `commands/refact.md`;
+  keep the TS/JS LSP+hook; add the transcript→server + preflight hooks; add `version` to
+  `plugin.json`; update `CLAUDE.md` (reverse the "canonical source" note; add the
+  plain-English response rule).
+- **Phase 2 — carve the 6 capability packs:** create each folder (`client`, `ops`, `seo`,
+  `nextjs`, `wordpress`, `testing`), move + apply the rewrite contract, bring
+  `scripts/`/`references/`/`assets/`, move PHP LSP to wordpress, register all in
+  `marketplace.json`, fix cross-pack links.
+- **Phase 3 — docs & verify:** top-level `README.md` with per-pack install commands; run the
+  static + load + LSP/hook + smoke checks.
+
+## F. What each surviving skill does (per-pack reference)
+
+**base (6)**
+- `git-workflow` — Handle git for any change: make a branch, commit, open the pull request.
+- `code-development` — Extra gates for code changes: run tests/lint/build before pushing.
+- `extract-learnings` — Save a durable lesson (a preference or rule) into a learnings file.
+- `asana` — Asana tasks: sync tickets, pull one, comment, or post an update.
+- `sync-env-vars` — Keep `.env` and the team 1Password item in sync; rebuild `.env.example`.
+- `update-project-config` — Write the slim `.refact-os.json` (project structure + tech stack).
+
+**client (3)**
+- `draft-discovery-proposal` — Write a client proposal in Refact's "discovery first" style.
+- `writing-client-updates` — Write a clear client update (email or Slack), headline first.
+- `render-deliverable` — Turn a markdown doc into a branded, print-ready HTML/PDF.
+
+**ops (2)**
+- `cloudflare` — Cloudflare tasks: WAF, DNS, cache, bots, Turnstile, Zero Trust, email DNS.
+- `sentry` — Triage Sentry errors: group, find root causes, mute/resolve to save quota.
+
+**seo (5)**
+- `ahrefs` — Ahrefs data: site audit, keywords, backlinks, rank tracking; drive fixes via PR.
+- `ga4` — Google Analytics 4: pull reports and manage config (read-only by default).
+- `gsc` — Google Search Console: search performance, sitemaps, URL inspection.
+- `gtm` — Google Tag Manager: audit the container and stage edits (a human publishes).
+- `pagespeed` — Page speed and Core Web Vitals via PageSpeed Insights (read-only).
+
+**nextjs (4)**
+- `setup-nextjs-app` — Create or adopt a Next.js app; record how to run it locally.
+- `nextjs-dev` — Work inside an existing Next.js app: run dev/build/lint, fix common issues.
+- `setup-vercel-deploy` — Link a Next.js app to Vercel; record deploy settings.
+- `setup-netlify-deploy` — Link a Next.js app to Netlify; record deploy settings.
+
+**wordpress (5)**
+- `wp-env` — Manage the local WordPress stack with wp-env: setup, pull, reset, domain.
+- `install-wp-skills` — Vendor the WordPress/Gutenberg agent skills into the project.
+- `plugin-update` — Safely update WP plugins one at a time on staging, with QA + rollback.
+- `setup-kinsta-deploy` — Create the Kinsta auto-deploy GitHub workflows.
+- `setup-wpengine-deploy` — Create the WP Engine auto-deploy GitHub workflows.
+
+**testing (5)**
+- `tdd` — TDD orchestrator: idea → plan → red-green-refactor → one PR (WordPress unit).
+- `tdd-plan` — TDD phase 1: cut a feature into thin slices, write a plan per slice.
+- `red-green-refactor` — TDD phase 2: build one slice test-first (red→green→refactor), commit.
+- `backfill-tests` — Add characterization tests under existing WordPress code (a safety net).
+- `integration-tests` — Build real-plugin integration tests for surfaces that can't be stubbed.
+
+**command (1)** — `/refact` — menu/router slash command to the installed skills (section C).
+
+## G. Gap analysis — here vs refact-os (what to bring / update / remove in Stage 2)
+
+Current `dev-toolkit` has 25 skills; the survivor set is 30 + the `/refact` command.
+
+**BRING (17) — survivors NOT in `dev-toolkit` today; copy from refact-os + apply the contract.**
+`ahrefs`, `ga4`, `gsc`, `gtm`, `pagespeed`, `setup-nextjs-app`, `nextjs-dev`,
+`setup-vercel-deploy`, `setup-netlify-deploy`, `wp-env`, `install-wp-skills`, `plugin-update`,
+`setup-kinsta-deploy`, `setup-wpengine-deploy`, `tdd`, `tdd-plan`, `red-green-refactor`.
+
+**UPDATE-IN-PLACE (13) — already here; keep but repoint/rewrite.**
+- KEEP (light repoint, 6): `git-workflow`, `code-development`, `sync-env-vars`,
+  `writing-client-updates`, `render-deliverable`, `cloudflare`.
+- FIX (body rewrite, 7): `extract-learnings`, `asana`, `update-project-config`,
+  `draft-discovery-proposal`, `sentry`, `backfill-tests`, `integration-tests`.
+
+**REMOVE (12) — currently in `dev-toolkit`, decided DROP.**
+`adopt`, `create-skill`, `list-skills`, `setup-project`, `import-chat-history`, `process-docs`,
+`git-it`, `ingest-input`, `open-ticket`, `update-canonical-record`, `project-status` — and
+`refact` (rebuilt as the `commands/refact.md` command, not a skill).
+
+> Reconciliation: 25 here = 13 update-in-place + 11 remove + `refact`. After Stage 2:
+> 30 skills + 1 command across 7 packs.
+
+## Files changed in Stage 1 (this decision)
+
+1. **`docs/plugin-marketplace-plan.md`** — this rewrite (sections A–G). Supersedes the older
+   6-pack version.
+2. **`docs/change-log.md`** — dated entries recording this decision.
+
+**No changes** to `plugins/`, `marketplace.json`, `CLAUDE.md`, or any `SKILL.md` in Stage 1.
+
+## Verification (Stage 1)
+
+Stage 1's output is a decision document, so verification is a review:
+- The triage table lists **all 50** skills exactly once; every survivor maps to one of the 7
+  packs.
+- No pack exceeds 25 skills (largest pack — `base` — has 6); every survivor's `next_skills`
+  will resolve within its own pack (cross-pack links marked optional).
+- The doc records the confirmed decisions (7 packs, keep `/refact`, slim `.refact-os.json`,
+  transcript+preflight hooks, Stage-1-only scope) and `docs/change-log.md` has the new entry.
+- (Deferred to Stage 2: the grep above, a fresh-project load test, per-pack smoke tests.)
 
 ---
 
-# PART 2 — Deprecate `refact-os` (LATER — deferred, not now)
+# Later — deprecate the `@refactco/refact-os` npm package (deferred)
 
-> Do **not** start this until Part 1 is proven on real projects. Listed here only so the end state is on record.
+> Do **not** start until Stage 2 is built and proven on real projects. Recorded so the end
+> state is on file. Stage 1 and Stage 2 only **copy** content out of refact-os; they do not
+> touch or break it.
 
-All three of refact-os's jobs are removed by Part 1, so the npm tool is wound down:
+All three of refact-os's jobs are removed once the marketplace is built, so the npm tool is
+wound down:
 1. Stop shipping skills (the catalog now lives in the marketplace).
-2. Final npm release = a deprecation notice pointing to the marketplace; then `npm deprecate @refactco/refact-os "..."`.
+2. Final npm release = a deprecation notice pointing to the marketplace; then
+   `npm deprecate @refactco/refact-os "..."`.
 3. Archive the repo (or replace its README with a redirect).
 4. Move `docs/agent-first-repo-best-practices.md` into this repo's `docs/` for design history.
-5. `lib/`, `bin/`, `templates/`, `.cursor/`/`.claude/` generation all retire with the package. (`adapters.js` index logic is available to copy back only if a plugin ever exceeds 25 skills.)
+5. `lib/`, `bin/`, `templates/`, `.cursor/`/`.claude/` generation all retire with the package.
+   (`adapters.js` index logic is available to copy back only if a plugin ever exceeds 25
+   skills.)

@@ -1,0 +1,48 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/check-vtsls.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/preflight-refact-config.mjs",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/claude-transcript-send-to-remote.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/claude-transcript-send-to-remote.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

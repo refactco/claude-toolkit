@@ -1,0 +1,160 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://refact.co/schemas/plugin-update.config.json",
+  "title": "plugin-update config",
+  "description": "Project-local config for the plugin-update skill. Lives at the repo root as plugin-update.config.json (canonical) or .claude/plugin-update.json (fallback). Committed to git. NOT a refact-os-generated file.",
+  "type": "object",
+  "required": ["mode", "hosting", "environments"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "_readme": {
+      "type": "string",
+      "description": "Free-text note. This file is owned by the plugin-update skill, not by refact-os sync."
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["traditional", "headless"],
+      "description": "traditional = QA drives the WordPress site directly (single Playwright pass). headless = the frontend is a separate app (e.g. Next.js) QA'd separately."
+    },
+    "hosting": {
+      "type": "string",
+      "enum": ["kinsta", "wpengine", "other"],
+      "description": "Hosting provider. Informational — the agent uses it to choose the right cache-bust command (e.g. `kinsta-cache purge`) in the prose steps; no script branches on it."
+    },
+    "excludePlugins": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [],
+      "description": "Plugin slugs that must never be auto-updated (e.g. the custom mu-plugin)."
+    },
+    "environments": {
+      "type": "object",
+      "required": ["staging"],
+      "additionalProperties": false,
+      "properties": {
+        "staging": { "$ref": "#/definitions/environment" },
+        "production": { "$ref": "#/definitions/environment" }
+      }
+    },
+    "qa": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "routes": {
+          "type": "array",
+          "description": "Baseline critical routes — screenshotted + HTTP-checked on every update. Human-confirmed in Setup.",
+          "items": {
+            "type": "object",
+            "required": ["name", "path"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "description": "Stable identifier, e.g. 'home', 'single-article'." },
+              "path": { "type": "string", "description": "URL path relative to the env url, e.g. '/' or '/?s=the'." },
+              "pageType": { "type": "string", "description": "Human label, e.g. 'front page', 'single post'." }
+            }
+          }
+        },
+        "flows": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Site-specific interactive flows this project HAS, mapped to their URL path. A flow is only checked if declared here, so the skill stays portable. Recognized keys: 'submitEvent' (event-submission form). e.g. { \"submitEvent\": \"/submit-an-event/\" }."
+        },
+        "visualDiff": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "maxDiffPixelRatio": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.02,
+              "description": "Playwright toHaveScreenshot threshold (ratio of differing pixels)."
+            },
+            "masks": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "CSS selectors for dynamic regions to mask (ads, latest-posts sliders, timestamps)."
+            }
+          }
+        },
+        "selectors": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Per-project, theme-specific CSS selectors discovered at Setup (discover-selectors.mjs + human confirm). The interactive/functional specs read EVERY selector from here and SKIP a check when its key is absent — so nothing is hardcoded and an unconfigured site never false-fails. Keep selectors small and specific.",
+          "properties": {
+            "navWrapper": { "type": "string", "description": "Primary nav container — scope for nav link-integrity + dropdown checks." },
+            "footer": { "type": "string", "description": "Site footer — scope for footer link-integrity check." },
+            "navDropdownToggle": { "type": "string", "description": "Element that opens a nav sub-menu / mega-menu." },
+            "navSubmenuContainer": { "type": "string", "description": "The opened sub-menu panel asserted visible after the toggle click." },
+            "ctaButton": { "type": "string", "description": "In-page anchor CTA buttons (href^='#') whose targets must resolve." },
+            "shareBlock": { "type": "string", "description": "Social-share block container on a single article." },
+            "shareControls": { "type": "string", "description": "Share links/buttons inside the share block." },
+            "tableOfContents": { "type": "string", "description": "Article table-of-contents container with in-page anchors." },
+            "lightboxTrigger": { "type": "string", "description": "Element that opens the image lightbox." },
+            "lightboxOverlay": { "type": "string", "description": "The opened lightbox overlay asserted visible." },
+            "eventsFilterInput": { "type": "string", "description": "Keyword/filter input on a filtered archive." },
+            "eventsListingContainer": { "type": "string", "description": "The listing container that re-renders after filtering." },
+            "loadMoreWrap": { "type": "string", "description": "Load-more (e.g. Ajax Load More) wrapper." },
+            "loadMoreItems": { "type": "string", "description": "Selector for the items inside the load-more wrapper (count grows after click)." },
+            "loadMoreButton": { "type": "string", "description": "The load-more button to click." },
+            "newsletterSignup": { "type": "string", "description": "Embedded (often third-party) newsletter form container. Declaring it makes its render a HARD gate." },
+            "newsletterEmailField": { "type": "string", "description": "Email input inside the newsletter form (defaults to a generic email-input selector if omitted but newsletterSignup is set)." },
+            "searchResults": { "type": "string", "description": "Search-results container shown for a matching query." },
+            "searchEmptyState": { "type": "string", "description": "No-results element shown for a non-matching query." },
+            "hamburgerButton": { "type": "string", "description": "Mobile menu toggle, asserted visible + clicked at phone width." },
+            "mobileNavLinks": { "type": "string", "description": "Nav links revealed after opening the mobile menu." }
+          }
+        },
+        "probes": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Per-project route paths + query terms the interactive/functional probes use. A probe-bound check SKIPS when its key is absent.",
+          "properties": {
+            "searchQuery": { "type": "string", "description": "A term known to return results on this site (search test). e.g. 'the'." },
+            "searchNoMatchQuery": { "type": "string", "description": "A nonsense term known to return zero results (search empty-state test). e.g. 'zzqqxnomatch123'." },
+            "eventsFilterQuery": { "type": "string", "description": "A keyword typed into the events/archive filter input." },
+            "eventsArchivePath": { "type": "string", "description": "Path of the filtered archive the events-filter test loads, e.g. '/events/'." },
+            "loadMoreArchivePath": { "type": "string", "description": "Path of an archive that paginates via load-more, e.g. '/category/news/'." }
+          }
+        }
+      }
+    },
+    "cache": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kinsta": { "type": "boolean", "default": true },
+        "cloudflare": { "type": "boolean", "default": true }
+      },
+      "description": "Which caches to bust after an update before screenshots."
+    },
+    "snapshotDir": {
+      "type": "string",
+      "default": ".plugin-update-snapshots",
+      "description": "Gitignored local dir for DB exports taken before updates."
+    }
+  },
+  "definitions": {
+    "environment": {
+      "type": "object",
+      "required": ["ssh", "url"],
+      "additionalProperties": false,
+      "properties": {
+        "url": { "type": "string", "format": "uri", "description": "Public URL of the environment." },
+        "branch": { "type": "string", "description": "Git branch that deploys to this environment (informational)." },
+        "ssh": {
+          "type": "object",
+          "required": ["user", "host", "port", "path"],
+          "additionalProperties": false,
+          "properties": {
+            "user": { "type": "string" },
+            "host": { "type": "string" },
+            "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+            "path": { "type": "string", "description": "WordPress install root on the server." }
+          }
+        }
+      }
+    }
+  }
+}

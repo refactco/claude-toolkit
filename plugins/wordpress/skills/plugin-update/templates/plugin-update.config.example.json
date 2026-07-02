@@ -1,0 +1,53 @@
+{
+  "_readme": "SEED config for the plugin-update skill. Setup (`/plugin-update setup`) copies this to the repo root as plugin-update.config.json, fills environments from .refact-os.json, then DISCOVERS and writes qa.routes / qa.flows / qa.visualDiff.masks / qa.selectors / qa.probes for THIS project (discover-routes.mjs + discover-selectors.mjs + human confirm). The qa.selectors below are WordPress-generic defaults — confirm/replace them against the real DOM. Brand-specific selectors (share, filters, search results, newsletter) are intentionally absent: the matching check stays SKIPPED until you declare them.",
+  "mode": "traditional",
+  "hosting": "kinsta",
+  "excludePlugins": ["your-custom-mu-plugin"],
+  "environments": {
+    "staging": {
+      "url": "https://staging.example.com",
+      "branch": "stage",
+      "ssh": { "user": "REPLACE_ME", "host": "REPLACE_ME", "port": 12345, "path": "/www/REPLACE_ME/public" }
+    },
+    "production": {
+      "url": "https://www.example.com",
+      "branch": "main",
+      "ssh": { "user": "REPLACE_ME", "host": "REPLACE_ME", "port": 12345, "path": "/www/REPLACE_ME/public" }
+    }
+  },
+  "qa": {
+    "routes": [
+      { "name": "home", "path": "/", "pageType": "front page" },
+      { "name": "single-article", "path": "/REPLACE-with-an-evergreen-post/", "pageType": "single post" },
+      { "name": "search", "path": "/?s=the", "pageType": "search results" },
+      { "name": "not-found", "path": "/plugin-update-404-probe/", "pageType": "404" }
+    ],
+    "flows": {},
+    "visualDiff": {
+      "maxDiffPixelRatio": 0.02,
+      "masks": []
+    },
+    "selectors": {
+      "navWrapper": "header nav",
+      "footer": "footer",
+      "navDropdownToggle": ".wp-block-navigation__submenu-icon",
+      "navSubmenuContainer": ".wp-block-navigation__submenu-container",
+      "ctaButton": "a.wp-block-button__link[href^='#']",
+      "tableOfContents": "#toc_container, .toc_container, nav.table-of-contents",
+      "lightboxTrigger": "button.lightbox-trigger, .wp-lightbox-container button",
+      "lightboxOverlay": ".wp-lightbox-overlay.active, .wp-lightbox-overlay.zoom.active",
+      "loadMoreWrap": ".ajax-load-more-wrap",
+      "loadMoreItems": ".alm-listing > *",
+      "loadMoreButton": ".alm-load-more-btn",
+      "hamburgerButton": ".wp-block-navigation__responsive-container-open",
+      "mobileNavLinks": ".wp-block-navigation__responsive-container.is-menu-open a",
+      "newsletterEmailField": "input[type='email'], input[name='email']"
+    },
+    "probes": {
+      "searchQuery": "the",
+      "searchNoMatchQuery": "zzqqxnomatch123"
+    }
+  },
+  "cache": { "kinsta": true, "cloudflare": true },
+  "snapshotDir": ".plugin-update-snapshots"
+}
