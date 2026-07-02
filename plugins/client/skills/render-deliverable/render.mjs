@@ -5,7 +5,7 @@
  * claret accent, warm cream, print stylesheet). The shell fetches the .md at
  * runtime, so content stays single-sourced in the markdown.
  *
- *   node agent/skills/render-deliverable/render.mjs <path/to/deliverable.md> \
+ *   node ${CLAUDE_PLUGIN_ROOT}/skills/render-deliverable/render.mjs <path/to/deliverable.md> \
  *        [--title "Doc Title"] [--header "Running header"] [--force]
  *
  * Output: <same-dir>/<same-basename>.html. Then:

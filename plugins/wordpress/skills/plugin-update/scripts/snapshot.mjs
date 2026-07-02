@@ -2,7 +2,7 @@
 // Take a pre-update snapshot of an environment, so QA can diff against it and a
 // rollback has a fallback beyond the version-pin.
 //
-//   node agent/skills/plugin-update/scripts/snapshot.mjs --env <staging|production> --slug <slug>
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/snapshot.mjs --env <staging|production> --slug <slug>
 //
 // Captures, into <snapshotDir>/:
 //   - <slug>-<env>.sql           : `wp db export` (streamed; the DB safety net)

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // HARD QA layer: collect fatal-breakage signals after a plugin update.
 //
-//   node agent/skills/plugin-update/scripts/error-signals.mjs --env <env> --slug <slug>
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/error-signals.mjs --env <env> --slug <slug>
 //
 // Three checks:
 //   ① HTTP status of every qa.routes URL  → 5xx or WSOD = HARD fail

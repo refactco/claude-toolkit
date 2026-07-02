@@ -37,12 +37,12 @@
 //   org:read, project:read, event:read (+ event:write for mute/resolve).
 //
 // Usage:
-//   node agent/scripts/sentry.mjs issues
-//   node agent/scripts/sentry.mjs issues --env production --period 14d --limit 100
-//   node agent/scripts/sentry.mjs issues --json
-//   node agent/scripts/sentry.mjs issue PROJECT-123
-//   node agent/scripts/sentry.mjs mute 1234567890 1234567891
-//   node agent/scripts/sentry.mjs resolve 1234567892
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/sentry/scripts/sentry.mjs issues
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/sentry/scripts/sentry.mjs issues --env production --period 14d --limit 100
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/sentry/scripts/sentry.mjs issues --json
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/sentry/scripts/sentry.mjs issue PROJECT-123
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/sentry/scripts/sentry.mjs mute 1234567890 1234567891
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/sentry/scripts/sentry.mjs resolve 1234567892
 
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";

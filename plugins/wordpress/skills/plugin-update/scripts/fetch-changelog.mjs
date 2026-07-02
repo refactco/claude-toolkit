@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Fetch a plugin's changelog, sliced to the versions being applied.
 //
-//   node agent/skills/plugin-update/scripts/fetch-changelog.mjs --slug <slug> [--from <ver>] [--to <ver>] [--env staging]
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/fetch-changelog.mjs --slug <slug> [--from <ver>] [--to <ver>] [--env staging]
 //
 // Primary source: the WordPress.org plugins API (public, no auth). For premium
 // / off-directory plugins (API returns "not found"), falls back to reading the

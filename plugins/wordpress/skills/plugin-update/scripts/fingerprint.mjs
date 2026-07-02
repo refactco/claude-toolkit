@@ -4,8 +4,8 @@
 // vanished security/cache headers, missing/duplicated analytics tags, net-new or
 // dropped assets, and status/redirect regressions — without a browser.
 //
-//   node agent/skills/plugin-update/scripts/fingerprint.mjs --env staging --capture   # baseline (run with snapshot)
-//   node agent/skills/plugin-update/scripts/fingerprint.mjs --env staging --compare   # after the update
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/fingerprint.mjs --env staging --capture   # baseline (run with snapshot)
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/fingerprint.mjs --env staging --compare   # after the update
 //
 // Only DELTAS vs the same-build baseline are reported (this site's staging is
 // SEO-stripped + caching-off + carries pre-existing debt identical to prod, so

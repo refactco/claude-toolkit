@@ -3,7 +3,7 @@
 // the site owner set) over SSH/WP-CLI — so the submit check can assert the real
 // confirmation deterministically instead of guessing a generic "success" shape.
 //
-//   node agent/skills/plugin-update/scripts/form-config.mjs --env staging
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/form-config.mjs --env staging
 //
 // Covers the plugins whose config is readable server-side:
 //   - WPForms : forms are a `wpforms` CPT; post_content is JSON with

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Run a WP-CLI command on a configured environment over SSH.
 //
-//   node agent/skills/plugin-update/scripts/wp.mjs <env> [--allow-prod-write] -- <wp args...>
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/wp.mjs <env> [--allow-prod-write] -- <wp args...>
 //
 // Examples:
 //   wp.mjs staging -- core version

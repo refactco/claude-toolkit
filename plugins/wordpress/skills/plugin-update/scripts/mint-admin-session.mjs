@@ -4,7 +4,7 @@
 // server-side via WP-CLI (wp_generate_auth_cookie) for an existing admin, and
 // writes them as a Playwright storageState file (gitignored) for admin.spec.ts.
 //
-//   node agent/skills/plugin-update/scripts/mint-admin-session.mjs [--env staging] [--allow-prod-write]
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/mint-admin-session.mjs [--env staging] [--allow-prod-write]
 //
 // It creates a REAL WP session token server-side (persisted ~2h in usermeta so
 // the cookie validates) and binds short-lived auth cookies to it. Because a prod

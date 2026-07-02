@@ -2,7 +2,7 @@
 // Roll a plugin back to its pre-update version (version-pin reinstall), with an
 // optional DB restore from the snapshot.
 //
-//   node agent/skills/plugin-update/scripts/rollback.mjs --env <env> --slug <slug> [--to <old-version>] [--restore-db --confirm-restore] [--allow-prod-write]
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/rollback.mjs --env <env> --slug <slug> [--to <old-version>] [--restore-db --confirm-restore] [--allow-prod-write]
 //
 // Primary mechanism: `wp plugin install <slug> --version=<old> --force`. If
 // --to is omitted, reads the version recorded by snapshot.mjs (and refuses if

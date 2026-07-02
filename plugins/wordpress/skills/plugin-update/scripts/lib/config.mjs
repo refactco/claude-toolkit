@@ -6,8 +6,7 @@
 //   2. <repo-root>/.claude/plugin-update.json   (fallback — the original brief's path)
 //
 // Repo root is resolved relative to THIS file (5 levels up from scripts/lib/),
-// so it works whether run from the canonical agent/ copy or a generated
-// .cursor/ / .claude/ mirror — same shape, same root.
+// so it works wherever the plugin is installed — same shape, same root.
 //
 // This module is imported by wp.mjs, check-updates.mjs, snapshot.mjs,
 // rollback.mjs, and error-signals.mjs. It does no I/O on import beyond locating

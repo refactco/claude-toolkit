@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Setup-mode selector discovery — proposes the project's qa.selectors block.
 //
-//   node agent/skills/plugin-update/scripts/discover-selectors.mjs [--env staging] [--json]
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/discover-selectors.mjs [--env staging] [--json]
 //
 // The interactive/functional Playwright specs read EVERY theme-specific selector
 // from qa.selectors (detect-and-skip when a key is absent) — nothing is hardcoded.

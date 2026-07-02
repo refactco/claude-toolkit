@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Setup-mode route discovery from the site's XML sitemap.
 //
-//   node agent/skills/plugin-update/scripts/discover-routes.mjs [--env staging] [--json]
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/discover-routes.mjs [--env staging] [--json]
 //
 // The sitemap is the authoritative, live list of what the site renders: each
 // sub-sitemap is a page TYPE (= a template). We take one representative URL per

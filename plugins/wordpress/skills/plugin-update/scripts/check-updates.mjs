@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // List plugins with an available update on staging, minus excludePlugins.
 //
-//   node agent/skills/plugin-update/scripts/check-updates.mjs [--env staging] [--format json|table]
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/check-updates.mjs [--env staging] [--format json|table]
 //
 // Output (json, default): array of { name, status, version, update_version }.
 // Queries the LIVE install over WP-CLI — never a git diff (plugins aren't tracked).

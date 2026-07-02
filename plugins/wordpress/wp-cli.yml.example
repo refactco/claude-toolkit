@@ -41,6 +41,6 @@
 
 # --- Production -------------------------------------------------------------
 # Intentionally NOT defined here. Production WP-CLI requires explicit owner
-# approval and a verified backup (per .cursor/rules/30-security.mdc). When
+# approval and a verified backup (per your project's security rules). When
 # approved, run it manually in a one-off shell — do not commit a
 # `@production` alias.

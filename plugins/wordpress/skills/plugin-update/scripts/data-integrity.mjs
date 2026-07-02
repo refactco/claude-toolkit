@@ -3,8 +3,8 @@
 // versions/active-state, published content counts per post type, and the cron
 // queue size BEFORE the update; compares AFTER.
 //
-//   node agent/skills/plugin-update/scripts/data-integrity.mjs --env staging --capture   # baseline (with snapshot)
-//   node agent/skills/plugin-update/scripts/data-integrity.mjs --env staging --compare   # after the update
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/data-integrity.mjs --env staging --capture   # baseline (with snapshot)
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/data-integrity.mjs --env staging --compare   # after the update
 //
 // HARD (exit non-zero): a plugin version moved BACKWARD (unintended downgrade),
 // an active plugin became inactive, published content count DROPPED (data loss),

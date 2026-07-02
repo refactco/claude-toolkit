@@ -3,9 +3,9 @@
 // doesn't accumulate in the owner's inbox/CRM. (The admin EMAIL notification a
 // submit triggers cannot be un-sent — only stored entries/comments are cleanable.)
 //
-//   node agent/skills/plugin-update/scripts/form-cleanup.mjs --env staging              # DRY RUN (lists only)
-//   node agent/skills/plugin-update/scripts/form-cleanup.mjs --env staging --confirm    # actually delete
-//   node agent/skills/plugin-update/scripts/form-cleanup.mjs --env production --confirm --allow-prod-write
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/form-cleanup.mjs --env staging              # DRY RUN (lists only)
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/form-cleanup.mjs --env staging --confirm    # actually delete
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/form-cleanup.mjs --env production --confirm --allow-prod-write
 //
 // Cleans (best-effort, only what's safe + plugin-supported):
 //   - WP comments whose content/author contains the QA marker (wp comment delete)
