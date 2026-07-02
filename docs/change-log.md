@@ -7,6 +7,22 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-02 — Cleaned up leftover scaffold path strings
+
+Pre-merge validation (before the PR to `main`) flagged old scaffold paths
+(`agent/skills/…`, `agent/scripts/…`, `.cursor`) surviving in helper scripts. Fixed:
+
+- **Functional:** `rollback.mjs` + `sentry.mjs` runtime messages, and a dead `$schema` pointer
+  in `plugin-update.config.example.json`, now point at the real
+  `${CLAUDE_PLUGIN_ROOT}/skills/<name>/scripts/…`; two false "generated into .cursor/.claude"
+  header comments corrected.
+- **Comments:** every `// node agent/…` usage-hint example repointed to `${CLAUDE_PLUGIN_ROOT}`.
+- **Left as-is:** `sync-env-vars/sync-env.sh` excludes `.cursor`/`.claude`/`agent` dirs from its
+  env-accessor scan — functional defensive behavior for the *consumer's* repo (avoids false
+  positives), not a scaffold assumption about this repo.
+
+---
+
 ## 2026-07-02 — Removed stray `context-boundary-spec.md`
 
 A top-level design note on where project context lives (repo vs Refact Control). It was
