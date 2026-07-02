@@ -7,6 +7,29 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-02 — Renamed the `seo` pack → `analytics`
+
+`seo` undersold the pack: it also holds GA4 (web analytics), GTM (tag management), and
+PageSpeed (performance) — GTM in particular is not SEO. Renamed the pack so its scope is
+honest, while keeping "SEO & analytics" in the description and `seo` in its keywords (the pack
+still does SEO, and the keyword aids discovery).
+
+- **`git mv`** `plugins/seo/` → `plugins/analytics/` — all 5 skills unchanged (`ahrefs`, `ga4`,
+  `gsc`, `gtm`, `pagespeed`).
+- **`plugin.json`** name `seo` → `analytics`; **`marketplace.json`** entry name + `source`
+  (`./plugins/analytics`). Pack version stays `1.0.0` (content unchanged); top-level marketplace
+  **2.2.0 → 2.3.0**.
+- **Docs:** `README.md` (packs table + skills-by-pack) and `CLAUDE.md` (layout + local-install
+  example) now say `analytics`. The install command is now `analytics@refact-os`.
+- **Breaking for consumers:** anyone who installed `seo@refact-os` re-installs as
+  `analytics@refact-os`. Cheap now — the marketplace is still on the `feat/marketplace-7-packs`
+  branch and not merged to `main`.
+- The `SEO` *word* elsewhere (Lighthouse category, WordPress SEO-plugin handling, Cloudflare
+  bot rules) is the concept, not the pack — left untouched. Historical planning doc
+  (`docs/plugin-marketplace-plan.md`) left as a point-in-time record.
+
+---
+
 ## 2026-07-02 — Moved `writing-client-updates` from `client` → `base`
 
 The client-update skill is generally useful on any engagement (status notes, issue

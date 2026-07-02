@@ -1,6 +1,6 @@
 {
   "name": "refact-os",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "owner": {
     "name": "Refact Developer",
     "email": "dev@refact.co"
@@ -31,9 +31,9 @@
       "keywords": ["refact", "skills", "cloudflare", "sentry", "ops", "waf", "dns"]
     },
     {
-      "name": "seo",
+      "name": "analytics",
       "version": "1.0.0",
-      "source": "./plugins/seo",
+      "source": "./plugins/analytics",
       "description": "SEO & analytics: Ahrefs, Google Analytics 4, Search Console, Tag Manager, and PageSpeed/Core Web Vitals.",
       "author": { "name": "Refact Developer", "email": "dev@refact.co" },
       "keywords": ["refact", "skills", "seo", "ahrefs", "ga4", "search-console", "gtm", "pagespeed"]
