@@ -21,7 +21,7 @@ Add the marketplace once, then install the packs you want:
 | **base** | `/plugin install base@refact-os` | git workflow, code-dev gates, Asana, env-var sync, learnings capture, client updates, slim project config, Refact Control MCP setup, the `/refact` command, TS/JS language server |
 | **client** | `/plugin install client@refact-os` | discovery-first proposals, branded print-ready PDF rendering |
 | **ops** | `/plugin install ops@refact-os` | Cloudflare client-zone ops (WAF/DNS/cache/bots), Sentry backlog triage |
-| **analytics** | `/plugin install analytics@refact-os` | Ahrefs (SEO), Google Analytics 4, Search Console, Tag Manager, PageSpeed/Core Web Vitals |
+| **insights** | `/plugin install insights@refact-os` | Ahrefs (SEO), Google Analytics 4, Search Console, Tag Manager, PageSpeed/Core Web Vitals |
 | **nextjs** | `/plugin install nextjs@refact-os` | create/adopt a Next.js app, run & diagnose it, Vercel/Netlify deploy setup |
 | **wordpress** | `/plugin install wordpress@refact-os` | local `wp-env` stack, safe plugin updates with QA + rollback, Kinsta/WP Engine deploys, PHP language server |
 | **testing** | `/plugin install testing@refact-os` | TDD harness (`tdd` → `tdd-plan` → `red-green-refactor`), WordPress characterization + integration tests |
@@ -39,7 +39,7 @@ auto-discovers these by trigger; you don't call them by name.
 | **base** | `asana`, `code-development`, `extract-learnings`, `git-workflow`, `setup-refact-control-mcp-server`, `sync-env-vars`, `update-project-config`, `writing-client-updates` — plus the `/refact` command |
 | **client** | `draft-discovery-proposal`, `render-deliverable` |
 | **ops** | `cloudflare`, `sentry` |
-| **analytics** | `ahrefs`, `ga4`, `gsc`, `gtm`, `pagespeed` |
+| **insights** | `ahrefs`, `ga4`, `gsc`, `gtm`, `pagespeed` |
 | **nextjs** | `nextjs-dev`, `setup-nextjs-app`, `setup-vercel-deploy`, `setup-netlify-deploy` |
 | **wordpress** | `wp-env`, `install-wp-skills`, `plugin-update`, `setup-kinsta-deploy`, `setup-wpengine-deploy` |
 | **testing** | `tdd`, `tdd-plan`, `red-green-refactor`, `backfill-tests`, `integration-tests` |

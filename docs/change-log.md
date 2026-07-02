@@ -7,6 +7,26 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-02 — Renamed the `analytics` pack → `insights` (final name)
+
+Second rename in the same session — `analytics` was also judged not right (GTM is tag
+management, not analytics; Ahrefs is SEO). `insights` names the pack's *purpose* — "how is the
+site doing?" — and matches two of its tools' own product names (**PageSpeed Insights**,
+**Search Console Insights**), so no single wrong category is implied.
+
+- **`git mv`** `plugins/analytics/` → `plugins/insights/` — all 5 skills unchanged.
+- **`plugin.json`** name → `insights`; description rewritten to name each tool's real category
+  ("Site insights: SEO (Ahrefs, Search Console), web analytics (GA4), tag management (GTM),
+  and PageSpeed/Core Web Vitals"); keywords gain `insights`, `analytics`. Same in
+  **`marketplace.json`** (+ `source: ./plugins/insights`). Pack version stays `1.0.0`;
+  top-level marketplace **2.3.0 → 2.4.0**.
+- **Docs:** `README.md` (both tables) and `CLAUDE.md` (layout + install example) now say
+  `insights`. Install: `/plugin install insights@refact-os`.
+- Naming trail this session: `seo` → `analytics` → **`insights`** (rejected along the way:
+  `marketing`, `measurement`, `seo-analytics`).
+
+---
+
 ## 2026-07-02 — Renamed the `seo` pack → `analytics`
 
 `seo` undersold the pack: it also holds GA4 (web analytics), GTM (tag management), and

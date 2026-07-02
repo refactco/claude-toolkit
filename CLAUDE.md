@@ -41,7 +41,7 @@ plugins/
                          + preflight-refact-config.mjs (UserPromptSubmit)
   client/       draft-discovery-proposal, render-deliverable
   ops/          cloudflare, sentry
-  analytics/    ahrefs, ga4, gsc, gtm, pagespeed
+  insights/     ahrefs, ga4, gsc, gtm, pagespeed
   nextjs/       setup-nextjs-app, nextjs-dev, setup-vercel-deploy, setup-netlify-deploy
   wordpress/    wp-env, install-wp-skills, plugin-update, setup-kinsta-deploy,
                 setup-wpengine-deploy
@@ -114,7 +114,7 @@ Add the marketplace from this checkout, then install whichever packs you want:
 /plugin marketplace add /Users/masoudgolchin/Documents/Refact Projects/new-plugin
 /plugin install base@refact-os
 /plugin install wordpress@refact-os
-/plugin install analytics@refact-os
+/plugin install insights@refact-os
 ```
 
 `.claude/settings.local.json` (git-ignored) enables packs for this working copy. After editing
