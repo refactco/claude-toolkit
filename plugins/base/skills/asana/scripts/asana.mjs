@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// agent/scripts/asana.mjs  (generated into .cursor/scripts/ and .claude/scripts/)
+// asana.mjs — bundled with the base/asana skill
 //
 // Asana integration. Mirrors the configured Asana project into docs/task/ and
 // can post comments back to tasks on behalf of the current git user.

@@ -1,5 +1,4 @@
 {
-  "$schema": "./agent/skills/plugin-update/config.schema.json",
   "_readme": "SEED config for the plugin-update skill. Setup (`/plugin-update setup`) copies this to the repo root as plugin-update.config.json, fills environments from .refact-os.json, then DISCOVERS and writes qa.routes / qa.flows / qa.visualDiff.masks / qa.selectors / qa.probes for THIS project (discover-routes.mjs + discover-selectors.mjs + human confirm). The qa.selectors below are WordPress-generic defaults — confirm/replace them against the real DOM. Brand-specific selectors (share, filters, search results, newsletter) are intentionally absent: the matching check stays SKIPPED until you declare them.",
   "mode": "traditional",
   "hosting": "kinsta",

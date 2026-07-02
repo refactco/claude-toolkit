@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// agent/scripts/sentry.mjs  (generated into .cursor/scripts/ and .claude/scripts/)
+// sentry.mjs — bundled with the ops/sentry skill
 //
 // Sentry issue triage. Talks to the Sentry API and helps you work a backlog of
 // errors/warnings: list + aggregate unresolved issues by source, classify them
@@ -294,7 +294,7 @@ async function cmdIssues(token, config, args) {
       process.stdout.write(`     ${r.title}\n     ${r.culprit}\n`);
     }
   }
-  process.stdout.write(`\nDrill in: node agent/scripts/sentry.mjs issue <shortId>\n`);
+  process.stdout.write(`\nDrill in: node \${CLAUDE_PLUGIN_ROOT}/skills/sentry/scripts/sentry.mjs issue <shortId>\n`);
 }
 
 async function cmdIssue(token, config, args) {
@@ -361,10 +361,10 @@ async function main() {
   if (!cmd || ["-h", "--help", "help"].includes(cmd)) {
     process.stdout.write(
       "Sentry triage\n" +
-        "  node agent/scripts/sentry.mjs issues [--env <e>] [--period 24h|14d] [--limit N] [--query <q>] [--json]\n" +
-        "  node agent/scripts/sentry.mjs issue <id|shortId>\n" +
-        "  node agent/scripts/sentry.mjs mute <id...>\n" +
-        "  node agent/scripts/sentry.mjs resolve <id...>\n",
+        "  node ${CLAUDE_PLUGIN_ROOT}/skills/sentry/scripts/sentry.mjs issues [--env <e>] [--period 24h|14d] [--limit N] [--query <q>] [--json]\n" +
+        "  node ${CLAUDE_PLUGIN_ROOT}/skills/sentry/scripts/sentry.mjs issue <id|shortId>\n" +
+        "  node ${CLAUDE_PLUGIN_ROOT}/skills/sentry/scripts/sentry.mjs mute <id...>\n" +
+        "  node ${CLAUDE_PLUGIN_ROOT}/skills/sentry/scripts/sentry.mjs resolve <id...>\n",
     );
     return;
   }

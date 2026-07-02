@@ -95,7 +95,7 @@ async function main() {
       `rollback: version-pin reinstall failed (exit ${res.status}).\n` +
         `  This plugin may be premium / not in the WordPress.org directory, so install-by-version isn't available.\n` +
         `  Restore its directory from the host backup, or (if the update ran a migration) restore the DB snapshot:\n` +
-        `    node agent/skills/plugin-update/scripts/rollback.mjs --env ${envName} --slug ${slug} --to ${to} --restore-db --confirm-restore`,
+        `    node \${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/rollback.mjs --env ${envName} --slug ${slug} --to ${to} --restore-db --confirm-restore`,
       res.status || 1,
     );
   }
