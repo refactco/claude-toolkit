@@ -129,7 +129,21 @@ Set the recommended packs `true` and the not-needed ones `false` (per the detect
 `/plugin install <pack>@refact-os` commands and tell the user to **restart** so skills/LSP/hooks
 load. Also fix the README if it documents `refact:sync` / `agent/skills`.
 
-## Step 11 — Verify
+## Step 11 — Repair docs/ internal links (opt-in)
+
+Removing `agent/` leaves dead links inside `docs/` — e.g. `docs/index.md` (read-order and the
+"Agent" row → `agent/AGENTS.md` / `agent/`) and `docs/context/learnings.md` (→
+`agent/skills/extract-learnings/SKILL.md`). The detector's `docsLinksToRepair` lists them (it skips
+`docs/sources/raw/` evidence so transcripts don't flood the list). With the user's OK, repoint:
+
+- contract links (`agent/AGENTS.md`) → the root contract (`CLAUDE.md`)
+- skill links (`agent/skills/<x>/SKILL.md`) → prose like "the `<x>` skill (from the `<pack>` pack)", dropping the file path
+
+Repoint **dead links only**. Do **not** rewrite recorded history — a closed/adopt ticket's account
+of what the scaffold once did stays as written. This step is opt-in; skip it if the user is not
+ready to touch `docs/`.
+
+## Step 12 — Verify
 
 Confirm: no scaffold markers remain (`agent/skills/`, `.claude/GENERATED.md`, `refact:*` scripts,
 the devDep all gone); `.refact-os.json` still parses and still has `stack` / `asana` / `sentry` /
@@ -143,4 +157,5 @@ only if the user asks.
 - Delete a **drifted** skill body, or any `noReplacement`/`unknown` skill, without confirmation.
 - Run `npm install`, or remove the devDependency if code imports it (Step 6).
 - Create or change any MCP server config on its own (Step 9).
-- Touch `docs/`, product code, `.env`, 1Password items, or any secret.
+- Rewrite `docs/` content or recorded tickets — only repoint dead `agent/` links, opt-in and reviewed (Step 11).
+- Touch product code, `.env`, 1Password items, or any secret.
