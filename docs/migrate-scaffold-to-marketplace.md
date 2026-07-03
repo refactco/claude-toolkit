@@ -4,6 +4,20 @@
 > This is a **plan / review**. Nothing here has been executed. Decisions for you are at the end.
 > Backed by a 9-agent audit workflow (drift check → skill map → gap list → skill design → adversarial verify).
 
+> **Status — updated 2026-07-03 (read this first).** The plan is **largely executed**. Treat the
+> forward-looking parts below (Parts C/D, "Now vs Later", "Open decisions") as the original proposal,
+> not the current state. What actually shipped:
+> - **The `asana.mjs` bug (Part D) is fixed** — `PROJECT_ROOT = process.cwd()` is in place.
+> - **The skill was built — but in its own `migrate` pack, not `base`.** `migrate-to-marketplace`
+>   ships as `plugins/migrate/` (v1.1.0), `requires_approval: true`. So `/base:refact migrate` prints
+>   `/plugin install migrate@refact-os` when that pack is not installed (Part C proposed `base`; a
+>   dedicated opt-in pack was chosen instead).
+> - **The `/base:refact migrate` route + the docs-link repair step both landed** (change-log 2026-07-03).
+> - **The usc-ksom cutover is still pending** — see "Still open for usc-ksom" at the very bottom
+>   (install the packs, `/docs` link repair, commit the branch).
+>
+> See `docs/change-log.md` for the running log. Everything below is the original plan + the pilot.
+
 ---
 
 ## TL;DR (plain English)
@@ -144,9 +158,11 @@ A pure "structure + stack only" file is **not enough**: the pack skills read mor
 **Answer to your question: yes — and it should be a NEW skill, not a revived `adopt`.**
 `adopt` only printed a read-only plan and is retired. This one **executes** the move, but safely.
 
-- **Pack:** `base` (always installed, so always available). `pattern: procedure`,
+- **Pack:** _(as shipped)_ a dedicated **`migrate`** pack (`plugins/migrate/`), **not** `base` — an
+  opt-in install so only repos doing a migration pull it in. `pattern: procedure`,
   `next_skills: []`, `requires_approval: true`.
-- **Also add** a `/refact migrate` row to `base/commands/refact.md`.
+- **Also added** a `/base:refact migrate` row to `base/commands/refact.md` (routes to the `migrate`
+  pack; prints the `/plugin install migrate@refact-os` hint when it is not installed).
 - **Bundled helper:** `scripts/detect-scaffold.mjs` (the marker scan + "signal → pack" derivation +
   the slim-file diff), referenced via `${CLAUDE_PLUGIN_ROOT}/skills/migrate-to-marketplace/scripts/detect-scaffold.mjs`.
 
