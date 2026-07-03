@@ -1,6 +1,6 @@
 # Refact OS — Claude Code plugin marketplace
 
-A Claude Code **plugin marketplace** that packages the Refact skills as **7 installable packs**.
+A Claude Code **plugin marketplace** that packages the Refact skills as **8 installable packs**.
 Install only the capabilities a project needs; turn packs on or off independently.
 
 ## Install
@@ -16,8 +16,14 @@ Add the marketplace once, then install the packs you want:
 
 ## Keeping packs up to date
 
-New versions land on `main`. Updating is **two steps, then a restart** — refreshing the marketplace
-does **not** upgrade packs you already have installed:
+New versions land on `main`. Refreshing the marketplace does **not** upgrade packs you already have
+installed — you have to bump each one, then restart.
+
+**The easy way** (needs the **base** pack): run **`/base:refact update plugins`**. It refreshes the
+catalog, updates every installed pack, and tells you when to restart. **`/base:refact install plugins`**
+does the same for installing. Both run the base **`manage-plugins`** skill.
+
+**By hand — two steps, then a restart:**
 
 ```
 /plugin marketplace update refact-os      # 1. refresh the catalog (learn the new versions)
@@ -35,15 +41,16 @@ Then **restart Claude Code** (or run `/reload-plugins`) — plugin updates only 
 
 | Pack | Install | What you get |
 |---|---|---|
-| **base** | `/plugin install base@refact-os` | git workflow, code-dev gates, Asana, env-var sync, learnings capture, client updates, slim project config, Refact Control MCP setup, the `/refact` command, TS/JS language server |
+| **base** | `/plugin install base@refact-os` | git workflow, code-dev gates, Asana, env-var sync, learnings capture, client updates, slim project config, Refact Control MCP setup, the `/base:refact` command, TS/JS language server |
 | **client** | `/plugin install client@refact-os` | discovery-first proposals, branded print-ready PDF rendering |
 | **ops** | `/plugin install ops@refact-os` | Cloudflare client-zone ops (WAF/DNS/cache/bots), Sentry backlog triage |
 | **insights** | `/plugin install insights@refact-os` | Ahrefs (SEO), Google Analytics 4, Search Console, Tag Manager, PageSpeed/Core Web Vitals |
 | **nextjs** | `/plugin install nextjs@refact-os` | create/adopt a Next.js app, run & diagnose it, Vercel/Netlify deploy setup |
 | **wordpress** | `/plugin install wordpress@refact-os` | local `wp-env` stack, safe plugin updates with QA + rollback, Kinsta/WP Engine deploys, PHP language server |
 | **testing** | `/plugin install testing@refact-os` | TDD harness (`tdd` → `tdd-plan` → `red-green-refactor`), WordPress characterization + integration tests |
+| **migrate** | `/plugin install migrate@refact-os` | one-time move of a refact-os-scaffolded repo (`agent/skills`, `.cursor` adapters) onto these installable packs |
 
-Start with **base** — it carries the `/refact` menu command and the always-useful git / env /
+Start with **base** — it carries the `/base:refact` menu command and the always-useful git / env /
 project-config skills.
 
 ## Skills by pack
@@ -53,13 +60,14 @@ auto-discovers these by trigger; you don't call them by name.
 
 | Pack | Skills |
 |---|---|
-| **base** | `asana`, `code-development`, `extract-learnings`, `git-workflow`, `setup-refact-control-mcp-server`, `sync-env-vars`, `update-project-config`, `writing-client-updates` — plus the `/refact` command |
+| **base** | `asana`, `code-development`, `extract-learnings`, `git-workflow`, `setup-refact-control-mcp-server`, `sync-env-vars`, `update-project-config`, `writing-client-updates` — plus the `/base:refact` command |
 | **client** | `draft-discovery-proposal`, `render-deliverable` |
 | **ops** | `cloudflare`, `sentry` |
 | **insights** | `ahrefs`, `ga4`, `gsc`, `gtm`, `pagespeed` |
 | **nextjs** | `nextjs-dev`, `setup-nextjs-app`, `setup-vercel-deploy`, `setup-netlify-deploy` |
 | **wordpress** | `wp-env`, `install-wp-skills`, `plugin-update`, `setup-kinsta-deploy`, `setup-wpengine-deploy` |
 | **testing** | `tdd`, `tdd-plan`, `red-green-refactor`, `backfill-tests`, `integration-tests` |
+| **migrate** | `migrate-to-marketplace` |
 
 ## Enable or disable a pack (per project)
 
@@ -119,7 +127,7 @@ Skills read an optional, non-secret project file holding only the **project stru
 }
 ```
 
-The base `update-project-config` skill writes it; run `/refact config` to create or update it.
+The base `update-project-config` skill writes it; run `/base:refact config` to create or update it.
 **Secrets never go here** — they stay in your `.env` / 1Password.
 
 ## Language servers
