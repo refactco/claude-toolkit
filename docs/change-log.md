@@ -7,6 +7,19 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-03 — Bump base to propagate the `/base:refact` command name
+
+PR #6 renamed the router command references `/refact` → `/base:refact` across the docs and the
+base command menu (`plugins/base/commands/refact.md`), but did **not** bump `base`. With the same
+version, `claude plugin update` skips it, so installs on 1.4.0 would never pick up the new menu
+text. Bump so it propagates, and fix the two remaining `/refact` mentions in the pack description.
+
+- **base** `1.4.0 → 1.4.1` — carries PR #6's `/base:refact` command menu; `plugin.json` +
+  `marketplace.json` descriptions updated `/refact` → `/base:refact`. No skill added or removed.
+- Marketplace **2.8.0 → 2.9.0**.
+
+---
+
 ## 2026-07-03 — New base skill `manage-plugins` (install/update the packs)
 
 Installing or updating the refact-os packs was a manual, multi-step chore — `marketplace update`
