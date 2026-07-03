@@ -7,6 +7,29 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-03 — New base skill `manage-plugins` (install/update the packs)
+
+Installing or updating the refact-os packs was a manual, multi-step chore — `marketplace update`
+only refreshes the catalog, so each installed pack still had to be bumped by hand, then a restart.
+New skill automates it.
+
+- **`plugins/base/skills/manage-plugins`** — install or update the refact-os marketplace packs: all
+  installed packs, the ones a project needs, or a single named pack. Refreshes the catalog
+  (`claude plugin marketplace update`), runs the actual `claude plugin install` / `update`, and
+  reminds the user to restart. Ships a read-only `scripts/plugin-plan.mjs` that diffs installed vs
+  the cached catalog (installed / available / to-update / not-installed). Clearly scoped **away**
+  from the WordPress `plugin-update` skill (which updates a site's WP plugins).
+- **`/refact install plugins`** and **`/refact update plugins`** routes added to the base router
+  (both always-available base actions).
+- **Disambiguated from WordPress plugin updates.** `manage-plugins` (refact-os packs) and the
+  wordpress `plugin-update` skill (a site's WP plugins) now point at each other via mutual
+  `when_not_to_use`; `manage-plugins` asks first on a bare "update plugins" in a WordPress project;
+  and the `/refact` router spells out the split ("packs" = marketplace; "WordPress plugins" =
+  `/plugin-update`).
+- Base pack **1.3.0 → 1.4.0**, wordpress **1.0.0 → 1.0.1**; marketplace **2.7.0 → 2.8.0**.
+
+---
+
 ## 2026-07-03 — Fix strict-YAML frontmatter across skills (marketplace-wide)
 
 `claude plugin validate` was failing on eight skills whose `description` / `when_to_use` /

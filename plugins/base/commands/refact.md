@@ -18,6 +18,7 @@ Show this menu (and nothing else), then stop and wait for the user to pick:
 | `config` | Record the project structure + tech stack in `.refact-os.json` | base (always available) |
 | `sync asana` | Sync / pull / comment on Asana tasks | base (always available) |
 | `setup refact-control` | Wire the Refact Control MCP server into this project | base (always available) |
+| `install plugins` / `update plugins` | Install/update the refact-os **packs** — not a site's WordPress plugins (those are `/plugin-update`) | base (always available) |
 | `wp-env` | Manage the local WordPress stack | wordpress |
 | `install wp skills` | Vendor the WordPress/Gutenberg skills | wordpress |
 | `setup kinsta` / `setup wpengine` | Create the WP auto-deploy workflows | wordpress |
@@ -37,6 +38,8 @@ Match the action (case-insensitive, allow close paraphrases) to one row:
 | config, set config, project config | `update-project-config` | base |
 | sync asana, asana, asana sync | `asana` | base |
 | setup refact-control, refact-control mcp, refact control mcp, add refact context | `setup-refact-control-mcp-server` | base |
+| install plugins, install the plugins, install pack, install `<pack>` | `manage-plugins` | base |
+| update plugins, update the plugins, update packs, latest packs, update `<pack>` | `manage-plugins` | base |
 | wp-env, wp env | `wp-env` | wordpress |
 | install wp skills | `install-wp-skills` | wordpress |
 | setup kinsta, kinsta deploy | `setup-kinsta-deploy` | wordpress |
@@ -49,9 +52,10 @@ Match the action (case-insensitive, allow close paraphrases) to one row:
 
 Then:
 
-1. **base actions** (`config`, `sync asana`, `setup refact-control`) are always available — invoke the skill directly.
+1. **base actions** (`config`, `sync asana`, `setup refact-control`, `install plugins`, `update plugins`) are always available — invoke the skill directly.
 2. **pack actions**: if the matching skill is available in this session, invoke it. If it is
    **not** installed, do not improvise — tell the user exactly:
    `That action needs the <pack> pack. Install it with: /plugin install <pack>@refact-os`
    and stop.
 3. If the action matches **no** row, show the menu above and ask which they meant. Do not guess.
+4. **"update plugins" vs "plugin update":** `/refact install plugins` / `/refact update plugins` mean the **refact-os packs** (`manage-plugins`, base). A **WordPress site's** plugins (ACF, Yoast, `wp-content/plugins/`) are the wordpress `plugin-update` skill / `/plugin-update`. If a bare "plugin update" is ambiguous on a WordPress project, ask which they mean before acting.
