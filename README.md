@@ -14,6 +14,23 @@ Add the marketplace once, then install the packs you want:
 
 (Or add it from a local checkout: `/plugin marketplace add /path/to/this/repo`.)
 
+## Keeping packs up to date
+
+New versions land on `main`. Updating is **two steps, then a restart** — refreshing the marketplace
+does **not** upgrade packs you already have installed:
+
+```
+/plugin marketplace update refact-os      # 1. refresh the catalog (learn the new versions)
+/plugin update base@refact-os             # 2. bump each installed pack you use…
+/plugin update wordpress@refact-os        #    …repeat for the packs you have installed
+```
+
+Then **restart Claude Code** (or run `/reload-plugins`) — plugin updates only apply after a restart.
+
+- `/plugin marketplace update refact-os` **alone** only refreshes the *catalog*; your installed packs
+  stay on their old version until you run `/plugin update <pack>@refact-os` for each.
+- Check installed vs. available versions any time with `/plugin` (menu) or `claude plugin list`.
+
 ## The packs
 
 | Pack | Install | What you get |
