@@ -24,6 +24,7 @@ Show this menu (and nothing else), then stop and wait for the user to pick:
 | `setup nextjs` | Create or adopt a Next.js app | nextjs |
 | `nextjs dev` | Run / fix an existing Next.js app | nextjs |
 | `setup vercel` / `setup netlify` | Set up the Next.js deploy | nextjs |
+| `migrate` | Move a refact-os-scaffolded repo onto the marketplace | migrate |
 
 Tell the user packs install with `/plugin install <pack>@refact-os`.
 
@@ -44,6 +45,7 @@ Match the action (case-insensitive, allow close paraphrases) to one row:
 | nextjs dev, run nextjs | `nextjs-dev` | nextjs |
 | setup vercel, vercel deploy | `setup-vercel-deploy` | nextjs |
 | setup netlify, netlify deploy | `setup-netlify-deploy` | nextjs |
+| migrate, migrate to marketplace, migrate scaffold, unscaffold | `migrate-to-marketplace` | migrate |
 
 Then:
 
