@@ -4,7 +4,7 @@ description: Safely update WordPress plugins one at a time on staging with chang
 pattern: procedure
 requires_approval: true
 when_to_use: /plugin-update [check|setup|execute] — or "plugin update", "are there plugin updates", "safely update <plugin>", "run plugin update QA". Checking for and safely applying WordPress plugin updates on a hosted (Kinsta/WP Engine) project, one plugin at a time on staging with QA + auto-rollback, promoting to prod only on a human-approved pass.
-when_not_to_use: Local-only code dev (use wp-env); non-WordPress projects; changes to the in-repo theme or custom mu-plugin (those deploy via git — use git-workflow / code-development); WP core or PHP upgrades (out of scope unless explicitly extended).
+when_not_to_use: Local-only code dev (use wp-env); non-WordPress projects; changes to the in-repo theme or custom mu-plugin (those deploy via git — use git-workflow / code-development); WP core or PHP upgrades (out of scope unless explicitly extended); installing or updating the refact-os toolkit packs (base/wordpress/ops/…) — that is the base manage-plugins skill (/refact update plugins), not a WordPress-site plugin update.
 next_skills: []
 sub_agents: []
 ---

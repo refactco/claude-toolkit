@@ -14,6 +14,13 @@ Install or update the **refact-os marketplace packs** — `base`, `wordpress`, `
 `nextjs`, `client`, `testing`, `migrate`. These are Claude Code plugins from the `refact-os`
 marketplace, **not** a WordPress site's plugins (for those, use the wordpress `plugin-update` skill).
 
+> **Am I the right skill?** This manages **refact-os marketplace packs** (Claude Code plugins:
+> `base`, `wordpress`, `ops`, …). If the user means a **WordPress site's plugins** (ACF, Yoast,
+> anything under `wp-content/plugins/`), stop — that is the wordpress **`plugin-update`** skill
+> (`/plugin-update`). `/refact update plugins`, `@refact-os`, or any pack name (`base`, `insights`,
+> …) always means **this** skill. A bare "update the plugins" / "plugin update" on a WordPress
+> project is ambiguous — **ask which they mean before doing anything.**
+
 Two facts this skill exists to handle:
 1. `claude plugin marketplace update` only refreshes the **catalog** — it does **not** upgrade packs
    you already have installed. You must also run `claude plugin update <pack>` per pack.

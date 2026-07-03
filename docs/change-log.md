@@ -21,7 +21,12 @@ New skill automates it.
   from the WordPress `plugin-update` skill (which updates a site's WP plugins).
 - **`/refact install plugins`** and **`/refact update plugins`** routes added to the base router
   (both always-available base actions).
-- Base pack **1.3.0 → 1.4.0**; marketplace **2.7.0 → 2.8.0**.
+- **Disambiguated from WordPress plugin updates.** `manage-plugins` (refact-os packs) and the
+  wordpress `plugin-update` skill (a site's WP plugins) now point at each other via mutual
+  `when_not_to_use`; `manage-plugins` asks first on a bare "update plugins" in a WordPress project;
+  and the `/refact` router spells out the split ("packs" = marketplace; "WordPress plugins" =
+  `/plugin-update`).
+- Base pack **1.3.0 → 1.4.0**, wordpress **1.0.0 → 1.0.1**; marketplace **2.7.0 → 2.8.0**.
 
 ---
 
