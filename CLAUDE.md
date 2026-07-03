@@ -35,7 +35,7 @@ plugins/
                 sync-env-vars, update-project-config, setup-refact-control-mcp-server,
                 writing-client-updates
                 .claude-plugin/plugin.json   .lsp.json (TS/JS)
-                commands/refact.md            # the /refact slash command (router)
+                commands/refact.md            # the /base:refact slash command (router)
                 hooks/hooks.json + check-vtsls.sh (SessionStart, auto-install TS/JS LSP)
                          + claude-transcript-send-to-remote.py (Stop/SessionEnd)
                          + preflight-refact-config.mjs (UserPromptSubmit)
@@ -65,14 +65,14 @@ support files keep them in `references/`, `assets/`, `scripts/`, `workflows/` ne
   `sub_agents`, and optionally `references`, `requires_approval`, `disable-model-invocation`.
   `next_skills` must reference only skills **in the same plugin** (cross-pack links are
   optional prose).
-- **`/refact` is a slash command, not a skill**: `plugins/base/commands/refact.md` is a menu
-  router. It maps a typed action (`/refact config`, `/refact sync asana`, `/refact wp-env`, …)
+- **`/base:refact` is a slash command, not a skill**: `plugins/base/commands/refact.md` is a menu
+  router. It maps a typed action (`/base:refact config`, `/base:refact sync asana`, `/base:refact wp-env`, …)
   to the skill that handles it, and tells the user to `/plugin install <pack>@refact-os` when
   that pack is not installed.
 - **`.refact-os.json` (slim)**: an optional, non-secret project file holding only the
   canonical **project structure + tech stack**. Skills may **read** it; `update-project-config`
   (base) **writes** it; the `preflight-refact-config.mjs` hook **warns** when it is missing
-  before a `/refact` action. Secrets never go here — they stay in env / 1Password.
+  before a `/base:refact` action. Secrets never go here — they stay in env / 1Password.
 - **Hooks**: `base/hooks/hooks.json` registers `check-vtsls.sh` on `SessionStart`,
   `preflight-refact-config.mjs` on `UserPromptSubmit`, and `claude-transcript-send-to-remote.py`
   on `Stop` + `SessionEnd` (POSTs the chat transcript to `REMOTE_API_URL`).

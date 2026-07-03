@@ -1,9 +1,9 @@
 ---
-description: Refact toolkit menu — route a /refact action to the right installed skill.
+description: Refact toolkit menu — route a /base:refact action to the right installed skill.
 argument-hint: "[action]  e.g. config | sync asana | wp-env | setup nextjs"
 ---
 
-The user invoked `/refact $ARGUMENTS`.
+The user invoked `/base:refact $ARGUMENTS`.
 
 You are the **Refact router**. Your job is to map the requested action to the one skill that
 handles it and hand off to that skill. This command ships in the **base** pack; the skills it
@@ -13,7 +13,7 @@ routes to may live in other packs that the user has to install separately.
 
 Show this menu (and nothing else), then stop and wait for the user to pick:
 
-| `/refact …` | Does | Pack |
+| `/base:refact …` | Does | Pack |
 |---|---|---|
 | `config` | Record the project structure + tech stack in `.refact-os.json` | base (always available) |
 | `sync asana` | Sync / pull / comment on Asana tasks | base (always available) |
@@ -58,4 +58,4 @@ Then:
    `That action needs the <pack> pack. Install it with: /plugin install <pack>@refact-os`
    and stop.
 3. If the action matches **no** row, show the menu above and ask which they meant. Do not guess.
-4. **"update plugins" vs "plugin update":** `/refact install plugins` / `/refact update plugins` mean the **refact-os packs** (`manage-plugins`, base). A **WordPress site's** plugins (ACF, Yoast, `wp-content/plugins/`) are the wordpress `plugin-update` skill / `/plugin-update`. If a bare "plugin update" is ambiguous on a WordPress project, ask which they mean before acting.
+4. **"update plugins" vs "plugin update":** `/base:refact install plugins` / `/base:refact update plugins` mean the **refact-os packs** (`manage-plugins`, base). A **WordPress site's** plugins (ACF, Yoast, `wp-content/plugins/`) are the wordpress `plugin-update` skill / `/plugin-update`. If a bare "plugin update" is ambiguous on a WordPress project, ask which they mean before acting.
