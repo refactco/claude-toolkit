@@ -7,6 +7,22 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-03 — Refresh the two planning docs to current state
+
+The two `docs/` planning files had drifted from the shipped marketplace. Added a "Status" banner to
+the top of each (bodies preserved as point-in-time records) and fixed one factual contradiction.
+
+- **`docs/plugin-marketplace-plan.md`** — banner noting Stage 2 is built, the marketplace is now
+  **8 packs not 7** (added `migrate`), `seo` → `insights`, `base` grew to 9 skills
+  (`writing-client-updates` moved in from `client`), and current counts are **8 packs / 33 skills +
+  `/base:refact`**.
+- **`docs/migrate-scaffold-to-marketplace.md`** — banner noting the `asana.mjs` bug is fixed and the
+  skill shipped in its **own `migrate` pack (v1.1.0), not `base`**; corrected Part C's "Pack: base"
+  line to match. usc-ksom cutover still pending.
+- Docs only — no plugin, manifest, or version changes.
+
+---
+
 ## 2026-07-03 — Bump base to propagate the `/base:refact` command name
 
 PR #6 renamed the router command references `/refact` → `/base:refact` across the docs and the

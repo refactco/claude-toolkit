@@ -4,6 +4,20 @@
 > **Stage 2** (the build) and the **Later** wind-down of the npm package are deferred.
 > This supersedes the earlier 6-pack version of this plan.
 
+> **Status — updated 2026-07-03 (read this first).** This is the **Stage 1 decision record**, kept
+> as written. **Stage 2 has since been built and the marketplace moved on**, so several present-tense
+> claims below ("Stage 2 … deferred / not done yet", "No changes to `plugins/`", the `seo` pack) are
+> now **historical, not current**. What actually shipped:
+> - **Stage 2 is built** (2026-06-30) — the packs exist under `plugins/`.
+> - **8 packs now, not 7** — a `migrate` pack (`migrate-to-marketplace`) was added later.
+> - **`seo` → `insights`** — that pack was renamed `seo` → `analytics` → **`insights`**.
+> - **`base` grew to 9 skills** — added `manage-plugins` and `setup-refact-control-mcp-server`, and
+>   `writing-client-updates` moved in from `client` (so `client` is now **2** skills, not 3).
+> - **Current counts: 8 packs, 33 skills + the `/base:refact` command** (was "7 packs, 30 skills").
+>
+> For the authoritative running state, see `docs/change-log.md` (newest first). Everything below is
+> the original Stage-1 plan, preserved as a point-in-time record.
+
 ## Context
 
 **Why this is happening.** The same skills live in two places: the `@refactco/refact-os`
