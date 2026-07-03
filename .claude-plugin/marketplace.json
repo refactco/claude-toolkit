@@ -1,6 +1,6 @@
 {
   "name": "refact-os",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "owner": {
     "name": "Refact Developer",
     "email": "dev@refact.co"
@@ -61,6 +61,14 @@
       "description": "Testing: TDD harness (plan -> red-green-refactor) plus WordPress characterization and real-plugin integration tests.",
       "author": { "name": "Refact Developer", "email": "dev@refact.co" },
       "keywords": ["refact", "skills", "testing", "tdd", "phpunit", "wordpress", "integration"]
+    },
+    {
+      "name": "migrate",
+      "version": "1.0.0",
+      "source": "./plugins/migrate",
+      "description": "One-time migration: move a refact-os-scaffolded project off the npm scaffold and onto this plugin marketplace — detect, back up, remove the generated trees, slim the config, and print the pack install commands.",
+      "author": { "name": "Refact Developer", "email": "dev@refact.co" },
+      "keywords": ["refact", "skills", "migration", "scaffold", "marketplace", "adopt"]
     }
   ]
 }

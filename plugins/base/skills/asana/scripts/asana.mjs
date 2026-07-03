@@ -44,11 +44,11 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const PROJECT_ROOT = path.resolve(__dirname, "..", "..");
+// Resolve project paths from the working directory (where the skill is invoked),
+// not from this script's location — the bundled copy lives deep under the plugin
+// dir (plugins/base/skills/asana/scripts), so __dirname-relative paths would point
+// inside the plugin instead of the user's project. Matches sentry.mjs.
+const PROJECT_ROOT = process.cwd();
 const CONFIG_PATH = path.join(PROJECT_ROOT, ".refact-os.json");
 const ENV_PATH = path.join(PROJECT_ROOT, ".env");
 

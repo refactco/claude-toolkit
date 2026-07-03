@@ -7,6 +7,27 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-03 — New `migrate` pack + fixed the base `asana.mjs` project root
+
+Added a new capability pack and fixed a real bug, off the back of a hand-run migration of the
+`usc-ksom` WordPress repo onto the marketplace (findings in `docs/migrate-scaffold-to-marketplace.md`).
+
+- **New pack `migrate`** (`plugins/migrate/`, v1.0.0) with one skill,
+  `migrate-to-marketplace` — moves a refact-os-scaffolded repo off the npm scaffold onto the
+  marketplace: detect the scaffold, back up, remove the generated `agent/` + `.claude/`/`.cursor/`
+  trees, slim `.refact-os.json` (keep `asana`/`sentry`/`wpEnv`/`stack`), move the contract to root
+  `CLAUDE.md`, hand transcript hooks to the base pack, and register/enable the packs the project
+  needs. `requires_approval: true`; dry-runs first. Ships a read-only helper
+  `scripts/detect-scaffold.mjs`. Registered in `marketplace.json`; top-level version 2.4.0 → 2.5.0.
+- **Fixed `plugins/base/skills/asana/scripts/asana.mjs`** — `PROJECT_ROOT` used
+  `path.resolve(__dirname, "..", "..")`, which at the bundled 4-deep path resolved to
+  `plugins/base/skills` instead of the user's project (so `/refact sync asana` read config from the
+  wrong place). Now uses `process.cwd()`, matching `sentry.mjs`.
+- **Added `docs/migrate-scaffold-to-marketplace.md`** — the migration plan, the 36-skill map, the
+  gap list, the `migrate-to-marketplace` spec, and the pilot findings.
+
+---
+
 ## 2026-07-02 — Cleaned up leftover scaffold path strings
 
 Pre-merge validation (before the PR to `main`) flagged old scaffold paths
