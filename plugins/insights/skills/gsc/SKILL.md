@@ -3,7 +3,7 @@ name: gsc
 description: Google Search Console toolkit — connect once, then pull search-performance reports, manage sitemaps, and run URL Inspection for any project's site. Read-only by default; sitemap submit/delete are the only writes and are explicit.
 pattern: procedure
 when_to_use: Any task needing Google Search Console data or actions for the current project — SEO audits, striking-distance/decay/cannibalization analysis, monthly health reports, checking index coverage of specific URLs, or listing/submitting sitemaps. Also the first stop when GSC isn't connected yet.
-when_not_to_use: Non-search analytics (use GA4 tooling). Out of scope: interpreting or prioritizing findings into recommendations — this skill pulls and acts on GSC data, it doesn't score it.
+when_not_to_use: "Non-search analytics (use GA4 tooling). Out of scope: interpreting or prioritizing findings into recommendations — this skill pulls and acts on GSC data, it doesn't score it."
 next_skills: []
 sub_agents: []
 references:

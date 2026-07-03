@@ -1,8 +1,8 @@
 ---
 name: tdd-plan
-description: Phase 1 of the TDD harness: decompose a feature into thin vertical slices and write a markdown execution plan per slice into plans/. Each plan is the contract red-green-refactor executes. Triggers: 'slice this up', 'plan this test-first', 'write a TDD plan'.
+description: "Phase 1 of the TDD harness: decompose a feature into thin vertical slices and write a markdown execution plan per slice into plans/. Each plan is the contract red-green-refactor executes. Triggers: 'slice this up', 'plan this test-first', 'write a TDD plan'."
 pattern: procedure
-when_to_use: At the start of any feature, bugfix, or change — before writing code — when you need to identify thin vertical slices and produce execution plans. Triggers: "slice this up", "what is the smallest first step", "plan this test-first", "write a TDD plan", "plan before coding".
+when_to_use: 'At the start of any feature, bugfix, or change — before writing code — when you need to identify thin vertical slices and produce execution plans. Triggers: "slice this up", "what is the smallest first step", "plan this test-first", "write a TDD plan", "plan before coding".'
 when_not_to_use: A plan already exists in plans/ and you are ready to implement a slice — go directly to red-green-refactor instead.
 next_skills:
   - red-green-refactor

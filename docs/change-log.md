@@ -7,6 +7,23 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-03 — Fix strict-YAML frontmatter across skills (marketplace-wide)
+
+`claude plugin validate` was failing on eight skills whose `description` / `when_to_use` /
+`when_not_to_use` values contained an unquoted `: ` (colon-space) — e.g. `Triggers: '...'`,
+`Out of scope: ...`, `full pipeline: tdd-plan`, `app: locate`. Strict YAML reads that as a nested
+mapping and errors; the Claude Code runtime tolerated it, so the skills still loaded. Quoted the
+offending values (double-quote by default; single-quote when the value itself contains double
+quotes) so the whole marketplace passes validation.
+
+- Fixed: **base** (asana, code-development), **insights** (ga4, gsc, pagespeed), **nextjs**
+  (nextjs-dev), **testing** (tdd, tdd-plan, red-green-refactor). All 8 packs now pass
+  `claude plugin validate`.
+- Version bumps: insights 1.0.0 → 1.0.1, nextjs 1.0.0 → 1.0.1, testing 1.1.0 → 1.1.1, migrate
+  1.0.0 → 1.1.0 (docs-repair), base 1.2.0 → 1.3.0 (route + fix); marketplace 2.5.0 → **2.7.0**.
+
+---
+
 ## 2026-07-03 — `/refact migrate` route + docs-link repair in the migrate skill
 
 - **`/refact migrate`** — added a `migrate` row to the base router (`plugins/base/commands/refact.md`),

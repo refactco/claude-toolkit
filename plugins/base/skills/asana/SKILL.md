@@ -2,7 +2,7 @@
 name: asana
 description: Interact with Asana — sync open tickets into docs/task/, pull a single task, or post a comment/update to a task on behalf of the current user.
 pattern: procedure
-when_to_use: /asana — for all Asana operations: sync tickets, pull a single ticket, add a comment, or post an update to a task.
+when_to_use: "/asana — for all Asana operations: sync tickets, pull a single ticket, add a comment, or post an update to a task."
 when_not_to_use: Opening a local ticket by hand (use open-ticket).
 next_skills:
   - sync-env-vars

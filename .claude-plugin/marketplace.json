@@ -1,6 +1,6 @@
 {
   "name": "refact-os",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "owner": {
     "name": "Refact Developer",
     "email": "dev@refact.co"
@@ -32,7 +32,7 @@
     },
     {
       "name": "insights",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "source": "./plugins/insights",
       "description": "Site insights: SEO (Ahrefs, Search Console), web analytics (GA4), tag management (GTM), and PageSpeed/Core Web Vitals.",
       "author": { "name": "Refact Developer", "email": "dev@refact.co" },
@@ -40,7 +40,7 @@
     },
     {
       "name": "nextjs",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "source": "./plugins/nextjs",
       "description": "Next.js: scaffold or adopt an app, run/diagnose it, and set up Vercel or Netlify deploys.",
       "author": { "name": "Refact Developer", "email": "dev@refact.co" },
@@ -56,7 +56,7 @@
     },
     {
       "name": "testing",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "source": "./plugins/testing",
       "description": "Testing: TDD harness (plan -> red-green-refactor) plus WordPress characterization and real-plugin integration tests.",
       "author": { "name": "Refact Developer", "email": "dev@refact.co" },
@@ -64,7 +64,7 @@
     },
     {
       "name": "migrate",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source": "./plugins/migrate",
       "description": "One-time migration: move a refact-os-scaffolded project off the npm scaffold and onto this plugin marketplace — detect, back up, remove the generated trees, slim the config, and print the pack install commands.",
       "author": { "name": "Refact Developer", "email": "dev@refact.co" },

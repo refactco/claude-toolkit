@@ -3,7 +3,7 @@ name: ga4
 description: Google Analytics 4 toolkit — pull GA4 reports (Data API, read-only) and manage GA4 configuration (Admin API — key events, custom dimensions/metrics, data streams, property settings, access). Config writes are confirm-gated.
 pattern: procedure
 when_to_use: Any task needing GA4 data OR configuration for the current project — traffic/acquisition/engagement/conversion reports, period comparisons, realtime users; or managing key events, custom dimensions/metrics, data streams, data retention/attribution, and property access. Also the first stop when GA4 isn't connected yet.
-when_not_to_use: Search-performance data (use the gsc skill). Core Web Vitals / page speed (use the pagespeed skill). Tag/container configuration (use the gtm skill). Out of scope: interpreting findings into recommendations; deleting GA4 config (do deletes in the GA4 UI).
+when_not_to_use: "Search-performance data (use the gsc skill). Core Web Vitals / page speed (use the pagespeed skill). Tag/container configuration (use the gtm skill). Out of scope: interpreting findings into recommendations; deleting GA4 config (do deletes in the GA4 UI)."
 next_skills: []
 sub_agents: []
 ---

@@ -1,6 +1,6 @@
 {
   "name": "migrate",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "One-time migration: move a refact-os-scaffolded project (agent/skills + generated .claude/.cursor + fat .refact-os.json) onto the refact-os plugin marketplace — detect, back up, remove the generated trees, slim the config, and print the pack install commands.",
   "author": {
     "name": "Refact Developer",

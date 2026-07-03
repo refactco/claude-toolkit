@@ -1,6 +1,6 @@
 ---
 name: code-development
-description: Code-specific layer over the base git-workflow skill: it defers all git mechanics (branch/commit/PR) to git-workflow and adds the code-only gates — run tests/lint/build before pushing, keep CI green, conventional-commit scopes.
+description: "Code-specific layer over the base git-workflow skill: it defers all git mechanics (branch/commit/PR) to git-workflow and adds the code-only gates — run tests/lint/build before pushing, keep CI green, conventional-commit scopes."
 pattern: procedure
 when_to_use: Any task that will result in committed product-code changes — "add a feature", "fix the bug", "refactor", "update the styling", "wire up the endpoint".
 when_not_to_use: Non-code changes (docs, content, config, deliverables) — those just use git-workflow directly. Read-only questions, exploration, or chat/transcript processing (those go through /refact).

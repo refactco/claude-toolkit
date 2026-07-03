@@ -1,6 +1,6 @@
 ---
 name: nextjs-dev
-description: Work safely inside an existing Next.js app: locate the app, run dev/build/lint checks, and diagnose common App Router issues.
+description: "Work safely inside an existing Next.js app: locate the app, run dev/build/lint checks, and diagnose common App Router issues."
 pattern: procedure
 when_to_use: /refact nextjs dev | run the Next.js app | fix Next.js bug | update a Next.js route, component, server action, or API endpoint.
 when_not_to_use: Creating or adopting a new app (use setup-nextjs-app), or deployment setup (use setup-vercel-deploy).
