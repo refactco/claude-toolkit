@@ -1,8 +1,8 @@
 ---
 name: red-green-refactor
-description: Phase 2 of the TDD harness: implement one slice test-first through red→green→refactor unit cycles until its acceptance criterion is met, then commit. Unit tests only (WordPress PHPUnit via wp-env). Triggers: 'implement slice NN', 'red green refactor', 'TDD this'.
+description: "Phase 2 of the TDD harness: implement one slice test-first through red→green→refactor unit cycles until its acceptance criterion is met, then commit. Unit tests only (WordPress PHPUnit via wp-env). Triggers: 'implement slice NN', 'red green refactor', 'TDD this'."
 pattern: procedure
-when_to_use: Implementing one slice test-first when a plan file exists in plans/. Triggers: "red green refactor", "TDD this", "implement slice NN", "work through the plan". Also invoked by the tdd orchestrator for each slice.
+when_to_use: 'Implementing one slice test-first when a plan file exists in plans/. Triggers: "red green refactor", "TDD this", "implement slice NN", "work through the plan". Also invoked by the tdd orchestrator for each slice.'
 when_not_to_use: No plan exists yet (run tdd-plan first). Batch-implementing multiple slices at once (always work one slice at a time). Writing integration or e2e tests (this harness covers unit tests only).
 next_skills: []
 sub_agents: []

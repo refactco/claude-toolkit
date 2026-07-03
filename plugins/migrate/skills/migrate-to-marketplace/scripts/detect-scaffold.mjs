@@ -140,8 +140,39 @@ const mcp = {
   note: "A .cursor/mcp.json server is Cursor-only — Claude Code never reads it. Check ~/.claude.json + .claude/settings.local.json for the real MCP wiring (often a claude.ai remote integration). Do NOT auto-create a repo .mcp.json; ask first.",
 };
 
+// --- Broken docs/ links after agent/ is removed -------------------------------
+// Scan only docs/*.md, skipping docs/sources/raw (evidence — transcripts/emails,
+// often huge .jsonl that merely mention "agent/"). These are flagged for the user
+// to repoint at CLAUDE.md / installed packs — historical tickets are reported too,
+// but repointing them is a human call (do not rewrite recorded history blindly).
+function walkMd(dir, acc = []) {
+  let entries;
+  try { entries = readdirSync(dir, { withFileTypes: true }); } catch { return acc; }
+  for (const e of entries) {
+    const full = path.join(dir, e.name);
+    if (e.isDirectory()) {
+      if (full.includes(path.join("docs", "sources", "raw"))) continue;
+      walkMd(full, acc);
+    } else if (e.name.endsWith(".md")) acc.push(full);
+  }
+  return acc;
+}
+const docsLinksToRepair = [];
+if (exists("docs")) {
+  for (const f of walkMd(p("docs"))) {
+    let lines;
+    try { lines = readFileSync(f, "utf8").split("\n"); } catch { continue; }
+    lines.forEach((ln, i) => {
+      if (/agent\/(AGENTS\.md|CLAUDE\.md|skills\/)|\]\([^)]*agent\//.test(ln)) {
+        docsLinksToRepair.push({ file: path.relative(ROOT, f), line: i + 1, text: ln.trim().slice(0, 120) });
+      }
+    });
+  }
+}
+
 const report = {
   root: ROOT, isScaffold, markers,
+  docsLinksToRepair,
   packsToInstall: packs,
   skills: { total: localSkills.length, movesToPack, becomesCommand, obsolete, noReplacement, unknown },
   config,
@@ -163,6 +194,8 @@ if (process.argv.includes("--summary")) {
   L(`package.json: remove ${report.packageJson.refactScriptsToRemove.length} scripts + refact-os dep=${hasRefactDep}`);
   L(`Remove: ${removeTrees.join(", ")}`);
   L(`Preserve: ${preserve.map((s) => s.split(" ")[0]).join(", ")}`);
+  const docFiles = [...new Set(docsLinksToRepair.map((d) => d.file))];
+  L(`docs/ links to repoint off agent/: ${docsLinksToRepair.length}${docFiles.length ? " in " + docFiles.join(", ") : ""}`);
 } else {
   process.stdout.write(JSON.stringify(report, null, 2) + "\n");
 }

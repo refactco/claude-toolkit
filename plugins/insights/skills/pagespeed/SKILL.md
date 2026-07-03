@@ -3,7 +3,7 @@ name: pagespeed
 description: Page-speed and Core Web Vitals for any project's site — real-user field data from the Chrome UX Report (CrUX) and on-demand Lighthouse lab audits via the PageSpeed Insights API. Fills the Core Web Vitals gap that the Search Console API can't (CWV has no GSC API). Read-only.
 pattern: procedure
 when_to_use: Any task about page speed, performance, or Core Web Vitals (LCP/INP/CLS) for the current project — "how's our CWV", "are we passing Core Web Vitals", "why is this page slow", "what should we fix for speed", performance sections of an SEO/site audit, or tracking CWV over time.
-when_not_to_use: Search-performance/index/sitemap data (use the gsc skill). Non-Google performance tooling. Out of scope: interpreting or prioritizing findings into a backlog — this skill pulls performance data, it doesn't score it.
+when_not_to_use: "Search-performance/index/sitemap data (use the gsc skill). Non-Google performance tooling. Out of scope: interpreting or prioritizing findings into a backlog — this skill pulls performance data, it doesn't score it."
 next_skills: []
 sub_agents: []
 ---

@@ -1,8 +1,8 @@
 ---
 name: tdd
-description: TDD harness orchestrator — takes a feature from idea to a reviewable PR via the full pipeline: tdd-plan (slice + plan), red-green-refactor per slice (unit loop), one PR at the end. WordPress-focused; unit tests only. Triggers: 'build X with TDD', '/tdd this'.
+description: "TDD harness orchestrator — takes a feature from idea to a reviewable PR via the full pipeline: tdd-plan (slice + plan), red-green-refactor per slice (unit loop), one PR at the end. WordPress-focused; unit tests only. Triggers: 'build X with TDD', '/tdd this'."
 pattern: orchestrator
-when_to_use: The user wants to take a whole feature from idea to PR using disciplined TDD — slicing, planning, implementing slice-by-slice with unit tests, and opening one PR. Triggers: "build X with TDD", "/tdd this", "take this from idea to PR test-first", "TDD the whole thing".
+when_to_use: 'The user wants to take a whole feature from idea to PR using disciplined TDD — slicing, planning, implementing slice-by-slice with unit tests, and opening one PR. Triggers: "build X with TDD", "/tdd this", "take this from idea to PR test-first", "TDD the whole thing".'
 when_not_to_use: The user only wants one phase — use tdd-plan for slicing/planning alone, or red-green-refactor to implement a specific slice. Don't force the full pipeline when a single phase was requested.
 next_skills:
   - tdd-plan
