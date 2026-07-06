@@ -6,6 +6,10 @@ This guide is for any developer or designer at Refact who needs to send a client
 
 A client reading your update should come away knowing four things without having to ask follow up questions. They should know where things stand right now, what we found when we looked into it, what they need to do if anything, and what we are doing next. Everything else is supporting detail.
 
+## Match the length to the update
+
+Let the update earn its length. A short, simple situation gets a short update. A complex one gets a longer one. The structure below is a checklist of what to consider, not a set of sections you must all fill. If a step has nothing real behind it, leave it out rather than padding it with filler. A two sentence message that fully answers the client is a success, not an incomplete one. Never stretch a small update into a long report to make it look thorough, and never invent detail the raw notes do not contain. When in doubt, err on the side of shorter.
+
 ## Tone
 
 The voice is warm, professional, calm, and firm. It comes from someone who has investigated the situation thoroughly and knows what they are talking about. It does not apologize reflexively. It does not hedge with weak qualifiers like “I think” or “maybe” when you actually do know. It does not bury bad news, and it does not dramatize good news. When something has gone wrong, you explain the root cause plainly and move directly to what we are doing about it.
@@ -14,7 +18,7 @@ Use first names. Write in full sentences. Avoid corporate filler like “circle 
 
 ## The structure
 
-Reorganize whatever raw notes you have into this order. The order is deliberately not the order in which you investigated the problem. It is the order that gives the client what they need fastest.
+Reorganize whatever raw notes you have into this order. The order is deliberately not the order in which you investigated the problem. It is the order that gives the client what they need fastest. Not every update needs every step. Include the steps that carry real information for this update and skip the ones that do not apply.
 
 **1. The headline.** One or two sentences at the top that tell the client where things stand right now. Is the issue resolved, in progress, blocked, or waiting on a decision? Lead with the state of things, not the history. If the answer is “fixed and deployed,” say so in the first sentence. If the answer is “still investigating,” say so in the first sentence.
 
@@ -24,7 +28,7 @@ Reorganize whatever raw notes you have into this order. The order is deliberatel
 
 **4. What we have done so far.** If anything is already shipped, fixed, or changed, describe it briefly. Mention where it is live and how the client can verify it if that is useful.
 
-**5. What we need from you, if anything.** A clear, named ask. One thing, not three. If you need a decision, frame the options. If you need access, say what you need and how to share it. If there is no action needed on their side, say “There is nothing you need to do on this.” Do not leave it implicit.
+**5. What we need from you, if anything.** Include this step only when there is a real ask. When there is one, make it a clear, named ask. One thing, not three. If you need a decision, frame the options. If you need access, say what you need and how to share it. If there is nothing for the client to do, leave this step out entirely. Do not add a line telling them there is nothing to do or reassuring them they need not act. Its absence already says that, and the message is shorter and calmer without it.
 
 **6. What we are doing next.** Concrete next steps from our side, with rough timing if you can give it. Use early, mid, or late framing when an exact date is not possible. For example, “We expect to have this ready for your review in the early part of next week.” Avoid internal risk language and avoid promising dates you are not confident in.
 
@@ -66,7 +70,7 @@ Avoid stacking many short messages in a row. One message that says everything is
 
 Use threads for back and forth. When the client replies in the main channel rather than in the thread, gently bring the conversation back into the thread by replying there yourself. It keeps the surface of the channel calm.
 
-A Slack update can be casual in register without being casual in substance. “Hey, the search bar is back up. It was a stale cache, we cleared it and added a check so it does not happen again on future deploys. Nothing needed on your end.” That message is short, friendly, and complete. It still hits the headline, the root cause, the action we took, and the client’s required action, in that order.
+A Slack update can be casual in register without being casual in substance. “Hey, the search bar is back up. It was a stale cache, we cleared it and added a check so it does not happen again on future deploys.” That message is short, friendly, and complete. It hits the headline, the root cause, and the action we took, in that order. There was nothing for the client to do, so it does not raise the subject at all.
 
 ### When in doubt about channel
 
@@ -78,9 +82,9 @@ Here is the same update written two ways. The first version is what an investiga
 
 **Less good.** “Hi Ben, so when we got your message about the search bar this morning, we first checked the theme files, then we looked at the search plugin, then we tested on staging, then we found that the issue was actually in the caching layer, and we have now cleared the cache and it seems to be working. Let me know if you see anything else.”
 
-**Better.** “Hi Ben, the search bar is working again as of this morning. The cause was a stale cache that was serving an older version of the search template, which is why the results looked broken even though the underlying data was correct. We cleared the affected cache layer and confirmed that searches are returning expected results across the site. There is nothing you need to do on this. We are going to add a check to our deployment process so that this particular cache is cleared automatically on future releases, and we will have that in place by the middle of next week. Happy to walk through any of this if useful.”
+**Better.** “Hi Ben, the search bar is working again as of this morning. The cause was a stale cache that was serving an older version of the search template, which is why the results looked broken even though the underlying data was correct. We cleared the affected cache layer and confirmed that searches are returning expected results across the site. We are going to add a check to our deployment process so that this particular cache is cleared automatically on future releases, and we will have that in place by the middle of next week. Happy to walk through any of this if useful.”
 
-The second version puts the client in the picture in the first sentence, explains the why in plain language, names what we did, removes the client from the loop on follow up actions, and tells them what we are doing to prevent it. The total length is similar. The clarity is not.
+The second version puts the client in the picture in the first sentence, explains the why in plain language, names what we did, and tells them what we are doing to prevent it. There was nothing for the client to do, so it does not raise the subject at all. The total length is similar. The clarity is not.
 
 -----
 

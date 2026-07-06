@@ -7,6 +7,22 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-06 — Update the `writing-client-updates` guide (length + omit no-action line)
+
+Parnia revised the `writing-client-updates` reference guide. Two new pieces of guidance and one
+reversed rule; the `SKILL.md` loader and its frontmatter are unchanged.
+
+- **`plugins/base/skills/writing-client-updates/references/writing-client-updates.md`** — added a
+  new **"Match the length to the update"** section (short situation → short update; do not pad or
+  invent detail); added a line to *The structure* intro that steps with nothing real behind them
+  should be skipped; **reversed step 5** — when nothing is needed from the client, **omit the step
+  entirely** rather than writing "There is nothing you need to do." Both worked examples updated to
+  drop that line.
+- **base** `1.4.1 → 1.4.2` — content refresh of one skill; no skill added or removed.
+- Marketplace **2.9.0 → 2.9.1**.
+
+---
+
 ## 2026-07-03 — Refresh the two planning docs to current state
 
 The two `docs/` planning files had drifted from the shipped marketplace. Added a "Status" banner to
