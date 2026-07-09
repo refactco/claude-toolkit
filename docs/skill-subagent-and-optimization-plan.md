@@ -1,6 +1,9 @@
 # Skill sub-agent offload + optimization plan
 
-Date: 2026-07-09. Status: **proposed — not executed**.
+Date: 2026-07-09. Status: **IMPLEMENTED 2026-07-09** (branch `feat/skill-audit-plan`; see
+`docs/change-log.md` for the full record). Exceptions: the wp-env restructure was removed
+from the plan by user decision, and code-development's duplicated git safety rules were
+deliberately kept (load-bearing per the git-workflow pack's design note).
 
 ## How this plan was made
 

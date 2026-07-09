@@ -1,6 +1,6 @@
 {
   "name": "refact-os",
-  "version": "2.10.1",
+  "version": "2.11.0",
   "owner": {
     "name": "Refact Developer",
     "email": "dev@refact.co"
@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "base",
-      "version": "1.5.0",
+      "version": "1.6.0",
       "source": "./plugins/base",
       "description": "Base toolkit: git workflow, code-dev gates, Asana, env sync, learnings, client updates, slim project config, Refact Control MCP setup + the /base:refact command + TS/JS LSP.",
       "author": { "name": "Refact Developer", "email": "dev@refact.co" },
@@ -16,7 +16,7 @@
     },
     {
       "name": "client",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "source": "./plugins/client",
       "description": "Client deliverables: discovery-first proposals and branded print-ready PDF rendering.",
       "author": { "name": "Refact Developer", "email": "dev@refact.co" },
@@ -24,7 +24,7 @@
     },
     {
       "name": "ops",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source": "./plugins/ops",
       "description": "Ops integrations: Cloudflare client-zone operations and Sentry backlog triage.",
       "author": { "name": "Refact Developer", "email": "dev@refact.co" },
@@ -32,7 +32,7 @@
     },
     {
       "name": "insights",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "source": "./plugins/insights",
       "description": "Site insights: SEO (Ahrefs, Search Console), web analytics (GA4), tag management (GTM), and PageSpeed/Core Web Vitals.",
       "author": { "name": "Refact Developer", "email": "dev@refact.co" },
@@ -40,7 +40,7 @@
     },
     {
       "name": "nextjs",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "source": "./plugins/nextjs",
       "description": "Next.js: scaffold or adopt an app, run/diagnose it, and set up Vercel or Netlify deploys.",
       "author": { "name": "Refact Developer", "email": "dev@refact.co" },
@@ -48,7 +48,7 @@
     },
     {
       "name": "wordpress",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "source": "./plugins/wordpress",
       "description": "WordPress: local wp-env stack, safe plugin updates with QA + rollback, Kinsta/WP Engine deploy workflows + PHP LSP.",
       "author": { "name": "Refact Developer", "email": "dev@refact.co" },
@@ -56,7 +56,7 @@
     },
     {
       "name": "testing",
-      "version": "1.1.2",
+      "version": "1.2.0",
       "source": "./plugins/testing",
       "description": "Testing: TDD harness (plan -> red-green-refactor) plus WordPress characterization and real-plugin integration tests.",
       "author": { "name": "Refact Developer", "email": "dev@refact.co" },
