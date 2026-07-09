@@ -6,7 +6,7 @@
 
 For appending, use `cloudflare.rulesets.rules.create({...})`. For editing one rule, use `cloudflare.rulesets.rules.edit({...rule_id, ...changes})`.
 
-We lost six existing rules on a CREDaily ticket this way. Never use the full-ruleset `update` to append.
+We lost six existing rules on a client ticket this way. Never use the full-ruleset `update` to append.
 
 ## Phase execution order is fixed
 

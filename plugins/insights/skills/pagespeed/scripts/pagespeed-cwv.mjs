@@ -14,23 +14,28 @@
  *   --form-factor=F    PHONE | DESKTOP | TABLET (default: all form factors combined).
  *   --history          Return the weekly p75 timeseries (~25 collection periods)
  *                      instead of the latest single snapshot.
+ *   --out=PATH         Write the full JSON to PATH instead of stdout, printing
+ *                      only a one-line confirmation + a compact summary
+ *                      (assessment + per-metric p75/verdict).
  *
  * Examples:
  *   node pagespeed-cwv.mjs                                   # origin from config
  *   node pagespeed-cwv.mjs --url=https://example.com/pricing
  *   node pagespeed-cwv.mjs --form-factor=PHONE --history
+ *   node pagespeed-cwv.mjs --history --out=cwv-history.json
  *
  * Note: CrUX only has data for origins/URLs with enough Chrome traffic. Low-traffic
  * sites or pages return 404 (CrUX_DATA_NOT_FOUND) — that's expected, not an error
  * in the setup. INP in particular often lacks data on smaller sites.
  */
 
+import fs from 'node:fs';
 import { readApiKey, resolveSite, THRESHOLDS, verdictFor } from './_shared.mjs';
 
 const BASE = 'https://chromeuxreport.googleapis.com/v1';
 
 function parseArgs(argv) {
-  const args = { origin: null, url: null, formFactor: null, history: false };
+  const args = { origin: null, url: null, formFactor: null, history: false, out: null };
   for (const a of argv.slice(2)) {
     if (a === '--history') { args.history = true; continue; }
     const m = a.match(/^--([^=]+)=(.+)$/);
@@ -38,6 +43,7 @@ function parseArgs(argv) {
     if (m[1] === 'origin') args.origin = m[2];
     else if (m[1] === 'url') args.url = m[2];
     else if (m[1] === 'form-factor') args.formFactor = m[2].toUpperCase();
+    else if (m[1] === 'out') args.out = m[2];
   }
   if (args.formFactor && !['PHONE', 'DESKTOP', 'TABLET'].includes(args.formFactor)) {
     throw new Error(`Invalid --form-factor "${args.formFactor}". Use PHONE, DESKTOP, or TABLET.`);
@@ -143,6 +149,34 @@ function coreAssessment(metricsByLabel) {
   return core.every((m) => (m.verdict ?? m.latestVerdict) === 'GOOD') ? 'PASS' : 'FAIL';
 }
 
+// Compact per-metric view: just p75 + verdict (latest values in history mode).
+function compactSummary(output) {
+  const metrics = {};
+  for (const [label, m] of Object.entries(output.metrics || {})) {
+    metrics[label] = { p75: m.p75 ?? m.latest ?? null, verdict: m.verdict ?? m.latestVerdict ?? null };
+  }
+  return {
+    target: output.target,
+    formFactor: output.formFactor,
+    mode: output.mode,
+    coreWebVitalsAssessment: output.coreWebVitalsAssessment,
+    metrics,
+  };
+}
+
+// Print the full JSON, or (with --out) write it to a file and print only a
+// one-line confirmation + a compact summary.
+function emit(output, outPath) {
+  const json = JSON.stringify(output, null, 2);
+  if (!outPath) {
+    console.log(json);
+    return;
+  }
+  fs.writeFileSync(outPath, json, 'utf8');
+  console.error(`Wrote CrUX ${output.mode} for ${output.target.value} to ${outPath}`);
+  console.log(JSON.stringify(compactSummary(output), null, 2));
+}
+
 async function main() {
   const args = parseArgs(process.argv);
   const apiKey = readApiKey();
@@ -163,17 +197,17 @@ async function main() {
       missingCoreMetrics: ['LCP', 'INP', 'CLS'].filter((l) => !(l in data.metrics)),
       ...data,
     };
-    console.log(JSON.stringify(output, null, 2));
+    emit(output, args.out);
   } catch (e) {
     if (e.notFound) {
-      console.log(JSON.stringify({
+      emit({
         source: 'CrUX (field / real-user data)',
         target,
         formFactor: args.formFactor || 'ALL',
         mode: args.history ? 'history' : 'snapshot',
         coreWebVitalsAssessment: 'NO_DATA',
         note: e.message,
-      }, null, 2));
+      }, args.out);
       return;
     }
     throw e;

@@ -146,10 +146,15 @@ Add to `package.json` › `scripts` (each prefixed with `PLAYWRIGHT_FORCE_ASYNC_
 "plugin-update:links:update": "PLUGIN_UPDATE_LINKS_UPDATE=1 PLAYWRIGHT_FORCE_ASYNC_LOADER=1 playwright test --config tests/e2e/playwright.config.ts tests/e2e/interactive.spec.ts",
 "plugin-update:forms:update": "PLUGIN_UPDATE_FORMS_UPDATE=1 PLAYWRIGHT_FORCE_ASYNC_LOADER=1 playwright test --config tests/e2e/playwright.config.ts tests/e2e/forms.spec.ts",
 "plugin-update:forms-submit": "PLAYWRIGHT_FORCE_ASYNC_LOADER=1 playwright test --config tests/e2e/playwright.config.ts tests/e2e/forms-submit.spec.ts",
-"plugin-update:admin": "node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/mint-admin-session.mjs && PLAYWRIGHT_FORCE_ASYNC_LOADER=1 playwright test --config tests/e2e/playwright.config.ts tests/e2e/admin.spec.ts",
+"plugin-update:admin": "node <RESOLVED_PLUGIN_ROOT>/skills/plugin-update/scripts/mint-admin-session.mjs && PLAYWRIGHT_FORCE_ASYNC_LOADER=1 playwright test --config tests/e2e/playwright.config.ts tests/e2e/admin.spec.ts",
 "plugin-update:visual": "PLAYWRIGHT_FORCE_ASYNC_LOADER=1 playwright test --config tests/e2e/playwright.config.ts tests/e2e/visual.spec.ts",
 "plugin-update:visual:update": "PLAYWRIGHT_FORCE_ASYNC_LOADER=1 playwright test --config tests/e2e/playwright.config.ts tests/e2e/visual.spec.ts --update-snapshots"
 ```
+
+**`<RESOLVED_PLUGIN_ROOT>`:** when writing these scripts, substitute the **actual
+absolute path** of `${CLAUDE_PLUGIN_ROOT}` (echo it first). Never write the literal
+variable into `package.json` — it is unset outside a Claude Code session, so
+`npm run plugin-update:admin` would resolve to `node /skills/...` and fail.
 
 ### S4 — Copy the Playwright suite to the repo root
 
@@ -219,6 +224,13 @@ Eyeball the captured PNGs — a baseline of a broken page poisons every future d
 ## Execute mode (`/plugin-update execute`)
 
 Processes **every plugin with an available update** — but **one at a time (sequentially), never batched.** Loop the full E2–E10 cycle over each plugin: a passed plugin stays updated on staging and is marked ready-to-promote; a failed plugin is rolled back on staging and flagged. When the list is exhausted, report a summary and promote the passed set (one human approval). Sequential-not-batch is what makes a failure attributable to a single plugin and rollback clean — it is **not** a limit on how many get updated per run.
+
+> **Offload:** E1 (and all of `check` mode) plus each plugin's **E5–E8** cycle
+> (snapshot → pinned update → cache bust → QA battery) are script-driven and
+> staging-only — dispatch them to the pack's **`wordpress:qa-runner`** sub-agent
+> (Agent tool), one plugin per dispatch, strictly sequentially. It returns the QA
+> signals + snapshot path. The judgment stays here: E3's defer call, E4's targeted
+> checklist, E9's pass/fail decision, E10 rollback, and the E11 human promotion gate.
 
 ### E1 — List ALL available updates
 ```bash

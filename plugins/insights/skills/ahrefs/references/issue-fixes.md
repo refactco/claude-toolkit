@@ -1,4 +1,4 @@
-# Ahrefs Site Audit issue → fix mapping (this repo)
+# Ahrefs Site Audit issue → fix mapping
 
 How to fix each Ahrefs issue **category** in the site's code.
 
@@ -47,7 +47,7 @@ filtered by the issue), fix via `code-development` (branch → PR, never push to
 - **Image file size too large / broken image** — use `next/image` with proper sizing; fix broken `src`. Pair with the `pagespeed` skill for LCP-image work.
 
 ## Usability and performance
-- **Slow page / large HTML / large page size** — diagnose with the **`pagespeed`** skill (CrUX field + Lighthouse lab), then fix in `apps/web`: image optimization, bundle/JS reduction, caching. This is where most of the current warnings sit.
+- **Slow page / large HTML / large page size** — diagnose with the **`pagespeed`** skill (CrUX field + Lighthouse lab), then fix in `apps/web`: image optimization, bundle/JS reduction, caching. Warnings commonly concentrate here.
 
 ## CSS / JavaScript
 - **CSS/JS file size too large** — code-splitting / minification in the Next build; review large global CSS (`apps/web/src/app/globals.css`) and heavy client components.
@@ -69,6 +69,6 @@ filtered by the issue), fix via `code-development` (branch → PR, never push to
 ---
 
 ### Quick triage heuristics
-- **Errors** → fix first (they block indexing/ranking). Currently **0**.
+- **Errors** → fix first (they block indexing/ranking).
 - **Warnings** → real but lower-stakes (performance, redirects, minor meta). Batch by category into one PR where possible.
 - **Notices** → mostly informational (internal-link distribution, IndexNow); treat as opportunities, not defects. Don't over-engineer fixes for notices.

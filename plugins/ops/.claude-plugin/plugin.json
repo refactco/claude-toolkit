@@ -1,6 +1,6 @@
 {
   "name": "ops",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Ops integrations: Cloudflare client-zone operations and Sentry backlog triage.",
   "author": {
     "name": "Refact Developer",

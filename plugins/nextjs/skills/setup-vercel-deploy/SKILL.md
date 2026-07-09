@@ -53,7 +53,7 @@ Set up deployment metadata and local verification while keeping project-specific
 
 2. If the repo is a monorepo, make sure the Vercel project root points at the app directory (detect it from the repo, or ask the user — e.g. `apps/<name>` in a monorepo), not the repo root, unless the repo intentionally builds from root.
 3. Do not commit `.vercel/` unless the team intentionally tracks Vercel project metadata. If unsure, ask. Many teams keep `.vercel/` local and document the project name instead.
-4. Record hosting (`vercel`) and each environment's `branch` + `url` (production and preview/staging) in `.refact-os.json` › `stack.nextjs` when stable. Keep app-specific build details (deployment owner, project name, app root, build command) in a deploy doc inside the app directory (e.g. `docs/deploy.md` under the app directory; create it on demand if missing).
+4. Record hosting (`vercel`) and each environment's `branch` + `url` (production and preview/staging) in `.refact-os.json` › `stack.nextjs` when stable — via the base pack's update-project-config skill when the base pack is installed, otherwise edit `.refact-os.json` directly. Keep app-specific build details (deployment owner, project name, app root, build command) in a deploy doc inside the app directory (e.g. `docs/deploy.md` under the app directory; create it on demand if missing).
 
 ## Environment variables
 

@@ -7,6 +7,69 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-09 — Implement the skill audit plan: P0 fixes, sub-agent offload layer, Part 3 cleanup
+
+Full implementation of `docs/skill-subagent-and-optimization-plan.md` (branch `feat/skill-audit-plan`).
+
+**Part 1 — P0 fixes:**
+- insights: deleted `gsc/scripts/gsc-login.mjs` — its webmasters-only scope silently overwrote the
+  shared union-scope `GOOGLE_REFRESH_TOKEN` minted by ga4's `google-login.mjs`, breaking ga4/gtm.
+  All gsc docs/errors now point at the shared login. gsc's CWV table row now routes to `pagespeed`.
+- base/sync-env-vars: `compare_plan` now masks secrets to 2 chars + `****` (was: first 5 chars of
+  every value into the chat — which the transcript hook uploads), prints BEFORE/AFTER + a SUMMARY
+  line; bootstrap message prints the real script path (`$0`); removed the nonexistent
+  `required_permissions` parameter from SKILL.md.
+- base/setup-refact-control-mcp-server: secrets flow is `op`-CLI only; never paste secrets into chat.
+
+**Part 2 — sub-agent offload layer (new `agents/` dir per pack):**
+`insights:data-puller` (sonnet), `ops:sentry-triage` (sonnet), `ops:cloudflare-investigator`
+(sonnet), `wordpress:qa-runner` (sonnet), `wordpress:wp-env-runner` (sonnet, wp-env SKILL.md
+itself untouched by user decision), `testing:slice-implementer` (inherit), `base:asana-sync-runner`
+(haiku). `pagespeed` now runs whole-skill in a fork (`context: fork`, `agent: general-purpose`,
+`model: sonnet`) — the only skill with zero mid-flow interactivity. Dispatch notes added to
+ga4/gsc/gtm/ahrefs/sentry/cloudflare/plugin-update/asana/tdd; every approval gate stays in the
+main conversation. tdd's duplicated branch-detection bash → `tdd/scripts/detect-source-branch.sh`.
+
+**Part 3 — cleanup sweep:**
+- Ghost skill refs removed (`open-ticket`, `update-canonical-record`, `create-deliverable`,
+  `contribute-skill`, `find-docs`/`ctx7`) — none of these skills exist.
+- Scaffold-era leftovers purged: `asana.mjs` printed commands, `install-wp-skills` framing,
+  `plugin-update` no longer writes a literal `${CLAUDE_PLUGIN_ROOT}` into consumers' package.json,
+  wpengine `AGENTS.md` mention, cloudflare Cursor mention. (The migrate pack still names the
+  scaffold on purpose — that's what it migrates.)
+- Dedup: kinsta/wpengine shared blocks (~93 lines) → `plugins/wordpress/references/deploy-shared.md`
+  (load-bearing safety one-liners kept inline); insights `_shared.mjs` helpers → pack-shared
+  `plugins/insights/lib/common.mjs` (sibling scripts unchanged; all 23 .mjs pass `node --check` +
+  import smoke); `--out` flags added to `gtm-export`, `gsc-inspect`, `pagespeed-cwv`,
+  `pagespeed-audit`; testing pack single-sourced (slicing toolkit, `⚪ excluded`, harness recipe
+  drift fixed, `apps/wordpress` → `<wp-app>`, backfill `next_skills: [integration-tests]`).
+- Client values genericized (`credaily_764`, `cre-daily`, `stlouismagazin`, a `CREDaily` war-story
+  mention). CLAUDE.md now says 8 plugins and lists `migrate/`. cloudflare stub `api.md` files
+  deleted; netlify's mangled sentences fixed; nextjs `.refact-os.json` writes routed through
+  base's update-project-config when installed.
+- Deliberate skips: wp-env restructure (user decision); code-development's duplicated git safety
+  rules (the git-workflow pack's design note marks them load-bearing).
+
+**Versions:** base 1.6.0, insights 1.1.0, ops 1.1.0, wordpress 1.1.0, testing 1.2.0,
+client 1.1.2, nextjs 1.0.2; marketplace **2.11.0**.
+
+## 2026-07-09 — Restore 4 missing bundled files from upstream (integration-tests + draft-discovery-proposal)
+
+A full 34-skill audit (see `docs/skill-subagent-and-optimization-plan.md`) found two skills that
+could not run because SKILL.md cited bundled files that were never lifted from upstream. Recovered
+all four from the upstream checkout (`refactco/refact-os` @ v2.17.1,
+`templates/base/agent/skills/`):
+
+- **`plugins/testing/skills/integration-tests/`** — added `references/integration-tests.md` (277
+  lines, cited at SKILL.md L111/L129/L181), `assets/integration-triage-template.md` (L85), and
+  `assets/integration-test-template.php` (L132). Adapted the upstream copies to this repo's
+  standalone convention: 5 hard-coded `apps/wordpress/` paths → the detected `<wp-app>`
+  placeholder the SKILL.md already uses (reference L60/L78/L107/L118, PHP template L6). No other
+  content changes.
+- **`plugins/client/skills/draft-discovery-proposal/`** — added `template.md` (158 lines, the
+  fillable proposal skeleton cited at SKILL.md L15/L44/L53). Copied verbatim (no scaffold-isms).
+- **Versions:** testing 1.1.1 → 1.1.2, client 1.1.0 → 1.1.1, marketplace 2.10.0 → 2.10.1.
+
 ## 2026-07-09 — Slim the `git-workflow` skill (thin router + split references)
 
 `git-workflow` loaded ~4,500 tokens whenever it fired, because `SKILL.md` told the agent to read one

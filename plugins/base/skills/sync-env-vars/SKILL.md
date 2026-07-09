@@ -121,7 +121,7 @@ Then rerun `op whoami` to confirm. Never hardcode, guess, log, or echo the token
 
 ## Sandbox Restriction — Run Outside the Sandbox
 
-Always run sync commands with `required_permissions: ["all"]`. If a run fails with a network/auth error, re-run outside the sandbox immediately.
+Sync commands need network access (1Password). If a run fails with a network or `op` auth error inside a sandboxed shell, re-run the same command with sandboxing disabled.
 
 ## Normal Command
 
@@ -153,7 +153,7 @@ Never pass `--yes` until the user has confirmed the vault write, overwrite, or d
 
 Before any write, the script prints a confirmation table so the user fully understands what is about to happen. Always relay this table to the user (verbatim, or reformatted as a clean markdown table) and **wait for explicit approval** before rerunning with `--yes`. The table makes the following explicit:
 
-- **ACTION** — `ADD` (new key), `UPDATE` (value changes), or `REMOVE` (key dropped from the destination).
+- **ACTION** — the raw statuses are `ADD_TO_<dest>`, `CHANGE_IN_<dest>`, `REMOVE_FROM_<dest>`, and `SAME`; present them as `ADD` / `UPDATE` / `REMOVE` (drop `SAME` rows from the recap).
 - **KEY** — the environment variable name.
 - **Source → Destination** — e.g. `.env → 1Password` or `1Password → .env`, plus the exact vault and item.
 - **BEFORE / AFTER** — the current destination value vs. the incoming source value. Secrets are masked (first 2 characters + `****`); non-secret values show up to 20 characters. `-` means the value is absent on that side (so `-` in BEFORE = a brand-new key; `-` in AFTER = a removal).
@@ -171,7 +171,7 @@ Present it as a short, confidence-inspiring recap, for example:
 >
 > That's 1 added, 1 updated, 1 removed, 4 unchanged. Nothing has been written yet — approve and I'll apply it.
 
-For a pull (`1Password → .env`) the same table is shown; only the source and destination swap. If the table reports "No changes", tell the user the two sources already match and stop.
+For a pull (`1Password → .env`) the same table is shown; only the source and destination swap. If the `SUMMARY` line reports `0 to add, 0 to change, 0 to remove`, tell the user the two sources already match and stop.
 
 ## When Agents Must Use It
 
@@ -200,7 +200,7 @@ Expected outcomes:
 - If `.env.example` is missing, sync creates it from the chosen value source.
 - If headers are missing, sync adds the fixed vault header and a project item title using `PROJECT_ITEM`, `--project`, an existing project header, or the default naming convention.
 
-If — and only if — the sync run above reports that neither `.env` nor a 1Password item exists, the resolved directory (see "Where The Env File Goes") is where the env file should be created. Do not skip the sync run and jump straight to asking the user; the sync command is what determines whether a 1Password item is already there. Once sync confirms both sources are missing, ask the user to choose one bootstrap path:
+If — and only if — the sync run above reports that neither `.env` nor a 1Password item exists (see "Default First Action" — never skip that run), the resolved directory (see "Where The Env File Goes") is where the env file should be created. Once sync confirms both sources are missing, ask the user to choose one bootstrap path:
 
 1. Existing 1Password item: ask for the exact item title, then run `${CLAUDE_PLUGIN_ROOT}/skills/sync-env-vars/scripts/sync-env.sh sync --project "<exact item title>"`.
 2. Existing `.env.example` with no values: the keys are already declared. Either collect values from the user to fill `.env`, or create `.env` with empty placeholders for the user to fill later. Never invent values.
@@ -249,7 +249,7 @@ Run:
 ${CLAUDE_PLUGIN_ROOT}/skills/sync-env-vars/scripts/sync-env.sh sync
 ```
 
-If `.env` was edited after the 1Password item, `.env` becomes the complete source for this sync run. The script prints the changes preview (the confirmation table described above) listing every key to add, update, or remove in 1Password with masked before/after values, then stops for confirmation. Relay the table, get approval, then rerun with `--yes`.
+If `.env` was edited after the 1Password item, `.env` becomes the complete source for this sync run, and the script stops after the changes preview — follow the same relay-table → approval → `--yes` flow described under "Normal Command" / "Confirmation Table".
 
 Empty values in `.env` are not pushed to 1Password. If the script reports empty local values, ask the user to fill them or remove those keys before syncing.
 

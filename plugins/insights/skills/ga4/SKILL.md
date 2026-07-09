@@ -19,6 +19,7 @@ and `gtm` skills (same Google account, same 1Password item, same one-time login)
 - **Target property**: `ga4.propertyId` (numeric) in the project's `.refact-os.json`. If it is missing in `.refact-os.json`, run `ga4-metadata.mjs --list` to discover it and ask the user before writing it in.
 - **Scripts** live in `scripts/` and share `scripts/_shared.mjs`. Run them from inside the project so `.refact-os.json` resolves.
 - **Safety**: reporting + discovery scripts are **read-only**. Configuration writes go through `ga4-admin.mjs` and are **hard-gated behind `--confirm`** — see "Managing GA4 config" below.
+- **Offload**: once `propertyId` + token exist, dispatch read-only pulls (`ga4-report.mjs`, `ga4-realtime.mjs`, `ga4-metadata.mjs`, `ga4-admin.mjs list/get`) to the pack's **`insights:data-puller`** sub-agent (Agent tool) — pass it the exact commands; it saves raw output under `docs/sources/raw/` and returns a compact summary. The connect flow, the `propertyId` write-in, and every `ga4-admin` create/update stay in the main conversation.
 
 ## Pick the right script
 

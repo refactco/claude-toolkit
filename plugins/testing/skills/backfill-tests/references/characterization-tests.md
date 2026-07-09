@@ -114,10 +114,9 @@ A `🔲` is exactly the surface that survives all three: it carries logic a test
 
 - **Private/protected methods and internal state.** Test through the public surface; if a private method's behaviour matters, it shows up there.
 - **Implementation details** (which helper was called, internal call order). That couples the test to structure and makes the safety net brittle — the opposite of what a regression suite is for.
-- **Trivial glue** — pure getters/setters, `register_*` calls with no logic, config arrays. Low value, noise.
 - **Framework / library behaviour itself** — you're testing *your* code, not WordPress core and not the third-party plugin. When your code *calls* a third-party dependency, **stub the dependency** (§11) and assert what *your* code does with the result — never assert the library's own correctness.
 - **Uncontrollable external effects** — these are **seams**, and they split two ways. Some you *can* control without touching the source, so the surface stays testable: HTTP via the `pre_http_request` filter, a third-party value-returning function via a hand-written fake (§11). Others have **no seam as written** — raw `time()`, `rand()`, direct sockets, hard `define()`/global state — and this skill may not edit the source to add one; note them for the user and mark the surface `⛔ blocked`. Never write a test that hits the real network or the real wall clock.
-- **Surfaces where a test would only restate the source** — registration/config glue, single-fallback getters, sanitizer/formatter pass-throughs (`wp_kses`, `number_format`), single literal array/string ops, boolean field reads, literal-pattern regex, one-liner WP-API side effects, branch-free pure-math (principle **A**), plus delegating wrappers and identical-pattern duplicates already covered by another row (principle **B**). These are `⚪ excluded`. **A single branch (a `?:` fallback) does not by itself earn a `🔲`** — the bar is whether pinning requires reasoning about an outcome the source doesn't state at a glance (a winner among inputs, a parsed/accumulated result, a boundary, a built query). The canonical definition, both principles, the pattern examples, and the "stays `🔲` even when short" counter-list live in **§4** — classify against that, don't re-derive here.
+- **Surfaces where a test would add no *meaningful* safety** — it would only restate the source (trivial glue, pass-throughs), it duplicates a row already pinned, or breaking it has no real blast radius. These are `⚪ excluded`. The canonical definition, both axes, the pattern examples, and the "stays `🔲` even when short" counter-list live in **§4** — classify against that, don't re-derive here.
 
 ## 6. WordPress specifics — fixtures, surfaces, assertions
 
@@ -253,7 +252,7 @@ The harness loads only **maintained** code (the `muplugins_loaded` loader in `bo
 
 ### Where fakes live, and the per-test-variation problem
 
-Put all fakes in one shared file, `apps/wordpress/tests/Unit/Generated/_stubs.php`, and `require` it from `bootstrap.php` **before** any maintained entry file (so a fake exists if a plugin checks `function_exists()` at load time). The `_stubs.php` name never matches the `*Test.php` glob, so PHPUnit won't collect it; it's committed with the suite.
+Put all fakes in one shared file, `<wp-app>/tests/Unit/Generated/_stubs.php`, and `require` it from `bootstrap.php` **before** any maintained entry file (so a fake exists if a plugin checks `function_exists()` at load time). The `_stubs.php` name never matches the `*Test.php` glob, so PHPUnit won't collect it; it's committed with the suite.
 
 Because a function is defined **once for the whole suite** and can't be redefined per test, a fake that needs to return different things in different tests must be **configurable** — route its return through a filter (or a test-settable global) that each test arranges:
 

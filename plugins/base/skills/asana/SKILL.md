@@ -3,7 +3,7 @@ name: asana
 description: Interact with Asana — sync open tickets into docs/task/, pull a single task, or post a comment/update to a task on behalf of the current user.
 pattern: procedure
 when_to_use: "/asana — for all Asana operations: sync tickets, pull a single ticket, add a comment, or post an update to a task."
-when_not_to_use: Opening a local ticket by hand (use open-ticket).
+when_not_to_use: Creating a local-only ticket file by hand (just write the markdown under docs/task/ — no Asana call involved).
 next_skills:
   - sync-env-vars
 sub_agents: []
@@ -93,7 +93,7 @@ node ${CLAUDE_PLUGIN_ROOT}/skills/asana/scripts/asana.mjs --comment --ticket 120
 1. **Parse intent.** Is this a full sync, a single-ticket fetch, or a write operation?
 2. **Ensure `op` access.** The token is resolved automatically from the shared 1Password item at runtime. If a prior run failed because `op` isn't set up, hand off to `sync-env-vars`, then retry. (A literal `ASANA_TOKEN` in `.env` skips `op` entirely.)
 3. **For full sync**: confirm `asana.projectId` is set in `.refact-os.json`. If missing, tell the user and offer to update it.
-4. **Run** via the appropriate `node` command above. Stream its output.
+4. **Dispatch, don't stream.** Hand the exact `node` command to the pack's **`base:asana-sync-runner`** sub-agent (Agent tool) — a large project prints one line per task, and the sub-agent absorbs that stream and returns only the tally. (Fallback: run the command directly if the Agent tool is unavailable.)
 5. **Report**: total tasks synced, open-full / completed-stub split, action tally (`created` / `updated` / `moved` / `unchanged` / `error`). If errors, list the failing GIDs and messages.
 
 ### Post a comment or update
@@ -132,7 +132,7 @@ Lightweight: title + link only, `processed: true`, no per-task API calls on full
 
 ## Guardrails
 
-- **Comments are permanent.** Always confirm the text with the user before posting.
+- **Comments are permanent** (Asana has no API delete) — hence the confirm-before-post step above. Comment posting always stays in the main conversation; never delegate it to a sub-agent.
 - Every comment posted by the script is prefixed with the git user's name. Never strip or override this prefix — it is the only attribution signal since the token is shared.
 - **Never** edit a synced ticket file by hand expecting it to round-trip to Asana. The sync is one-way (Asana → local); local edits are overwritten on the next sync.
 - **Never** commit `.env` or echo `ASANA_TOKEN` into chat or PR descriptions.

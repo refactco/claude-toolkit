@@ -260,7 +260,7 @@ load_headers() {
 }
 
 # Print "KEY<TAB>VALUE" for each assignment in a dotenv file. User-facing commands
-# only surface a short value preview (first 5 chars) via compare_plan.
+# only surface a masked preview via compare_plan (secrets: 2 chars + "****").
 parse_env() {
   local f="$1"
   [ -f "$f" ] || return 0
@@ -455,25 +455,39 @@ write_example_file() {
   rm -f "$old_kv"
 }
 
+# Confirmation plan: STATUS<tab>KEY<tab>BEFORE<tab>AFTER, then a SUMMARY line.
+# Secret-like keys (same patterns as secret_like_key) are masked to their first
+# 2 characters + "****"; non-secret values show up to 20 characters. "-" means
+# the value is absent on that side.
 compare_plan() {
-  local source="$1" target="$2" target_name="$3"
-  awk -F'\t' -v target="$target_name" '
-    function preview(v,   p) {
-      p = substr(v, 1, 5)
-      if (length(v) > 5) p = p "..."
+  local source="$1" target="$2" target_name="$3" plan
+  plan="$(awk -F'\t' -v target="$target_name" '
+    function is_secret(k) {
+      return k ~ /(^|_)(SECRET|PASSWORD|PASS|TOKEN|PRIVATE|API_KEY|ACCESS_KEY|CLIENT_SECRET|JWT|SESSION|COOKIE|SALT|DSN)(_|$)/ ||
+             k ~ /(DATABASE_URL|DB_URL|REDIS_URL|MONGO_URL|PRIVATE_KEY)$/
+    }
+    function mask(k, v,   p) {
+      if (v == "") return "-"
+      if (is_secret(k)) return substr(v, 1, 2) "****"
+      p = substr(v, 1, 20)
+      if (length(v) > 20) p = p "..."
       return p
     }
     FNR==NR { s[$1]=$2; keys[$1]=1; next }
     { t[$1]=$2; keys[$1]=1 }
     END {
       for (k in keys) {
-        if ((k in s) && !(k in t)) printf "ADD_TO_%s\t%s\t%s\n", target, k, preview(s[k])
-        else if ((k in s) && (k in t) && s[k] != t[k]) printf "CHANGE_IN_%s\t%s\t%s\n", target, k, preview(s[k])
-        else if (!(k in s) && (k in t)) printf "REMOVE_FROM_%s\t%s\t%s\n", target, k, preview(t[k])
-        else printf "SAME\t%s\t%s\n", k, preview(s[k])
+        if ((k in s) && !(k in t)) printf "ADD_TO_%s\t%s\t-\t%s\n", target, k, mask(k, s[k])
+        else if ((k in s) && (k in t) && s[k] != t[k]) printf "CHANGE_IN_%s\t%s\t%s\t%s\n", target, k, mask(k, t[k]), mask(k, s[k])
+        else if (!(k in s) && (k in t)) printf "REMOVE_FROM_%s\t%s\t%s\t-\n", target, k, mask(k, t[k])
+        else printf "SAME\t%s\t%s\t%s\n", k, mask(k, s[k]), mask(k, s[k])
       }
     }
-  ' "$source" "$target" | sort -t$'\t' -k2
+  ' "$source" "$target")"
+  [ -n "$plan" ] && printf '%s\n' "$plan" | sort -t$'\t' -k2
+  printf '%s\n' "$plan" | awk -F'\t' '
+    /^ADD_TO_/ {a++} /^CHANGE_IN_/ {c++} /^REMOVE_FROM_/ {r++} /^SAME\t/ {u++}
+    END { printf "SUMMARY: %d to add, %d to change, %d to remove, %d unchanged\n", a, c, r, u }'
 }
 
 confirm_vault_replacement() {
@@ -530,9 +544,9 @@ No local .env and no known 1Password item were found for '$PROJECT'.
 
 Choose one bootstrap path:
 1. Provide an existing 1Password item title, then run:
-   .claude/scripts/sync-env.sh sync --project "<exact item title>"
+   "$0" sync --project "<exact item title>"
 2. Discover env keys from the codebase, collect values from the user, create .env, then run:
-   .claude/scripts/sync-env.sh sync --yes
+   "$0" sync --yes
 EOF
 }
 
@@ -601,7 +615,7 @@ run_sync() {
       echo "Fill the values or remove those keys from .env before syncing."
       exit 6
     fi
-    echo "Replacement plan for 1Password (STATUS<tab>KEY<tab>value preview, first 5 chars):"
+    echo "Replacement plan for 1Password (STATUS<tab>KEY<tab>BEFORE<tab>AFTER — secrets masked to 2 chars + ****):"
     compare_plan "$env_kv" "$vault_kv" "VAULT"
     confirm_vault_replacement
     apply_env_to_vault "$env_kv" "$vault_kv"
@@ -609,7 +623,7 @@ run_sync() {
     echo
     echo "Synced .env -> 1Password and regenerated $EXAMPLE_FILE."
   else
-    echo "Replacement plan for .env (STATUS<tab>KEY<tab>value preview, first 5 chars):"
+    echo "Replacement plan for .env (STATUS<tab>KEY<tab>BEFORE<tab>AFTER — secrets masked to 2 chars + ****):"
     compare_plan "$vault_kv" "$env_kv" "ENV"
     write_env_file "$vault_kv"
     write_example_file "$vault_kv"

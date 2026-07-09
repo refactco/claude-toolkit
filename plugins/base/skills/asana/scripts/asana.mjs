@@ -36,10 +36,10 @@
 //     set up by the sync-env-vars skill.
 //
 // Usage:
-//   npm run asana:sync                       # full project sync
-//   npm run asana:sync:dry                   # show changes, write nothing
-//   npm run asana:sync -- --ticket <gid>     # one task, always full detail
-//   npm run asana:comment -- --ticket <gid> --text "message"  # post a comment
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/asana/scripts/asana.mjs                 # full project sync
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/asana/scripts/asana.mjs --dry-run       # show changes, write nothing
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/asana/scripts/asana.mjs --ticket <gid>  # one task, always full detail
+//   node ${CLAUDE_PLUGIN_ROOT}/skills/asana/scripts/asana.mjs --comment --ticket <gid> --text "message"
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -491,7 +491,7 @@ function renderStub(task, projectGid) {
     `**Status:** Completed · [Open in Asana](${permalink})`,
     "",
     "> Completed task — only the title and link are mirrored locally to keep syncs lean.",
-    `> Pull full detail on demand: \`npm run asana:sync -- --ticket ${task.gid}\``,
+    `> Pull full detail on demand: \`node \${CLAUDE_PLUGIN_ROOT}/skills/asana/scripts/asana.mjs --ticket ${task.gid}\``,
     "",
   ];
   return headerLines.join("\n") + lines.join("\n");
@@ -588,7 +588,7 @@ async function main() {
 
   if (!args.ticket && (projectId === undefined || projectId === null || projectId === "")) {
     die(
-      "asana.projectId is missing in .refact-os.json. Run `npx refact-os-scaffold init` to fill it in, or pass --ticket <gid> to sync a single ticket.",
+      "asana.projectId is missing in .refact-os.json. Create or update .refact-os.json with an `asana.projectId` key (the base pack's update-project-config skill writes it), or pass --ticket <gid> to sync a single ticket.",
     );
   }
 

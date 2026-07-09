@@ -57,5 +57,5 @@ when retiring an old/duplicate sitemap.
 
 ## Notes
 
-- `--submit` / `--delete` also need a token minted with the full `webmasters` scope. If you get a 403, the refresh token is read-only — re-run `gsc-login.mjs` (see the connect reference) to re-authorize. List works with either scope.
+- `--submit` / `--delete` also need a token minted with the full `webmasters` scope. If you get a 403, the refresh token is read-only — re-run the shared login (`skills/ga4/scripts/google-login.mjs`, see the connect reference) to re-authorize. List works with either scope.
 - Only one of `--submit` / `--delete` per run.

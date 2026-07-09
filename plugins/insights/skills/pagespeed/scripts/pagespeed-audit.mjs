@@ -15,15 +15,20 @@
  *   --categories=...   Comma-separated: performance (default), accessibility,
  *                      best-practices, seo. (pwa was removed in Lighthouse 12.)
  *   --top=N            Number of top opportunities to return (default 8).
+ *   --out=PATH         Write the full JSON to PATH instead of stdout, printing
+ *                      only a one-line confirmation + a compact summary
+ *                      (scores + top opportunities).
  *
  * Examples:
  *   node pagespeed-audit.mjs
  *   node pagespeed-audit.mjs --url=https://example.com/pricing --strategy=desktop
  *   node pagespeed-audit.mjs --categories=performance,seo,accessibility
+ *   node pagespeed-audit.mjs --strategy=desktop --out=audit-desktop.json
  *
  * Note: a Lighthouse run takes ~10–30s, so this is slower than the other scripts.
  */
 
+import fs from 'node:fs';
 import { readApiKey, resolveSite } from './_shared.mjs';
 
 const ENDPOINT = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed';
@@ -41,13 +46,14 @@ const MS_SAVINGS = ['LCP', 'FCP', 'TBT', 'INP'];
 const SKIP_MODES = new Set(['informative', 'notApplicable', 'manual', 'error']);
 
 function parseArgs(argv) {
-  const args = { url: null, strategy: 'mobile', categories: ['performance'], top: 8 };
+  const args = { url: null, strategy: 'mobile', categories: ['performance'], top: 8, out: null };
   for (const a of argv.slice(2)) {
     const m = a.match(/^--([^=]+)=(.+)$/);
     if (!m) continue;
     if (m[1] === 'url') args.url = m[2];
     else if (m[1] === 'strategy') args.strategy = m[2].toLowerCase();
     else if (m[1] === 'top') args.top = parseInt(m[2], 10);
+    else if (m[1] === 'out') args.out = m[2];
     else if (m[1] === 'categories') {
       args.categories = m[2].split(',').map((c) => c.trim().toLowerCase());
     }
@@ -161,7 +167,23 @@ async function main() {
     flaggedAudits: flagged,
     fieldData,
   };
-  console.log(JSON.stringify(output, null, 2));
+
+  if (args.out) {
+    fs.writeFileSync(args.out, JSON.stringify(output, null, 2), 'utf8');
+    console.error(`Wrote Lighthouse audit for ${url} to ${args.out}`);
+    // Compact summary: scores + the biggest opportunities.
+    console.log(JSON.stringify({
+      url,
+      strategy: args.strategy,
+      scores,
+      opportunityCount: opportunities.length,
+      topOpportunities: opportunities.slice(0, 3).map((o) => ({
+        id: o.id, estimatedSavingsMs: o.estimatedSavingsMs,
+      })),
+    }, null, 2));
+  } else {
+    console.log(JSON.stringify(output, null, 2));
+  }
 }
 
 main().catch((e) => {

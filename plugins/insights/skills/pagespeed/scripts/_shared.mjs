@@ -1,5 +1,11 @@
 // _shared.mjs — common helpers for the pagespeed scripts.
 //
+// The generic helpers (.refact-os.json lookup, 1Password coordinates) live in
+// the pack-shared ../../../lib/common.mjs; this file re-exports them for the
+// sibling scripts and keeps the pagespeed-specific pieces (API-key auth, site
+// normalization, CWV thresholds/verdicts). Sibling scripts import from
+// './_shared.mjs' only.
+//
 // Unlike the gsc skill (OAuth), CrUX and PageSpeed Insights authenticate with a
 // simple API KEY: GOOGLE_API_KEY on the 1Password item `GOOGLE SERVICES TOKEN`
 // (vault `Env Variables & Secrets`). The target site is derived from gsc.siteUrl
@@ -7,11 +13,10 @@
 // and PSI need real URLs, not the `sc-domain:` property form).
 
 import fs from 'node:fs';
-import path from 'node:path';
 import { execSync } from 'node:child_process';
+import { findRefactOsJson, OP_VAULT, OP_ITEM } from '../../../lib/common.mjs';
 
-export const OP_VAULT = 'Env Variables & Secrets';
-export const OP_ITEM = 'GOOGLE SERVICES TOKEN';
+export { OP_VAULT, OP_ITEM, findRefactOsJson } from '../../../lib/common.mjs';
 
 export function readApiKey() {
   let key;
@@ -36,17 +41,6 @@ export function readApiKey() {
     );
   }
   return key;
-}
-
-export function findRefactOsJson(startDir) {
-  let dir = startDir;
-  while (true) {
-    const candidate = path.join(dir, '.refact-os.json');
-    if (fs.existsSync(candidate)) return candidate;
-    const parent = path.dirname(dir);
-    if (parent === dir) return null;
-    dir = parent;
-  }
 }
 
 // Normalize whatever is in gsc.siteUrl into { origin, url }:

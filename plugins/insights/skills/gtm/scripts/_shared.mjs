@@ -1,5 +1,11 @@
 // _shared.mjs — common auth + config helpers for the gtm scripts.
 //
+// The generic helpers (1Password access, .refact-os.json lookup, OAuth token
+// exchange) live in the pack-shared ../../../lib/common.mjs; this file
+// re-exports them for the sibling scripts and adds the gtm-specific config
+// reader, Tag Manager API helpers, quota pacing, and container/workspace id
+// resolution. Sibling scripts import from './_shared.mjs' only.
+//
 // Credentials live in the 1Password item `GOOGLE SERVICES TOKEN`
 // (vault `Env Variables & Secrets`): GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
 // GOOGLE_REFRESH_TOKEN — the SAME item the ga4/gsc skills use. The refresh token
@@ -12,39 +18,19 @@
 // Optionally cache the resolved numeric ids as gtm.accountId / gtm.containerId.
 
 import fs from 'node:fs';
-import path from 'node:path';
-import { execSync } from 'node:child_process';
+import {
+  findRefactOsJson,
+  getAccessToken as getGoogleAccessToken,
+} from '../../../lib/common.mjs';
 
-export const OP_VAULT = 'Env Variables & Secrets';
-export const OP_ITEM = 'GOOGLE SERVICES TOKEN';
+export {
+  OP_VAULT,
+  OP_ITEM,
+  readFrom1Password,
+  findRefactOsJson,
+} from '../../../lib/common.mjs';
+
 export const TM_BASE = 'https://tagmanager.googleapis.com/tagmanager/v2';
-
-export function readFrom1Password(field) {
-  try {
-    const out = execSync(
-      `op item get "${OP_ITEM}" --vault "${OP_VAULT}" --fields label=${field} --reveal`,
-      { encoding: 'utf8' },
-    );
-    return out.trim();
-  } catch (e) {
-    throw new Error(
-      `Could not read "${field}" from 1Password item "${OP_ITEM}" (vault "${OP_VAULT}").\n` +
-      `Make sure the item exists and that 'op' is signed in.\n` +
-      `Original error: ${e.message}`
-    );
-  }
-}
-
-export function findRefactOsJson(startDir) {
-  let dir = startDir;
-  while (true) {
-    const candidate = path.join(dir, '.refact-os.json');
-    if (fs.existsSync(candidate)) return candidate;
-    const parent = path.dirname(dir);
-    if (parent === dir) return null;
-    dir = parent;
-  }
-}
 
 export function readGtmConfig() {
   const file = findRefactOsJson(process.cwd());
@@ -53,33 +39,17 @@ export function readGtmConfig() {
   return json?.gtm ?? {};
 }
 
-export async function getAccessToken() {
-  const clientId = readFrom1Password('GOOGLE_CLIENT_ID');
-  const clientSecret = readFrom1Password('GOOGLE_CLIENT_SECRET');
-  const refreshToken = readFrom1Password('GOOGLE_REFRESH_TOKEN');
-  if (!refreshToken) {
-    throw new Error(
+// gtm-specific hints: the shared login lives in the ga4 skill and must carry
+// the tagmanager scope.
+export function getAccessToken() {
+  return getGoogleAccessToken({
+    missingTokenHint:
       'GOOGLE_REFRESH_TOKEN is empty in 1Password. Run ga4/scripts/google-login.mjs once ' +
-      '(it requests the tagmanager scope too).'
-    );
-  }
-  const res = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      client_id: clientId, client_secret: clientSecret,
-      refresh_token: refreshToken, grant_type: 'refresh_token',
-    }),
+      '(it requests the tagmanager scope too).',
+    invalidGrantHint:
+      'If this mentions insufficient scope, the token predates the tagmanager scope — ' +
+      're-run ga4/scripts/google-login.mjs to upgrade it.',
   });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(
-      `Failed to refresh access token (${res.status}): ${text}\n` +
-      `If this mentions insufficient scope, the token predates the tagmanager scope — ` +
-      `re-run ga4/scripts/google-login.mjs to upgrade it.`
-    );
-  }
-  return (await res.json()).access_token;
 }
 
 export async function tmGet(accessToken, urlPath) {

@@ -108,47 +108,14 @@ Match step size to confidence. Beck's ordering, from most confident to least:
 
 ---
 
-## 4. Thin Vertical Slicing, Minimum Testable Behavior, and the Walking Skeleton
+## 4. Thin Vertical Slicing — Summary
 
-### Slice vertically, never horizontally
+Slicing is the `tdd-plan` skill's job; the full slicing toolkit lives in the tdd-plan skill: `${CLAUDE_PLUGIN_ROOT}/skills/tdd-plan/references/slicing-guide.md` (vertical-vs-horizontal, INVEST, the nine Humanizing Work splitting patterns, a worked example, ordering, re-slice smells). What matters mid-implementation:
 
-> A vertical slice is "a work item that delivers a valuable change in system behavior such that you'll probably have to touch multiple architectural layers to implement the change." — Humanizing Work
-
-Build **feature-by-feature, end-to-end**, not layer-by-layer:
-
-> Instead of "Implement the database layer for A, B and C" then logic then UI, you "Implement A from end to end" then B and C. — John Sonmez
-
-Horizontal slicing (DB layer, then logic, then UI) produces no independently valuable or testable increment and defers integration dangerously to the end. **This is forbidden.**
-
-### Minimum testable behavior
-
-Decompose every feature down to **the smallest observable change in system behavior that delivers value and can be verified** — the single tiny goal for one cycle (e.g., "handle null input," "implement core logic for rule Z"). The core rhythm of vertical slicing is: *test fails → minimum code passes → next round.*
-
-### The INVEST quality bar for a slice
-
-**I**ndependent · **N**egotiable · **V**aluable · **E**stimable · **S**mall · **T**estable. "If a story does not have discernable value it should not be done. Period." A slice should be deliverable within an iteration; for this harness, target a slice completable in **hours, not days — ideally under a day**, so it is one red-green-refactor pass and one PR.
-
-### Nine concrete splitting patterns (Humanizing Work)
-
-1. **Workflow Steps** — build the simple end-to-end case first, then add middle steps/special cases.
-2. **Operations / CRUD** — split "manage X" into Create / Read / Update / Delete.
-3. **Business Rule Variations.**
-4. **Variations in Data** — start with one data variation, add others just-in-time.
-5. **Data Entry Methods** — simplest UI first.
-6. **Major Effort** — do the part that carries the bulk of the work first.
-7. **Simple / Complex** — extract the simplest viable version; defer edge cases to separate slices.
-8. **Defer Performance** — split "make it work" from "make it fast / secure / scalable."
-9. **Break Out a Spike** — time-boxed investigation to resolve genuine uncertainty.
-
-**Meta-pattern:** identify the core complexity → list all the variations → reduce to **just one** variation for the first slice.
-
-### The Walking Skeleton (the first slice of a new system)
-
-> "A walking skeleton is an implementation of the thinnest possible slice of real functionality that we can automatically build, deploy, and test end-to-end." — GOOS
-
-> "A Walking Skeleton is a tiny implementation of the system that performs a small end-to-end function. It need not use the final architecture, but it should link together the main architectural components." — Alistair Cockburn
-
-Its purpose is to **de-risk architecture and infrastructure first** — CI, deployment scripts, repo/project setup, component wiring, communication mechanisms — *before* piling on features. "The point of the walking skeleton is to help us understand the requirements well enough to propose and validate a broad-brush system structure." (GOOS) It lets you **test-drive the architecture** and evolve it as later slices reveal pressure, rather than committing to big design up front.
+- **Slice vertically, never horizontally.** Each slice cuts end-to-end through the layers to one observable behaviour; layer-only slices ("the data model", "the API") are forbidden — re-slice.
+- **One slice = the minimum testable behaviour** — the smallest observable, valuable, verifiable change; one red-green-refactor pass, completable in hours, not days; it must pass INVEST (Independent, Negotiable, Valuable, Estimable, Small, Testable).
+- **A new system's first slice is a walking skeleton** — the thinnest end-to-end slice that automatically builds and tests through real infrastructure. Its purpose is to de-risk architecture and infrastructure first (CI, deployment scripts, repo/project setup, component wiring): "the point of the walking skeleton is to help us understand the requirements well enough to propose and validate a broad-brush system structure" (GOOS). It lets you test-drive the architecture and evolve it as later slices reveal pressure, rather than committing to big design up front.
+- **If a slice proves too big mid-loop**, split it with one of the nine splitting patterns in the guide and re-plan.
 
 ---
 
