@@ -64,7 +64,7 @@ For every `stack.wordpress.environments.<env>` entry, the workflow needs:
 
 If `branch` or `install` is missing for any env you're about to generate, stop and ask the user to fill them in — do not invent defaults.
 
-The **non-secret** deploy routing lives in `.refact-os.json`. The SSH **private keys** are GitHub Actions secrets and live only there — never in `.refact-os.json` and never in `AGENTS.md`.
+The **non-secret** deploy routing lives in `.refact-os.json`. The SSH **private keys** are GitHub Actions secrets and live only there — never in `.refact-os.json` and never committed anywhere in the repo.
 
 ### 1c. Confirm with the user
 
@@ -129,7 +129,7 @@ jobs:
           git push git@git.wpengine.com:<env.install>.git HEAD:master --force
 ```
 
-Concrete example, for a project whose WordPress app dir is `apps/wordpress`, an env keyed `production` with `branch: "main"` and `install: "stlouismagazin"`:
+Concrete example, for a project whose WordPress app dir is `apps/wordpress`, an env keyed `production` with `branch: "main"` and `install: "exampleprod"`:
 
 ```yaml
 name: Production auto-deploy
@@ -163,7 +163,7 @@ jobs:
           git config user.name "GitHub Actions"
           git add .
           git commit -m "Deploy ${{ github.sha }}"
-          git push git@git.wpengine.com:stlouismagazin.git HEAD:master --force
+          git push git@git.wpengine.com:exampleprod.git HEAD:master --force
 ```
 
 ### Secret name mapping
@@ -189,25 +189,22 @@ Tell the user:
 4. The next step: push to the `develop` branch first, watch the run in the Actions tab, then promote `develop → stage → main` via PRs.
 5. That the workflows are **path-filtered** on `<wp-app>/**`, so edits elsewhere in the repo will not trigger a deploy or burn Actions minutes.
 
-## Vendor policy
+## Shared deploy rules
 
-**The default for these WordPress projects is: `vendor/` directories are tracked in git.** Each plugin (or mu-plugin) commits its `composer install` output alongside the source.
+Read `${CLAUDE_PLUGIN_ROOT}/references/deploy-shared.md` before writing any workflow file — vendor policy, .gitignore hard rules, smoke test, hard rules.
 
-Consequences for this deploy flow:
+Non-negotiables that hold regardless:
 
-- The deploy workflow **must not** run `composer install`. It `cp -r`s exactly what was committed.
-- The bytes deployed to WP Engine equal the bytes in the merge commit — deploys are deterministic and there's no build step that can drift between environments.
-- New plugin dependencies require a commit that includes the updated `vendor/` tree alongside the `composer.json` change.
+- **Never run `composer install` (or any other build step) in the deploy workflow.** It `cp -r`s exactly what was committed.
+- **Never delete or aggressively rewrite `<wp-app>/.gitignore`.** It is the deploy filter — without it, the `cp -r` could pick up untracked WordPress core, dump files, or local dev artifacts.
+- **Stop if a required secret is missing** — each env needs its `SSH_PRIV_KEY_*` GitHub Actions secret (see the mapping above) before the first push; the workflow fails at the `ssh-add` step.
+- **Force-push only to the WP Engine endpoint** (`git@git.wpengine.com:<install>.git`) — never `--force` to GitHub's `main` or any other GitHub branch.
 
-Override path: a project that wants a build-in-CI flow must (a) add a `composer install --no-dev --optimize-autoloader` step before the `cp -r` here, (b) add the matching `vendor/` ignore rules to the repo's `.gitignore`, and (c) document the deviation in `docs/decisions.md` (create it if missing) with a responsible person.
+WP Engine specifics for the shared rules:
 
-## `.gitignore` hard rules
-
-WP Engine receives **only** what reaches `/tmp/deploy/wp-content`, which is **only** what's tracked by git under `<wp-app>/wp-content/`. That means the `.gitignore` files in the repo are the deploy filter, not just a local hygiene tool.
-
-- **Never use a root-whitelist `.gitignore` pattern (`/*` followed by `!apps/`, `!docs/`, …)** at the repo root. Whitelists are fragile across branch switches: a branch that doesn't carve out one of the allowed paths can quietly drop tracking on files the deploy depends on. Use blocklist semantics (ignore specific things; track everything else).
-- **Scoped allow-lists belong in `<wp-app>/.gitignore`**, not at the repo root. That's where the classic "ignore WP core; allow `wp-content/`; inside `wp-content/`, only track our theme + mu-plugin" pattern lives.
-- **Never delete or aggressively rewrite `<wp-app>/.gitignore`** — it's load-bearing. Without it, the `cp -r` could pick up untracked WordPress core, dump files, or local dev artifacts.
+- WP Engine receives **only** what reaches `/tmp/deploy/wp-content` — i.e. only what's tracked by git under `<wp-app>/wp-content/`.
+- Smoke test: push the test mu-plugin to `develop`, watch the "Development auto-deploy" run, then check the dev install URL.
+- Vendor-policy override path: the `composer install --no-dev --optimize-autoloader` step goes before the `cp -r`.
 
 ## Adding new tracked files under `<wp-app>/`
 
@@ -221,36 +218,6 @@ git check-ignore -v <wp-app>/wp-content/mu-plugins/your-new-plugin.php
 ```
 
 `git status` showing the file as untracked-but-eligible is the green-light.
-
-## Smoke-testing the auto-deploy
-
-Round-trip test that doesn't touch theme/plugin code:
-
-1. On `develop`, create `<wp-app>/wp-content/mu-plugins/deploy-test.php`:
-
-   ```php
-   <?php
-   /** Plugin Name: Deploy Test */
-   defined('ABSPATH') || exit;
-   add_action('wp_footer', function () {
-       echo '<div style="position:fixed;bottom:8px;right:8px;background:#222;color:#fff;padding:6px 10px;font:12px monospace;z-index:99999;">deploy ok &middot; ' . esc_html(gmdate('c')) . '</div>';
-   });
-   ```
-
-2. Add `!wp-content/mu-plugins/deploy-test.php` to `<wp-app>/.gitignore`.
-3. Commit and `git push origin develop`.
-4. Watch `https://github.com/<org>/<repo>/actions` → "Development auto-deploy" run.
-5. Visit the dev install URL — bottom-right badge means the tree reached WP Engine.
-6. Revert via a **new commit** (don't amend) — delete the file, remove the gitignore line, push.
-
-## Hard rules
-
-1. **Force-push (`--force`) is required for the WP Engine endpoint and only the WP Engine endpoint.** WP Engine's git endpoint expects a fresh-init tree and cannot fast-forward against one. Never `--force` to GitHub's `main` (or any other GitHub branch).
-2. **Never delete or aggressively rewrite `<wp-app>/.gitignore`.** It is the deploy filter (see above).
-3. **Never place workflows under `<wp-app>/.github/`.** GitHub doesn't run nested workflows. If any exist there, delete them.
-4. **Never push to `main` directly.** Develop and stage get validated first, then `stage → main` via PR.
-5. **Don't bypass the path filter** (e.g. removing `paths: '<wp-app>/**'`). Doing so means every README edit redeploys.
-6. **Never run `composer install` (or any other build step) in the deploy workflow** without first changing the vendor policy as described above.
 
 ## When to stop and ask the user
 

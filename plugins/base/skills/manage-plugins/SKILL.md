@@ -56,9 +56,8 @@ If `toUpdate` is empty, say "already on the latest" and stop.
 
 **Update one pack** ("update the base pack"): `claude plugin update <pack>@refact-os`.
 
-**Install one pack** ("install wordpress"): `claude plugin install <pack>@refact-os` (add
-`--scope project` to record it in the committed `.claude/settings.json` for the team; default is
-`--scope user` = available in all your projects).
+**Install one pack** ("install wordpress"): `claude plugin install <pack>@refact-os` (see Notes
+for `--scope`).
 
 **Install "the plugins"** (no pack named): don't blindly install all — recommend a set:
 - `base` — always.

@@ -3,7 +3,7 @@ name: render-deliverable
 description: Scaffold a designed, print-ready HTML render shell (the Refact design system) next to a markdown deliverable and wire it to fetch the .md at runtime — serve over HTTP, save to PDF. Use to render a proposal, addendum, or client doc to a polished HTML/PDF.
 pattern: procedure
 when_to_use: You have a markdown deliverable (proposal, addendum, brief, report, one-pager) and want a polished, branded, print-ready HTML/PDF version. Triggers — "render this to HTML", "make a PDF of the proposal", "a designed version of this doc", "turn this markdown into the nice format".
-when_not_to_use: Plain internal notes, emails sent as plain text, or content that ships as raw markdown; or when a shell already exists for the file (only re-run with --force to regenerate). For promoting a finished artifact to the client folder, use create-deliverable.
+when_not_to_use: Plain internal notes, emails sent as plain text, or content that ships as raw markdown; or when a shell already exists for the file (only re-run with --force to regenerate). Promoting a finished artifact to the client deliverables folder is a plain file move, not this skill.
 next_skills: []
 sub_agents: []
 ---
@@ -56,6 +56,7 @@ runtime*, so you edit prose in markdown and the HTML/PDF always reflects it.
 
 - The `.md`, its `.html` shell, and the exported PDF live together in the same folder, so
   they travel as a set when a draft is promoted from `internal/` to `deliverables/`.
-- When the deliverable is sent, promote it with **create-deliverable** (Task → Output).
+- When the deliverable is sent, promote it by moving the set (`.md`, `.html`, PDF) into
+  the client deliverables folder (`docs/deliverables/<type>/`).
 - The design system is brand process, not project content — nothing client-specific is
   baked into the shell.

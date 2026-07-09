@@ -19,7 +19,7 @@ Diagnose why a site is down, flapping, or slow. Analyze traffic to identify the 
 
 Before any triage step, confirm the `mcp__cloudflare_*` tools are loaded in your session. If they are not:
 
-1. Follow **SKILL.md § Installing MCP Servers** for your host (Cursor or Claude Code) to install + authenticate the required servers.
+1. Follow **SKILL.md § Installing MCP servers for Claude Code Agent** to install + authenticate the required servers.
 2. **Do not** check `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_EMAIL` or any other env var as a shortcut.
 3. **Do not** call the Cloudflare REST API via `curl` (or any HTTP client / CLI) to substitute for missing MCP tools.
 4. If install requires user action (OAuth, restart), stop and hand off. Resume only after MCP tools appear in your tool list.

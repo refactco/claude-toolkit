@@ -56,13 +56,13 @@ Set up Netlify deployment metadata and verification while keeping hosting choice
 
 2. If the repo is a monorepo, make sure Netlify's base directory points at the app directory (detect it from the repo, or ask the user — e.g. `apps/<name>` in a monorepo) unless the repo intentionally builds from root.
 3. Do not commit `.netlify/` unless the team intentionally tracks Netlify project metadata. If unsure, ask. Many teams keep it local and document the site name/id instead.
-4. Record hosting (`netlify`) and each environment's `branch` + `url` (production and staging) in `.refact-os.json` › `stack.nextjs` when stable. Keep app-specific build details (team, site name, app root, build command, publish directory) in a `docs/deploy.md` inside the app directory (detect it from the repo, or ask the user — e.g. `apps/<name>` in a monorepo); create the file on demand if it does not exist.
+4. Record hosting (`netlify`) and each environment's `branch` + `url` (production and staging) in `.refact-os.json` › `stack.nextjs` when stable — via the base pack's update-project-config skill when the base pack is installed, otherwise edit `.refact-os.json` directly. Keep app-specific build details (team, site name, app root, build command, publish directory) in a `docs/deploy.md` inside the app directory; create the file on demand if it does not exist.
 
 ## Build settings
 
 Prefer Netlify's Next.js detection when it works. Only add or edit `netlify.toml` when the repo needs explicit settings, such as a monorepo app root or custom redirects.
 
-Typical app-local settings when `netlify.toml` lives inside the app directory (detect it from the repo, or ask the user — e.g. `apps/<name>` in a monorepo):
+Typical app-local settings when `netlify.toml` lives inside the app directory:
 
 ```toml
 [build]

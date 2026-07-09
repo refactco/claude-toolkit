@@ -200,7 +200,7 @@ Expected outcomes:
 - If `.env.example` is missing, sync creates it from the chosen value source.
 - If headers are missing, sync adds the fixed vault header and a project item title using `PROJECT_ITEM`, `--project`, an existing project header, or the default naming convention.
 
-If — and only if — the sync run above reports that neither `.env` nor a 1Password item exists, the resolved directory (see "Where The Env File Goes") is where the env file should be created. Do not skip the sync run and jump straight to asking the user; the sync command is what determines whether a 1Password item is already there. Once sync confirms both sources are missing, ask the user to choose one bootstrap path:
+If — and only if — the sync run above reports that neither `.env` nor a 1Password item exists (see "Default First Action" — never skip that run), the resolved directory (see "Where The Env File Goes") is where the env file should be created. Once sync confirms both sources are missing, ask the user to choose one bootstrap path:
 
 1. Existing 1Password item: ask for the exact item title, then run `${CLAUDE_PLUGIN_ROOT}/skills/sync-env-vars/scripts/sync-env.sh sync --project "<exact item title>"`.
 2. Existing `.env.example` with no values: the keys are already declared. Either collect values from the user to fill `.env`, or create `.env` with empty placeholders for the user to fill later. Never invent values.
@@ -249,7 +249,7 @@ Run:
 ${CLAUDE_PLUGIN_ROOT}/skills/sync-env-vars/scripts/sync-env.sh sync
 ```
 
-If `.env` was edited after the 1Password item, `.env` becomes the complete source for this sync run. The script prints the changes preview (the confirmation table described above) listing every key to add, update, or remove in 1Password with masked before/after values, then stops for confirmation. Relay the table, get approval, then rerun with `--yes`.
+If `.env` was edited after the 1Password item, `.env` becomes the complete source for this sync run, and the script stops after the changes preview — follow the same relay-table → approval → `--yes` flow described under "Normal Command" / "Confirmation Table".
 
 Empty values in `.env` are not pushed to 1Password. If the script reports empty local values, ask the user to fill them or remove those keys before syncing.
 

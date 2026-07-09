@@ -14,6 +14,7 @@ references:
   - cache-reserve
   - email-routing
   - tunnel
+  - wordpress
 ---
 
 # Cloudflare Skill — Refact

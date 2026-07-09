@@ -16,7 +16,7 @@ Use this reference when the user invokes `/refact install wp skills` (or asks to
 
 Vendor in a curated set of WordPress-specific skills from the upstream [`WordPress/agent-skills`](https://github.com/WordPress/agent-skills) repository into this project's local skills directory (`.claude/skills/` — create it if it does not exist yet).
 
-These skills give the agent expert WordPress knowledge (blocks, block themes, plugin dev, REST API, performance, etc.) without bloating the refact-os scaffolder itself.
+These skills give the agent expert WordPress knowledge (blocks, block themes, plugin dev, REST API, performance, etc.) without bundling them into the marketplace's wordpress pack itself.
 
 ## Curated skill list (default)
 
@@ -124,7 +124,7 @@ To pull newer versions of the upstream skills, just re-run this flow. The `--mod
 ## Guardrails
 
 - **Never** clone the upstream repo into the project tree.
-- **Never** install with `--global` from this flow — global installs belong to the user's home, not a per-project scaffolder.
+- **Never** install with `--global` from this flow — these skills must stay project-local so each engagement controls its own set; global installs belong to the user's home, not this per-project flow.
 - **Never** add `wordpress-router` or `wp-project-triage` to the default set — they overlap with `refact` routing.
 - **Never** silently overwrite a user-modified vendored skill. Ask first.
 - **Never** retry a failed clone or install with elevated permissions or alternative flags without user approval.

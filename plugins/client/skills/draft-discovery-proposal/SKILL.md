@@ -99,6 +99,5 @@ enforce.
 
 ## Note on scope (global skill)
 
-This is a **global / catalog** skill: process-not-content, reusable across every Refact
-engagement, with no client-private data baked in. It is a promotion candidate — run
-`contribute-skill` to upstream it to the refact-os catalog so every prospect repo gets it.
+This is a **global** skill: process-not-content, reusable across every Refact engagement,
+with no client-private data baked in. Improvements are edited directly in the marketplace repo.

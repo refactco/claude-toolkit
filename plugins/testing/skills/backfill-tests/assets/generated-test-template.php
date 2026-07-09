@@ -3,7 +3,7 @@
  * TEMPLATE for a generated characterization test.
  *
  * Copy this into:
- *   apps/wordpress/tests/Unit/Generated/<Prefix><PascalName>/<Subject>Test.php
+ *   <wp-app>/tests/Unit/Generated/<Prefix><PascalName>/<Subject>Test.php
  *     <Prefix>      = Plugin | MuPlugin | Theme
  *     <PascalName>  = source slug split on non-alphanumerics, each token capitalised
  *                     (my-shop -> MyShop, wp-2fa -> Wp2fa, core-logic -> CoreLogic)

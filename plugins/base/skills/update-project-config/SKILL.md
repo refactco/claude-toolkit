@@ -3,7 +3,7 @@ name: update-project-config
 description: Write confirmed project structure and tech-stack facts into a slim .refact-os.json immediately — where code lives, languages, frameworks, hosting. Keeps the file current so it stays a reliable agent context source.
 pattern: procedure
 when_to_use: Any turn that confirms or changes the project's structure (where code lives, app slots in a monorepo) or its tech stack (languages, frameworks, hosting). Run this before ending the turn; never defer.
-when_not_to_use: Updating the canonical prose record (blueprint/proposal/spec) — use update-canonical-record for that. Secrets or secret values — never write those here. Per-service integration details, analytics IDs, or env-var inventories — those no longer live in this file.
+when_not_to_use: Updating the canonical prose record (blueprint/proposal/spec) — that lives in docs/, not here. Secrets or secret values — never write those here. Per-service integration details, analytics IDs, or env-var inventories — those no longer live in this file.
 next_skills: []
 sub_agents: []
 ---

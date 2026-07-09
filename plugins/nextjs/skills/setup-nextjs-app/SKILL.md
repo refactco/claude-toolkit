@@ -80,7 +80,7 @@ In the layout and commands below, `<app-dir>` means the directory you resolved h
 
 4. Add an `<app-dir>/docs/README.md` only if there is a concrete technical note to capture now (create the `docs/` directory on demand if it does not exist). Otherwise let `docs/` be earned later.
 5. Report the app path, install command used, and available scripts from `<app-dir>/package.json`.
-6. Optionally record the resolved app directory and package manager in `.refact-os.json` under `stack.nextjs` so later skills can read it. Keep it slim — non-secret structure/config only, never secrets.
+6. Optionally record the resolved app directory and package manager under `stack.nextjs` in `.refact-os.json` so later skills can read it — via the base pack's update-project-config skill when the base pack is installed, otherwise by editing `.refact-os.json` directly. Keep it slim — non-secret structure/config only, never secrets.
 
 ## Flow B — Adopt an existing app
 

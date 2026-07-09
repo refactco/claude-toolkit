@@ -76,7 +76,7 @@ And remind them which GitHub Actions secrets they will need to add **before** th
 | `SSH_PRIV_KEY` | Private SSH key matching the public key added in Kinsta's SSH settings |
 | `ENV_IP` | Kinsta server IP (shared between prod and stage) |
 | `ENV_NAME` | Kinsta user / bare repo name |
-| `ENV_DIRECTORY` | Path slug (e.g. `credaily_764`) |
+| `ENV_DIRECTORY` | Path slug (e.g. `examplesite_123`) |
 | `ENV_PROD_PORT` | Kinsta production SSH port |
 | `ENV_STG_PORT` | Kinsta staging SSH port |
 
@@ -153,8 +153,8 @@ Example for a new mu-plugin:
 ```gitignore
 # <WP_APP_DIR>/.gitignore (excerpt)
 wp-content/mu-plugins/*
-!wp-content/mu-plugins/cre-daily
-!wp-content/mu-plugins/cre-daily.php
+!wp-content/mu-plugins/example-custom
+!wp-content/mu-plugins/example-custom.php
 !wp-content/mu-plugins/your-new-plugin.php
 ```
 
@@ -167,54 +167,22 @@ git check-ignore -v <WP_APP_DIR>/wp-content/mu-plugins/your-new-plugin.php
 
 `git status` showing the file as untracked is the green-light.
 
-## Smoke-testing the auto-deploy
+## Shared deploy rules
 
-Round-trip test that doesn't touch theme/plugin code:
+Read `${CLAUDE_PLUGIN_ROOT}/references/deploy-shared.md` before writing any workflow file — vendor policy, .gitignore hard rules, smoke test, hard rules.
 
-1. On `stage`, create `<WP_APP_DIR>/wp-content/mu-plugins/deploy-test.php`:
+Non-negotiables that hold regardless:
 
-   ```php
-   <?php
-   /** Plugin Name: Deploy Test */
-   defined('ABSPATH') || exit;
-   add_action('wp_footer', function () {
-       echo '<div style="position:fixed;bottom:8px;right:8px;background:#222;color:#fff;padding:6px 10px;font:12px monospace;z-index:99999;">deploy ok &middot; ' . esc_html(gmdate('c')) . '</div>';
-   });
-   ```
+- **Never run `composer install` (or any other build step) in the deploy workflow.** It commits exactly what's tracked under `<WP_APP_DIR>/` and force-pushes that tree to Kinsta.
+- **Never delete or aggressively rewrite `<WP_APP_DIR>/.gitignore`.** Without it, the fresh-init would push WordPress core files to Kinsta on every deploy — Kinsta provisions core; we only push wp-content additions.
+- **Stop if any required GitHub Actions secret is missing** (see the Step 1c table) — the workflow fails at the `ssh-add` or `git push` step.
+- **Force-push only to the Kinsta endpoint** — never `--force` to GitHub's `main` or `stage`.
 
-2. Add `!wp-content/mu-plugins/deploy-test.php` to `<WP_APP_DIR>/.gitignore`.
-3. Commit and `git push origin stage`.
-4. Watch `https://github.com/<org>/<repo>/actions` → "WordPress staging deploy" run.
-5. Visit the staging URL — bottom-right badge means the tree reached Kinsta and was checked out.
-6. Revert via a **new commit** (don't amend) — delete the file, remove the gitignore line, push.
+Kinsta specifics for the shared rules:
 
-## Vendor policy
-
-**The default for refact-os WordPress projects is: `vendor/` directories are tracked in git.** Each plugin (or mu-plugin) commits its `composer install` output alongside the source.
-
-Consequences for this deploy flow:
-
-- The deploy workflow **must not** run `composer install`. It commits exactly what's tracked under `<WP_APP_DIR>/` and force-pushes that tree to Kinsta.
-- The bytes deployed to Kinsta equal the bytes in the merge commit — deploys are deterministic and there's no build step that can drift between environments.
-- New plugin dependencies require a commit that includes the updated `vendor/` tree alongside the `composer.json` change.
-
-Override path: a project that wants a build-in-CI flow must (a) add a `composer install --no-dev --optimize-autoloader` step in each plugin dir before the `git add .`, (b) add the matching `vendor/` ignore rules to the repo's `.gitignore`, and (c) document the deviation in `docs/decisions.md` (create it if missing) with a responsible person.
-
-## `.gitignore` hard rules
-
-Kinsta receives **only** what reaches the workflow's fresh-init tree, which is **only** what's tracked by git under `<WP_APP_DIR>/`. That means the `.gitignore` files in the repo are the deploy filter, not just a local hygiene tool.
-
-- **Never use a root-whitelist `.gitignore` pattern (`/*` followed by `!apps/`, `!docs/`, …)** at the repo root. Whitelists are fragile across branch switches: a branch that doesn't carve out one of the allowed paths can quietly drop tracking on files the deploy depends on. Use blocklist semantics (ignore specific things; track everything else).
-- **Scoped allow-lists belong in `<WP_APP_DIR>/.gitignore`**, not at the repo root.
-
-## Hard rules
-
-1. **Force-push (`--force`) is required for the Kinsta endpoint and only the Kinsta endpoint.** Kinsta's bare repo can't fast-forward against a fresh-init tree. Never `--force` to GitHub's `main` or `stage`.
-2. **Never delete or aggressively rewrite `<WP_APP_DIR>/.gitignore`.** It's load-bearing — without it, the fresh-init would push WordPress core files to Kinsta on every deploy. Kinsta provisions core; we only push wp-content additions.
-3. **Never place workflows under `<WP_APP_DIR>/.github/`.** GitHub doesn't run nested workflows. If any exist there, delete them.
-4. **Never push to `main` directly.** Stage gets validated first, then `stage → main` via PR.
-5. **Don't bypass the path filter** (e.g. removing `paths: '<WP_APP_DIR>/**'`). Doing so means every README edit redeploys to Kinsta.
-6. **Never run `composer install` (or any other build step) in the deploy workflow** without first changing the vendor policy as described above.
+- Kinsta receives **only** what reaches the workflow's fresh-init tree — i.e. only what's tracked by git under `<WP_APP_DIR>/`.
+- Smoke test: push the test mu-plugin to `stage`, watch the "WordPress staging deploy" run, then check the staging URL.
+- Vendor-policy override path: the `composer install --no-dev --optimize-autoloader` step goes in each plugin dir before the `git add .`.
 
 ## When to stop and ask the user
 

@@ -4,7 +4,8 @@ description: Generate unit tests for existing WordPress code that was NOT built 
 pattern: procedure
 when_to_use: You want test coverage under code that already exists (written before TDD) — "/backfill-tests", "backfill tests", "add a safety net before refactoring", "characterize this plugin/theme". The complement to the TDD harness (tdd → tdd-plan → red-green-refactor), which drives NEW code test-first.
 when_not_to_use: Driving new code test-first (that's the TDD harness's job). Third-party / gitignored plugins and themes (vendor code, never in scope). Refactoring or fixing the code under test rather than pinning its current observable behaviour.
-next_skills: []
+next_skills:
+  - integration-tests
 sub_agents: []
 ---
 
@@ -99,7 +100,7 @@ Each sub-agent (analysis only — no tests, no files):
 - Proposes a **disposition** for each — it classifies, it does not skip. When a surface depends on third-party code, classify *the dependency* (simple vs complex, §11):
   - **`🔌 integration`** — complex third-party object graph, can't fake without reimplementing the library. **Name the dep.** Terminal.
   - **`⛔ blocked`** — no seam to control a non-deterministic/external effect and no source change allowed (raw `time()`/`rand()`, direct socket, hard `define()`). **Name the seam.** Terminal.
-  - **`⚪ excluded`** — a test adds no *meaningful* safety. Three reasons (full rule + patterns in §4): **(A)** a test would only **restate the source** (config glue, single-fallback getter, `wp_kses` pass-through, single literal op, boolean field read, literal regex); **(B)** already characterized by another row (wrapper, or one of N duplicates → mark one `🔲` representative, rest `⚪ (same pattern as: <rep>)`); **(C)** **low blast radius** — genuine logic but admin-only chrome / cosmetic label / self-correcting editor convenience. Note the reason, e.g. `⚪ excluded (low-impact: <why>)`. Terminal.
+  - **`⚪ excluded`** — a test would add no *meaningful* safety: **(A)** it would only restate the source, **(B)** the behaviour is already characterized by another row, or **(C)** low blast radius. Note the reason on the row (e.g. `⚪ excluded (low-impact: <why>)`). Canonical definition + patterns: `references/characterization-tests.md` §4. Terminal.
   - **`🔲 deferred`** — clears **both axes**: real logic (pinning needs reasoning the source doesn't state at a glance — a winner among inputs, a parsed/accumulated result, a boundary/clamp, a built query) **and** real blast radius (front-end output, stored data, security, indexing, money, which-content). Short ≠ trivial (`restrict_author_access` is 3 lines → `🔲`). Includes surfaces blocked only by a **simple** stubbable dep — note it (`stub wc_get_product()`). **Non-terminal** — must be resolved or signed off before done.
 - Returns rows: `surface · kind · file:line · disposition · one-line note`.
 
