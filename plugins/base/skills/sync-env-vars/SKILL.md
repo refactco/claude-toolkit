@@ -121,7 +121,7 @@ Then rerun `op whoami` to confirm. Never hardcode, guess, log, or echo the token
 
 ## Sandbox Restriction — Run Outside the Sandbox
 
-Always run sync commands with `required_permissions: ["all"]`. If a run fails with a network/auth error, re-run outside the sandbox immediately.
+Sync commands need network access (1Password). If a run fails with a network or `op` auth error inside a sandboxed shell, re-run the same command with sandboxing disabled.
 
 ## Normal Command
 
@@ -153,7 +153,7 @@ Never pass `--yes` until the user has confirmed the vault write, overwrite, or d
 
 Before any write, the script prints a confirmation table so the user fully understands what is about to happen. Always relay this table to the user (verbatim, or reformatted as a clean markdown table) and **wait for explicit approval** before rerunning with `--yes`. The table makes the following explicit:
 
-- **ACTION** — `ADD` (new key), `UPDATE` (value changes), or `REMOVE` (key dropped from the destination).
+- **ACTION** — the raw statuses are `ADD_TO_<dest>`, `CHANGE_IN_<dest>`, `REMOVE_FROM_<dest>`, and `SAME`; present them as `ADD` / `UPDATE` / `REMOVE` (drop `SAME` rows from the recap).
 - **KEY** — the environment variable name.
 - **Source → Destination** — e.g. `.env → 1Password` or `1Password → .env`, plus the exact vault and item.
 - **BEFORE / AFTER** — the current destination value vs. the incoming source value. Secrets are masked (first 2 characters + `****`); non-secret values show up to 20 characters. `-` means the value is absent on that side (so `-` in BEFORE = a brand-new key; `-` in AFTER = a removal).
@@ -171,7 +171,7 @@ Present it as a short, confidence-inspiring recap, for example:
 >
 > That's 1 added, 1 updated, 1 removed, 4 unchanged. Nothing has been written yet — approve and I'll apply it.
 
-For a pull (`1Password → .env`) the same table is shown; only the source and destination swap. If the table reports "No changes", tell the user the two sources already match and stop.
+For a pull (`1Password → .env`) the same table is shown; only the source and destination swap. If the `SUMMARY` line reports `0 to add, 0 to change, 0 to remove`, tell the user the two sources already match and stop.
 
 ## When Agents Must Use It
 

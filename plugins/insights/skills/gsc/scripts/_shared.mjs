@@ -78,8 +78,8 @@ export async function getAccessToken() {
   const refreshToken = readFrom1Password('GOOGLE_REFRESH_TOKEN');
   if (!refreshToken) {
     throw new Error(
-      'GOOGLE_REFRESH_TOKEN is empty in 1Password. Run gsc-login.mjs once to set it up ' +
-      '(see the connect reference).'
+      'GOOGLE_REFRESH_TOKEN is empty in 1Password. Run the shared login once to set it up: ' +
+      'node <plugin>/skills/ga4/scripts/google-login.mjs (see the connect reference).'
     );
   }
   const res = await fetch('https://oauth2.googleapis.com/token', {
@@ -96,7 +96,7 @@ export async function getAccessToken() {
     const text = await res.text();
     throw new Error(
       `Failed to refresh access token (${res.status}): ${text}\n` +
-      `If this says "invalid_grant", the refresh token is no longer valid — re-run gsc-login.mjs.`
+      `If this says "invalid_grant", the refresh token is no longer valid — re-run the shared login (skills/ga4/scripts/google-login.mjs).`
     );
   }
   const json = await res.json();

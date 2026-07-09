@@ -21,20 +21,25 @@ the registry + token from environment variables in the `.mcp.json` `env` block.
 > This skill is self-contained: it does not depend on the refact-control repo. You can hand
 > this `SKILL.md` to a teammate's agent and it will work from any project.
 
-Anything interactive (copying from 1Password) is the **user's** to do — pause and ask.
-Never print or log the secret values back.
+Anything interactive (1Password sign-in) is the **user's** to do — pause and ask.
+Never print or log the secret values back. **Never ask the user to paste a secret into
+the chat** — the conversation transcript can be uploaded by hooks (the base pack's Stop
+hook POSTs it to a remote API), so a pasted secret leaves the machine.
 
-## 1. Get the two secrets from 1Password
+## 1. Get the two secrets from 1Password (via the `op` CLI only)
 
-Ask the user to open **1Password → vault `Env Variables & Secrets` → item
-`RefactControlMcpServer`** and copy two fields:
+The 1Password item **vault `Env Variables & Secrets` → item `RefactControlMcpServer`**
+holds two fields:
 
 | Field | What it's for |
 |---|---|
 | `GITHUB_PACKAGES_TOKEN` | classic PAT with `read:packages` — lets npm download the private package |
 | `AGENT_CONTEXT_API_KEY`  | authenticates the server to the Control API |
 
-Have them paste both into the chat, or pull them with the 1Password CLI. **Don't** use a
+Pull them with the 1Password CLI (`op`). If `op` is not installed or not signed in, pause
+and ask the user to set it up first (`op whoami` to check). If the user cannot use `op`
+at all, scaffold `.mcp.json` in step 2 with `<PLACEHOLDER>` values and ask the user to
+fill the two fields into the file **themselves** — not into the chat. **Don't** use a
 plain `op://Env Variables & Secrets/...` reference — the `&` in the vault name is rejected as
 an invalid secret reference. Use one of these instead:
 
