@@ -10,90 +10,82 @@ sub_agents: []
 
 # Git Workflow
 
-This skill handles **all the git** for you. Nobody using the repo needs to know git
-commands — say what you want in plain words, and the agent does the right thing while
-keeping the shared project safe. It is the single gate every committed change passes
-through, whether that change is code, a document, content, or a client deliverable.
+This skill handles **all the git** for you. Say what you want in plain words — the agent does the
+right thing and keeps the shared project safe. Every committed change (code, docs, content,
+config, deliverable) passes through here.
+
+> **Why this file is short (do not undo this):** the body keeps only one-liners and the request
+> map, so it costs little context. The exact commands live in three references that load only when
+> needed. Do **not** move detail back in here, and do **not** trim the safety one-liners below "to
+> de-duplicate" — several are load-bearing and must stay visible on every run, before any reference
+> is opened.
 
 ## The one rule that keeps everyone safe
 
-Never change the shared branch directly. Your work always happens on **your own branch**,
-and you offer it back with a **pull request (PR)** so it can be reviewed before it becomes
-official. The agent enforces this automatically — it will **never** commit straight to the
-base branch, not even for a tiny change.
+Never change the shared **base** branch directly. Your work happens on **your own branch**, and you
+offer it back with a **pull request (PR)** so it can be reviewed. The agent enforces this — it
+**never** commits straight to base, not even for a one-word fix.
 
 ## Read what the person wants, then do the git
 
-People rarely say "create a branch." They say the things on the left. Map the request to
-the action — don't make a non-technical person learn git words.
+People rarely say "create a branch." Map the request to the action — don't make anyone learn git
+words.
 
 | If they say… | Do this |
 |---|---|
-| starts asking for any change — "let's edit…", "add…", "fix…", "update…" | **Before editing:** make sure we're on a **fresh branch off the latest base** (create one if we're still on the base branch). |
-| "save this" / "I'm done" / "keep that" / "commit it" | **Commit** the current changes with a short, clear message describing what changed. |
-| "send it" / "publish" / "push it up" / "share for review" / "open a PR" | **Push** the branch and **open a PR** into the base branch; reply with the link. |
-| "what's going on?" / "where are we?" | Show the current branch, what's changed, and any open PR — in plain words. |
-| "undo that" / "go back" | Explain the safe options (revert the last commit vs. discard uncommitted edits) and **confirm before anything that deletes work**. |
-| "clean up the repo" / "tidy the branches" / "remove old branches" / "prune merged branches" | **Prune the work branches already merged into the base** — both local and remote. Confirm which branch is the base first if you can't detect it. Only ever touch convention-named work branches (`feat/`, `fix/`, `chore/`, `docs/`, `content/`, `refactor/`) that are *fully merged*; **never** delete `main`, `master`, `dev`, `develop`, `stage`, `staging`, `stg`, or anything with unmerged work. |
+| starts any change — "let's edit…", "add…", "fix…", "update…" | **Before editing:** be on a **fresh branch off the latest base** (create one if still on base). |
+| "save this" / "I'm done" / "keep that" / "commit it" | **Commit** the current changes with a short, clear message. |
+| "send it" / "publish" / "push it up" / "open a PR" | **Push** the branch and **open a PR** into base; reply with the link and whether CI passed. |
+| "what's going on?" / "where are we?" | Show the current branch, what changed, and any open PR — in plain words. |
+| "undo that" / "go back" | Explain safe options (revert last commit vs. discard uncommitted); **confirm before anything that deletes work**. |
+| "clean up the repo" / "tidy the branches" / "prune merged branches" | Prune only fully-merged work branches → [`references/cleanup.md`](references/cleanup.md). |
+| a git step fails or blocks you | → [`references/recovery.md`](references/recovery.md). |
 
-When a request is ambiguous, pick the **safe** reading, do it, and say what you did in one
-sentence — e.g. *"Saved your changes on a branch called `docs/pricing-update` and opened a
-PR: <link>."*
+When a request is ambiguous, pick the **safe** reading, do it, and say what you did in one sentence
+— e.g. *"Saved your changes on `docs/pricing-update` and opened a PR: <link>."*
 
-## Steps the agent runs (exact commands in the reference)
+## The happy path (compact)
 
-1. **Before the first edit** — confirm a clean start, figure out the base branch, and cut a
-   branch off the latest base.
-2. **As work happens** — commit in small, clearly described chunks.
-3. **When it's ready** — push and open a PR into the base branch; report the link and
-   whether the automated checks pass.
+Exact branch naming, commit style, and the PR template are in
+[`references/happy-path.md`](references/happy-path.md) — **that file is the canonical source**; the
+block below is only a skeleton. When they differ, `happy-path.md` wins.
 
-Follow [`references/git-workflow.md`](references/git-workflow.md) end-to-end for the precise
-commands, branch-naming, and recovery steps.
+```bash
+# base: prefer AGENTS.md; else `git remote show origin | sed -n 's/.*HEAD branch: //p'`; else ask once & record
+git fetch origin && git switch <base> && git pull --ff-only origin <base>
+git switch -c feat/<ticket>-<slug>          # feat | fix | chore | docs | content | refactor + kebab slug
+git add <paths>                             # explicit paths — never `git add -A`
+git commit -m "<type>(<scope>): <subject>"  # Conventional Commits
+git push -u origin feat/<ticket>-<slug>
+gh pr create --base <base> --title "…" --body "…"   # Summary / Why / Test plan
+```
 
-## Which branch is "the base"?
+Then report the PR URL and whether CI passed. **Detect the base, don't assume it** — if it stays
+unclear after the checks in the block above, ask once and record the answer in `AGENTS.md`.
 
-The base (shared) branch differs per repo — commonly `main`, sometimes `stage` / `staging`
-or `develop`. **Detect it, don't assume.** Prefer the base branch named in
-`AGENTS.md` if it states one; otherwise read the repo's default branch (the reference
-shows how). If it's still unclear, ask once in plain words — *"Which branch is the main /
-shared one I should base this on — `main`?"* — then record the answer in `AGENTS.md`
-so nobody has to ask again.
+## Hard rules (never — these apply on every run, whatever file is open)
 
-## When something blocks you — explain it simply
-
-Never drop a raw git error on a non-technical person. Say **what happened**, **what it
-means**, and **the safe way forward** — then do the recommended option (or wait for a yes
-when it could lose work). The common blockers:
-
-| What happened (in plain words) | Say this, then… |
-|---|---|
-| **There are leftover changes from before** — the workspace wasn't clean when we started. | "I found some earlier unsaved changes. Want me to keep them on their own branch, or set them aside for now?" Don't sweep them into this work. |
-| **We were on the shared branch** — about to edit the protected base. | "We were on the shared branch, so I moved your changes onto a new branch first — that keeps the project safe." (Just do it, then mention it.) |
-| **Two people changed the same thing** (a merge conflict). | "Someone else changed some of the same lines. I'll show you both versions and we'll pick what's right — nothing is lost." |
-| **The push was rejected** — your branch is behind the shared one. | "The shared branch moved on since we started. I'll merge the latest in — no force push needed." Use `git merge --ff-only origin/<base>`; if that fails, `git merge origin/<base>` (merge commit). **Never rebase** to fix this unless the user explicitly asks — rebase rewrites history and forces a push. |
-| **The automated checks failed** (CI is red). | "The project's automatic checks didn't pass — here's what failed. Let's fix it before this gets merged." Show the failing output; never hide it. |
-| **Not logged in / no permission** (e.g. `gh` not authenticated). | Give the exact one-line fix: "Run `gh auth login` once to connect GitHub, then I'll open the PR," and continue once it's done. |
-| **The base branch isn't what we expected.** | Ask once which branch is the shared one, update `AGENTS.md`, and continue with the corrected name. |
-
-## Hard rules (never)
-
-- **Never commit or push to the base branch directly** — branch first, always, even for a
-  one-word fix.
-- **Never open a PR into `main`** when the repo uses a separate integration branch (e.g.
-  `stage`) — unless the user explicitly asks for a `stage → main` promotion.
-- **Never force-push, `git reset --hard`, `git clean -fd`, or delete a branch** without
-  explicit confirmation — these destroy work. (A "clean up the repo" request *is* that
-  confirmation, but only for **fully merged** convention-named work branches — `feat/`,
-  `fix/`, `chore/`, `docs/`, `content/`, `refactor/` — deleted with the safe `-d` flag. Never
-  an unmerged branch, and never `main`, `master`, `dev`, `develop`, `stage`, `staging`, or
-  `stg`.)
-- **Never skip hooks** (`--no-verify`) and never amend an already-pushed commit on a shared
-  branch.
+- **Never commit or push to the base branch** — branch first, always, even for a one-word fix.
+- **Never open a PR into `main`** when the repo integrates via a separate branch (e.g. `stage` /
+  `develop`) — unless the user asks for a `stage → main` promotion.
+- **Never force-push, `git reset --hard`, `git clean -fd`, or delete a branch** without explicit
+  confirmation — these destroy work.
+- **Push rejected → never force-push and never rebase to fix it.** Merge the latest base in
+  (`git merge --ff-only origin/<base>`, else a plain merge commit — still no force push). Detail in
+  [`references/recovery.md`](references/recovery.md).
+- **Cleanup deletes only fully-merged, convention-named work branches** — `feat/`, `fix/`, `chore/`,
+  `docs/`, `content/`, `refactor/` — with the safe `-d` flag. **Never** an unmerged branch, **never**
+  a branch with no work prefix even if merged, and **never** `main`, `master`, `dev`, `develop`,
+  `stage`, `staging`, or `stg`.
+- **Never skip hooks** (`--no-verify`) and never amend an already-pushed commit on a shared branch.
+- **Surface CI failures** in plain words — never hide them, silently re-run, or rewrite history to
+  mask them.
 - When in doubt, **stop and surface the problem in plain words** rather than guessing.
 
 ## References
 
-| Topic | Reference |
+| When | File |
 |---|---|
-| Exact commands — preflight, base-branch detection, branch / commit / push / PR, and recovery from each blocker | `references/git-workflow.md` |
+| Exact commands — base detection, branch naming, commit style, push, PR template | [`references/happy-path.md`](references/happy-path.md) |
+| A step blocks you (push rejected, CI red, conflict, dirty tree, `gh` auth, base wrong) | [`references/recovery.md`](references/recovery.md) |
+| Prune merged branches on a "clean up" request | [`references/cleanup.md`](references/cleanup.md) |
