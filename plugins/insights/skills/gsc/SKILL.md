@@ -26,6 +26,7 @@ all up front.
 - **Target site**: comes from `gsc.siteUrl` in the project's `.refact-os.json` (e.g. `https://example.com/` or `sc-domain:example.com`). If it's missing, ask the user for it and write it in yourself before running anything (see the connect reference).
 - **Scripts** live in `scripts/` and share `scripts/_shared.mjs` (1Password reads, `.refact-os.json` lookup, token exchange). Run them from inside the project so `.refact-os.json` resolves.
 - **Safety**: every action is read-only except `gsc-sitemaps.mjs --submit` / `--delete`. Before running either, you **MUST** show the user the exact action (the sitemap URL and whether it's submit or delete) and get their **explicit written approval in a chat message**. Only then pass the required `--confirm` flag. The script hard-refuses any write without `--confirm`; never supply `--confirm` on the user's behalf without their written go-ahead.
+- **Offload**: once `siteUrl` + token exist, dispatch read-only pulls (`gsc-queries.mjs`, `gsc-sites.mjs`, sitemap **list**, batch `gsc-inspect.mjs` — which can print up to 2,000 per-URL results) to the pack's **`insights:data-puller`** sub-agent (Agent tool) — pass it the exact commands; it saves raw output under `docs/sources/raw/` and returns a compact summary. The connect flow, the `siteUrl` write-in, and sitemap submit/delete stay in the main conversation.
 
 ## Pick the right reference
 

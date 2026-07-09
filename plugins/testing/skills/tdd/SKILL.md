@@ -43,15 +43,11 @@ Phases 1 and 2 are their own skills — invoke them via the **Skill** tool. Phas
 3. **Cut the one feature branch.** Determine the **source branch** — the first of `stage`, `staging`, `main` that exists — and cut `feat/<feature-slug>` from it (the whole feature shares this one branch). Record the source branch in the plan README; the PR targets it.
 
    ```bash
-   for b in stage staging main; do
-     if git rev-parse --verify --quiet "$b" >/dev/null || git rev-parse --verify --quiet "origin/$b" >/dev/null; then
-       BASE="$b"; break
-     fi
-   done
+   BASE="$(bash ${CLAUDE_PLUGIN_ROOT}/skills/tdd/scripts/detect-source-branch.sh)"
    git switch -c "feat/<feature-slug>" "$BASE"   # use origin/$BASE if it's remote-only
    ```
 
-4. **Phase 2 — develop, slice by slice.** For each approved slice, invoke `red-green-refactor`. It drives the implementation through unit-test red→green→refactor cycles until the slice's acceptance criterion is met, then makes **one commit for the slice** on the feature branch and updates the plan. Return here and repeat for the next slice **on the same branch** — do not cut a new branch.
+4. **Phase 2 — develop, slice by slice.** For each approved slice, dispatch the pack's **`testing:slice-implementer`** sub-agent (Agent tool) with the feature slug, the slice number, and the branch. It invokes `red-green-refactor` in its own context, drives the unit-test red→green→refactor cycles until the slice's acceptance criterion is met, makes **one commit for the slice** on the feature branch, and reports back (tests added, suite status, commit hash). **Strictly one slice at a time — never dispatch two in parallel** (slices share the one branch; each builds on the last). Review the report, then dispatch the next slice **on the same branch** — do not cut a new branch. (Fallback: invoke `red-green-refactor` inline via the Skill tool if the Agent tool is unavailable.)
 5. **Phase 3 — PR.** Once **all** slices are done and committed, open **one** pull request from `feat/<feature-slug>` into the **source branch** you recorded. **This is outward-facing — confirm with the user before pushing.** Then:
 
    ```bash

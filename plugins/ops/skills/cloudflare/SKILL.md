@@ -145,6 +145,16 @@ What's triggering the challenge?
 
 Every workflow in this skill assumes the conventions below. Workflows reference this section by name (e.g., *"Narration: see SKILL.md § Narration"*) instead of repeating them.
 
+### Offload (read-only data gathering)
+
+Once the MCP servers are connected and authenticated, dispatch bulk read-only pulls to
+the pack's **`ops:cloudflare-investigator`** sub-agent (Agent tool): zone/role/GES
+prechecks, site-triage Phase 2 (the seven GraphQL pulls), post-fix verification
+re-queries (Phase 5), the waf-rules verify pull, and the email DNS audit. Name the
+workflow file it should follow; it returns a compact findings report instead of raw
+query dumps. MCP install/OAuth hand-offs, fix selection, and every write stay in the
+main conversation.
+
 ### Narration
 
 Before **every cloudflare tool call**, output one sentence (under 15 words) explaining what the call does and why. Never call a tool silently.

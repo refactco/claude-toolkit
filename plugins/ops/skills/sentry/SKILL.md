@@ -75,6 +75,11 @@ actively-recurring issues still surface because their last-seen is recent.
 
 ## Workflow
 
+> **Offload:** steps 1–2 (and the `issue <id>` drill-downs in step 3) are read-only and
+> script-driven — dispatch them to the pack's **`ops:sentry-triage`** sub-agent (Agent
+> tool), which runs `sentry.mjs` and returns the aggregated report. `mute`/`resolve`
+> and the code fixes stay in the main conversation.
+
 1. **Inventory.** Run `issues`. Read the BY SOURCE table and the OURS list. Note the total
    event volume and which sources dominate — the quota concern is almost always a few
    high-volume third-party signatures.

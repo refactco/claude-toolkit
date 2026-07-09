@@ -20,6 +20,7 @@ audit what's actually deployed — GTM holds *tag configuration*, not analytics
 - **Target container**: the `gtm` object in `.refact-os.json` — `{ "publicId": "GTM-XXXXXXX", "containerName": "…" }`. The Tag Manager API addresses containers by **numeric** accountId + containerId, so the scripts resolve those from `publicId` automatically (optionally cache them as `gtm.accountId`/`gtm.containerId`).
 - **Scripts** live in `scripts/` and share `scripts/_shared.mjs`. Run from inside the project so `.refact-os.json` resolves.
 - **Safety**: reads (list/audit) are GET-only. Edits go **only to a workspace (a draft)** via `gtm-edit.mjs`, are **confirm-gated**, and **never publish or delete** — a human publishes the workspace in the GTM UI. See "Editing the container" below.
+- **Offload**: dispatch the read-only work (`gtm-list.mjs`, the `gtm-export.mjs` audit — especially `--full`, which dumps the entire container JSON — and `gtm-workspace.mjs list`/`status`) to the pack's **`insights:data-puller`** sub-agent (Agent tool) — pass it the exact commands; it saves raw output under `docs/sources/raw/` and returns a compact summary. `gtm-edit.mjs` writes, workspace creation, the connect flow, and the publish hand-off stay in the main conversation.
 
 ## Pick the right script
 

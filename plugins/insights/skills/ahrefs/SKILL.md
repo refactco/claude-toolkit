@@ -30,6 +30,8 @@ analyze half + the fix-routing playbook.
 
 **Safety:** all data access is read-only. Fixes are code changes — always via your code workflow (branch + PR, never push to `main`; if a code-development pack/skill is available, use it), then re-crawl in Ahrefs to confirm the issue count dropped.
 
+**Offload:** for multi-pull work (a full audit triage, keyword/backlink sweeps), dispatch the pulls to the pack's **`insights:data-puller`** sub-agent (Agent tool) — name the MCP tools or script commands to run; it saves raw output under `docs/sources/raw/` and returns a compact summary. Keep in the main conversation: the app-directory question, the issue→fix mapping, the code changes/PR, and any `render-*` presentation for the user.
+
 ## The four areas
 
 | Area | MCP tool(s) | API v3 endpoint | For |

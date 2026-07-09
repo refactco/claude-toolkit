@@ -6,9 +6,18 @@ when_to_use: Any task about page speed, performance, or Core Web Vitals (LCP/INP
 when_not_to_use: "Search-performance/index/sitemap data (use the gsc skill). Non-Google performance tooling. Out of scope: interpreting or prioritizing findings into a backlog — this skill pulls performance data, it doesn't score it."
 next_skills: []
 sub_agents: []
+context: fork
+agent: general-purpose
+model: sonnet
 ---
 
 # PageSpeed & Core Web Vitals
+
+> **Forked execution**: this skill runs in an isolated sub-agent context
+> (`context: fork`) — the scripts do all scoring, and big Lighthouse/CrUX JSON stays
+> out of the main conversation. There are no mid-flow user questions here; if the API
+> key or config is missing, report exactly what's missing (and the Prerequisites steps)
+> back to the main conversation instead of asking.
 
 Two complementary data sources, one shared API key. Read-only.
 
