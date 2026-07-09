@@ -20,7 +20,7 @@ For every code task, in order:
 
 1. **Run the base git workflow first.** Follow the `git-workflow` skill at
    `${CLAUDE_PLUGIN_ROOT}/skills/git-workflow/SKILL.md` (and its
-   `references/git-workflow.md`) to preflight, branch off the base, and — at the end — push
+   `references/happy-path.md`) to preflight, branch off the base, and — at the end — push
    and open the PR. Do not edit committed files while still on the base branch.
 2. **Do the code work** on the feature branch, in focused commits.
 3. **Add the code-specific gates** below before you push.
@@ -43,7 +43,8 @@ For every code task, in order:
 
 | Topic | Reference |
 |---|---|
-| All git mechanics (branch, commit, push, PR, recovery) | `${CLAUDE_PLUGIN_ROOT}/skills/git-workflow/references/git-workflow.md` |
+| Git mechanics — branch, commit, push, PR | `${CLAUDE_PLUGIN_ROOT}/skills/git-workflow/references/happy-path.md` |
+| Recovering from a blocked git step | `${CLAUDE_PLUGIN_ROOT}/skills/git-workflow/references/recovery.md` |
 
 Add code-specific references here as the project grows (testing conventions, code style,
 deploy process, …). Each new reference becomes another gate this skill can route to.

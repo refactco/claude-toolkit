@@ -7,6 +7,34 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-09 — Slim the `git-workflow` skill (thin router + split references)
+
+`git-workflow` loaded ~4,500 tokens whenever it fired, because `SKILL.md` told the agent to read one
+big reference "end-to-end". A skill's body and the references it reads stay in context for the whole
+session (they load once and are **not** duplicated on re-call — verified live on Claude Code 2.1.205
+via the skill/read dedup notes), so that was a large **persistent** footprint on nearly every session
+(`code-development` defers here). Restructured for progressive disclosure — **no behaviour change**:
+
+- **`plugins/base/skills/git-workflow/SKILL.md`** — rewritten as a thin router: the one rule, the
+  request→action map, a compact happy-path command block, and the full "never" hard-rules inline.
+  Detail moved out. The safety one-liners that must survive *before* a reference loads are kept inline
+  on purpose (push-rejected → no force / no rebase; surface CI failures; the full cleanup allow-list,
+  including "never a branch with no work prefix even if merged"). A design note warns future editors
+  not to move detail back in or trim those lines.
+- **Split the single `references/git-workflow.md`** into three that load only when needed:
+  `references/happy-path.md` (preflight, base detection, branch / commit / push / PR, PR template —
+  the canonical source for commands), `references/recovery.md` (blocker handling + when-to-stop-and-ask),
+  `references/cleanup.md` (prune merged branches). Deleted the old combined `references/git-workflow.md`.
+- **`plugins/base/skills/code-development/SKILL.md`** — repointed its two links from the old
+  `references/git-workflow.md` to `happy-path.md` (mechanics) and `recovery.md` (blockers).
+- **Effect:** a routine commit + PR now loads ~750–1,550 tokens instead of ~4,500; the recovery and
+  cleanup detail never enter context unless actually needed. Design + rationale:
+  `docs/optimize-git-workflow-skill.md`.
+- **base** `1.4.2 → 1.5.0` — skill restructure + reference-layout change (no capability added or removed).
+- Marketplace **2.9.1 → 2.10.0**.
+
+---
+
 ## 2026-07-06 — Update the `writing-client-updates` guide (length + omit no-action line)
 
 Parnia revised the `writing-client-updates` reference guide. Two new pieces of guidance and one
