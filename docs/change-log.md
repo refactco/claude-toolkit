@@ -7,6 +7,23 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-09 — Restore 4 missing bundled files from upstream (integration-tests + draft-discovery-proposal)
+
+A full 34-skill audit (see `docs/skill-subagent-and-optimization-plan.md`) found two skills that
+could not run because SKILL.md cited bundled files that were never lifted from upstream. Recovered
+all four from the upstream checkout (`refactco/refact-os` @ v2.17.1,
+`templates/base/agent/skills/`):
+
+- **`plugins/testing/skills/integration-tests/`** — added `references/integration-tests.md` (277
+  lines, cited at SKILL.md L111/L129/L181), `assets/integration-triage-template.md` (L85), and
+  `assets/integration-test-template.php` (L132). Adapted the upstream copies to this repo's
+  standalone convention: 5 hard-coded `apps/wordpress/` paths → the detected `<wp-app>`
+  placeholder the SKILL.md already uses (reference L60/L78/L107/L118, PHP template L6). No other
+  content changes.
+- **`plugins/client/skills/draft-discovery-proposal/`** — added `template.md` (158 lines, the
+  fillable proposal skeleton cited at SKILL.md L15/L44/L53). Copied verbatim (no scaffold-isms).
+- **Versions:** testing 1.1.1 → 1.1.2, client 1.1.0 → 1.1.1, marketplace 2.10.0 → 2.10.1.
+
 ## 2026-07-09 — Slim the `git-workflow` skill (thin router + split references)
 
 `git-workflow` loaded ~4,500 tokens whenever it fired, because `SKILL.md` told the agent to read one
