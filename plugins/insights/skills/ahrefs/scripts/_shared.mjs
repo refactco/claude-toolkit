@@ -9,24 +9,15 @@
 // Requires a paid Ahrefs API plan. Project/target come from .refact-os.json.
 
 import fs from 'node:fs';
-import path from 'node:path';
 import { execSync } from 'node:child_process';
+import { findRefactOsJson } from '../../../lib/common.mjs';
+
+export { findRefactOsJson } from '../../../lib/common.mjs';
 
 export const API_BASE = 'https://api.ahrefs.com/v3';
 const DEFAULT_VAULT = 'Env Variables & Secrets';
 const DEFAULT_ITEM = 'AHREFS API TOKEN';
 const DEFAULT_FIELD = 'AHREFS_API_TOKEN';
-
-export function findRefactOsJson(startDir) {
-  let dir = startDir;
-  while (true) {
-    const candidate = path.join(dir, '.refact-os.json');
-    if (fs.existsSync(candidate)) return candidate;
-    const parent = path.dirname(dir);
-    if (parent === dir) return null;
-    dir = parent;
-  }
-}
 
 export function readAhrefsConfig() {
   const file = findRefactOsJson(process.cwd());

@@ -8,14 +8,19 @@
  * version, not draft workspaces.
  *
  * Flags:
- *   --full    Print the entire raw live ContainerVersion JSON (everything).
- *             Default prints a structured summary + name/type lists.
+ *   --full        Print the entire raw live ContainerVersion JSON (everything).
+ *                 Default prints a structured summary + name/type lists.
+ *   --out=PATH    Write the full JSON (normal or --full output) to PATH instead
+ *                 of stdout, printing only a one-line confirmation + a compact
+ *                 summary (container, version, counts, Google ids).
  *
  * Usage:
  *   node gtm-export.mjs
  *   node gtm-export.mjs --full
+ *   node gtm-export.mjs --full --out=gtm-live.json
  */
 
+import fs from 'node:fs';
 import { getAccessToken, resolveContainer, tmGet } from './_shared.mjs';
 
 // Friendly labels for the GTM API's terse tag type codes (common ones).
@@ -47,15 +52,47 @@ function googleIdsFromTag(tag) {
   return [...ids];
 }
 
+function parseArgs(argv) {
+  const args = { full: false, out: null };
+  for (const a of argv.slice(2)) {
+    if (a === '--full') { args.full = true; continue; }
+    const m = a.match(/^--out=(.+)$/);
+    if (m) args.out = m[1];
+  }
+  return args;
+}
+
+// Print the full JSON, or (with --out) write it to a file and print only a
+// one-line confirmation + a compact summary.
+function emit(output, outPath, summary) {
+  const json = JSON.stringify(output, null, 2);
+  if (!outPath) {
+    console.log(json);
+    return;
+  }
+  fs.writeFileSync(outPath, json, 'utf8');
+  console.error(`Wrote live container export to ${outPath}`);
+  console.log(JSON.stringify(summary, null, 2));
+}
+
 async function main() {
-  const full = process.argv.slice(2).includes('--full');
+  const { full, out } = parseArgs(process.argv);
   const accessToken = await getAccessToken();
   const { accountId, containerId, publicId } = await resolveContainer(accessToken);
 
   const version = await tmGet(accessToken, `accounts/${accountId}/containers/${containerId}/versions:live`);
 
   if (full) {
-    console.log(JSON.stringify(version, null, 2));
+    emit(version, out, {
+      container: { publicId, accountId, containerId, name: version.container?.name },
+      version: { id: version.containerVersionId, name: version.name || null },
+      counts: {
+        tags: (version.tag || []).length,
+        triggers: (version.trigger || []).length,
+        variables: (version.variable || []).length,
+        builtInVariables: (version.builtInVariable || []).length,
+      },
+    });
     return;
   }
 
@@ -74,7 +111,7 @@ async function main() {
   const allGoogleIds = [...new Set(tags.flatMap((t) => t.googleIds))];
   const ga4Tags = tags.filter((t) => ['googtag', 'gaawc', 'gaawe'].includes(t.type));
 
-  console.log(JSON.stringify({
+  const output = {
     container: { publicId, accountId, containerId, name: version.container?.name },
     version: { id: version.containerVersionId, name: version.name || null },
     counts: {
@@ -90,7 +127,15 @@ async function main() {
     triggers,
     variables,
     builtInVariables: builtIn,
-  }, null, 2));
+  };
+
+  emit(output, out, {
+    container: output.container,
+    version: output.version,
+    counts: output.counts,
+    googleIds: output.googleIds,
+    ga4TagCount: output.ga4.tagCount,
+  });
 }
 
 main().catch((e) => {

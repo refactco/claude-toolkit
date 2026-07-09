@@ -15,10 +15,14 @@
  *   --url=URL          Inspect a single URL.
  *   --urls-file=PATH   Inspect every URL in a file (one per line, # comments ok).
  *   --lang=CODE        BCP-47 language for messages (default en-US).
+ *   --out=PATH         Write the full per-URL results JSON to PATH instead of
+ *                      stdout, printing only a one-line confirmation + a compact
+ *                      summary (verdict tallies). Recommended for big batches.
  *
  * Examples:
  *   node gsc-inspect.mjs --url=https://example.com/pricing
  *   node gsc-inspect.mjs --urls-file=urls.txt
+ *   node gsc-inspect.mjs --urls-file=urls.txt --out=inspection.json
  *
  * Quota: the API allows ~2000 inspections/day and 600/min per property, so this
  * paces batch requests. Feed it a focused list (e.g. pages flagged by a report),
@@ -32,13 +36,14 @@ const ENDPOINT = 'https://searchconsole.googleapis.com/v1/urlInspection/index:in
 const PACE_MS = 150; // ~400/min, comfortably under the 600/min cap.
 
 function parseArgs(argv) {
-  const args = { url: null, urlsFile: null, lang: 'en-US' };
+  const args = { url: null, urlsFile: null, lang: 'en-US', out: null };
   for (const a of argv.slice(2)) {
     const m = a.match(/^--([^=]+)=(.+)$/);
     if (!m) continue;
     if (m[1] === 'url') args.url = m[2];
     else if (m[1] === 'urls-file') args.urlsFile = m[2];
     else if (m[1] === 'lang') args.lang = m[2];
+    else if (m[1] === 'out') args.out = m[2];
   }
   if (!args.url && !args.urlsFile) {
     throw new Error('Provide --url=<URL> or --urls-file=<path>.');
@@ -117,7 +122,20 @@ async function main() {
     inspectedCount: results.length,
     results,
   };
-  console.log(JSON.stringify(output, null, 2));
+
+  if (args.out) {
+    fs.writeFileSync(args.out, JSON.stringify(output, null, 2), 'utf8');
+    console.error(`Wrote ${output.inspectedCount} inspection result(s) to ${args.out}`);
+    // Compact summary: tally verdicts (errors counted separately).
+    const verdicts = {};
+    for (const r of results) {
+      const v = r.error ? 'ERROR' : (r.verdict ?? 'UNKNOWN');
+      verdicts[v] = (verdicts[v] || 0) + 1;
+    }
+    console.log(JSON.stringify({ site: siteUrl, inspectedCount: output.inspectedCount, verdicts }, null, 2));
+  } else {
+    console.log(JSON.stringify(output, null, 2));
+  }
 }
 
 main().catch((e) => {
