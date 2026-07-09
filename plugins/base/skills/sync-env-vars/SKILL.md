@@ -156,7 +156,7 @@ Before any write, the script prints a confirmation table so the user fully under
 - **ACTION** — the raw statuses are `ADD_TO_<dest>`, `CHANGE_IN_<dest>`, `REMOVE_FROM_<dest>`, and `SAME`; present them as `ADD` / `UPDATE` / `REMOVE` (drop `SAME` rows from the recap).
 - **KEY** — the environment variable name.
 - **Source → Destination** — e.g. `.env → 1Password` or `1Password → .env`, plus the exact vault and item.
-- **BEFORE / AFTER** — the current destination value vs. the incoming source value. Secrets are masked (first 2 characters + `****`); non-secret values show up to 20 characters. `-` means the value is absent on that side (so `-` in BEFORE = a brand-new key; `-` in AFTER = a removal).
+- **BEFORE / AFTER** — the current destination value vs. the incoming source value. Secrets show a **deliberate short preview** (first 5 characters + `...`) — the sync runs in both directions, so seeing part of the old and the new value is what lets the user review a change before approving it; never widen or narrow this preview. Non-secret values show up to 20 characters. `-` means the value is absent on that side (so `-` in BEFORE = a brand-new key; `-` in AFTER = a removal).
 - A one-line **summary** of how many keys will be added, updated, removed, and left unchanged.
 
 Present it as a short, confidence-inspiring recap, for example:
@@ -166,8 +166,8 @@ Present it as a short, confidence-inspiring recap, for example:
 > | Action | Key | Before | After |
 > |---|---|---|---|
 > | ADD | `NEW_FLAG` | - | `true` |
-> | UPDATE | `API_TOKEN` | `sk****` | `sk****` |
-> | REMOVE | `OLD_SECRET_KEY` | `zz****` | - |
+> | UPDATE | `API_TOKEN` | `sk-ab...` | `sk-xy...` |
+> | REMOVE | `OLD_SECRET_KEY` | `zz9f2...` | - |
 >
 > That's 1 added, 1 updated, 1 removed, 4 unchanged. Nothing has been written yet — approve and I'll apply it.
 

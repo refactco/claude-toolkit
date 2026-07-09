@@ -260,7 +260,7 @@ load_headers() {
 }
 
 # Print "KEY<TAB>VALUE" for each assignment in a dotenv file. User-facing commands
-# only surface a masked preview via compare_plan (secrets: 2 chars + "****").
+# only surface a short preview via compare_plan (secrets: first 5 chars, for review).
 parse_env() {
   local f="$1"
   [ -f "$f" ] || return 0
@@ -456,9 +456,11 @@ write_example_file() {
 }
 
 # Confirmation plan: STATUS<tab>KEY<tab>BEFORE<tab>AFTER, then a SUMMARY line.
-# Secret-like keys (same patterns as secret_like_key) are masked to their first
-# 2 characters + "****"; non-secret values show up to 20 characters. "-" means
-# the value is absent on that side.
+# Secret-like keys (same patterns as secret_like_key) show a DELIBERATE short
+# preview — first 5 characters + "..." — so the user can compare the old and
+# new value and review what the sync is about to change before approving.
+# Non-secret values show up to 20 characters. "-" means the value is absent
+# on that side.
 compare_plan() {
   local source="$1" target="$2" target_name="$3" plan
   plan="$(awk -F'\t' -v target="$target_name" '
@@ -468,7 +470,11 @@ compare_plan() {
     }
     function mask(k, v,   p) {
       if (v == "") return "-"
-      if (is_secret(k)) return substr(v, 1, 2) "****"
+      if (is_secret(k)) {
+        p = substr(v, 1, 5)
+        if (length(v) > 5) p = p "..."
+        return p
+      }
       p = substr(v, 1, 20)
       if (length(v) > 20) p = p "..."
       return p
@@ -615,7 +621,7 @@ run_sync() {
       echo "Fill the values or remove those keys from .env before syncing."
       exit 6
     fi
-    echo "Replacement plan for 1Password (STATUS<tab>KEY<tab>BEFORE<tab>AFTER — secrets masked to 2 chars + ****):"
+    echo "Replacement plan for 1Password (STATUS<tab>KEY<tab>BEFORE<tab>AFTER — secrets previewed as first 5 chars):"
     compare_plan "$env_kv" "$vault_kv" "VAULT"
     confirm_vault_replacement
     apply_env_to_vault "$env_kv" "$vault_kv"
@@ -623,7 +629,7 @@ run_sync() {
     echo
     echo "Synced .env -> 1Password and regenerated $EXAMPLE_FILE."
   else
-    echo "Replacement plan for .env (STATUS<tab>KEY<tab>BEFORE<tab>AFTER — secrets masked to 2 chars + ****):"
+    echo "Replacement plan for .env (STATUS<tab>KEY<tab>BEFORE<tab>AFTER — secrets previewed as first 5 chars):"
     compare_plan "$vault_kv" "$env_kv" "ENV"
     write_env_file "$vault_kv"
     write_example_file "$vault_kv"
