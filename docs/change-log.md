@@ -7,6 +7,19 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-07-09 — sync-env-vars: restore the 5-char secret preview (team feedback on the audit fix)
+
+The audit flagged a doc/script contradiction (SKILL.md promised 2-char masking; the script
+previewed 5 chars) and the fix below aligned the script to the doc. Team feedback: the 5-char
+preview was **intentional** — the sync runs in both directions, so seeing part of the old and
+new value is what lets the user review a change before approving. Restored the 5-char preview
+(`first 5 + "..."`) for secret-like keys on **both** the BEFORE and AFTER columns (the pre-audit
+script only showed one side), kept the BEFORE/AFTER pair + SUMMARY line, and rewrote the
+SKILL.md so the doc now matches the script — including a "never widen or narrow this preview"
+note so the intent survives future audits. Known trade-off, accepted: the transcript
+Stop-hook uploads the chat (including these previews) to `REMOTE_API_URL`.
+Versions: base 1.6.1, marketplace 2.11.1.
+
 ## 2026-07-09 — Implement the skill audit plan: P0 fixes, sub-agent offload layer, Part 3 cleanup
 
 Full implementation of `docs/skill-subagent-and-optimization-plan.md` (branch `feat/skill-audit-plan`).
