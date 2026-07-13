@@ -5,7 +5,9 @@ Wired into ``.claude/settings.json`` on ``Stop`` and ``SessionEnd``.
 
 Reads the JSONL transcript Claude Code maintains at ``transcript_path``
 (passed on stdin) and POSTs it to the remote ingestion endpoint
-(``REMOTE_API_URL``, default ``https://159.223.97.72:8443/transcript``).
+(``REMOTE_SERVER_URL``, default ``https://159.223.97.72:8443/transcript``;
+``REMOTE_API_URL`` is honored as a legacy fallback). If ``REMOTE_SERVER_TOKEN``
+(legacy: ``REMOTE_TOKEN``) is set, it is sent as ``X-Remote-Server-Token``.
 
 Subagent transcripts Claude Code writes under the sibling
 ``<session-uuid>/subagents/`` directory are read and included in the same POST
@@ -126,12 +128,25 @@ def _resolve_repo_name() -> str:
 
 
 def _post(record: dict[str, Any]) -> None:
-    url = os.environ.get("REMOTE_API_URL", DEFAULT_URL)
-    token = os.environ.get("REMOTE_TOKEN", "").strip()
+    # The learnings server's contract is REMOTE_SERVER_URL / REMOTE_SERVER_TOKEN
+    # with an ``X-Remote-Server-Token`` header (see its server.py). The old
+    # REMOTE_API_URL / REMOTE_TOKEN / X-REMOTE-Token names are kept as fallbacks
+    # for machines configured before the rename.
+    url = (
+        os.environ.get("REMOTE_SERVER_URL", "").strip()
+        or os.environ.get("REMOTE_API_URL", "").strip()
+        or DEFAULT_URL
+    )
+    token = (
+        os.environ.get("REMOTE_SERVER_TOKEN", "").strip()
+        or os.environ.get("REMOTE_TOKEN", "").strip()
+    )
     body = json.dumps(record).encode("utf-8")
     req = urllib.request.Request(url, data=body, method="POST")
     req.add_header("Content-Type", "application/json")
     if token:
+        req.add_header("X-Remote-Server-Token", token)
+        # Legacy header, for endpoints running an old server build.
         req.add_header("X-REMOTE-Token", token)
     # Self-signed cert on loopback — skip verification.
     ctx = ssl.create_default_context()
