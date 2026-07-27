@@ -1,0 +1,23 @@
+# Changelog — base:verify-before-claim
+
+Newest first. Written by the Skill Analyzer; verdicts are filled in by code.
+
+## 1.0.0 — 2026-07-27 — minor — Skill Analyzer 2026-W31
+
+**Change:** Added verify-before-claim skill requiring live source checks and a confirmed-vs-unconfirmed list before client-facing claims or targeted edits.
+
+**Why:** Agents draft docs, edits, and client claims from assumption then rework after pushback; 7 findings across 5 repos share this root cause.
+
+**Evidence:**
+- [F-044] skill.absent · friction · (no skill) | No skill exists for verifying a generated documentation draft against the actual codebase; the agent had to manually grep/read dozens of files across two verification passes (blueprint-vs-code, then main-vs-develop) to keep the guide accurate. | quote: "Check the code to make sure what I said exists then add it to the doce in the articles section" | fix: Add a 'verify-claims-against-code' skill: before finalizing docs derived from plans, grep the relevant ACF/field definitions and code paths and list confirmed vs. unconfirmed claims. | njmonthly-website/07fb84cf
+- [F-045] friction.pushback · rework · (no skill) | Agent's first guide draft mixed unverified blueprint (plan) content in as if already built, requiring a full re-verification and rewrite of every feature claim against the codebase. | quote: "don't add anything that is not actually in the code" | fix:  | njmonthly-website/07fb84cf
+- [F-046] friction.pushback · rework · (no skill) | Agent validated the guide's claims against the main branch's code state; once the user pulled develop, prior validation was stale and the entire document had to be re-verified and largely rewritten. | quote: "no now I want you check all the changes on develop branch and revalidate everything on the document you created. including the newsletter signup module logic" | fix:  | njmonthly-website/07fb84cf
+- [F-070] skill.absent · rework · (no skill) | No skill guides visually confirming which component matches a described UI target before editing; agent edited and pushed wrong components (HomeWhatWeBuildSection, WhyUsSection) twice before discovering via screenshot that HomeStatsBar was the real target,… | quote: "Now I see it — that's the stats bar (12+, 200+, 3+, 4.9/5). That's a different component than the ones I edited." | fix: Add a skill step requiring a screenshot/visual confirmation of the target element before editing styling based on a text description alone. | refact-website/20945a50
+- [F-074] skill.absent · friction · (no skill) | Agent drafted a client testimonial by splicing sentences from two different Clutch Q&A answers into one continuous quotation, catching the misrepresentation only after writing it into the page. | quote: "I just stitched two sentences that come from *different* Q&A answers ("most impressive" vs the UX answer) into one quotation, and trimmed the UX sentence mid-wa" | fix: Add a quote-verification skill requiring published quotes be a single contiguous span from one source answer, never merged across separate Q&A responses. | refact-website/857cfad3
+- [F-075] skill.absent · rework · (no skill) | Six drafts of client-facing claims about the pipeline's tools and safeguards were written from assumption before anyone checked the live n8n workflow, requiring a rewrite once the real node structure was inspected. | quote: "Let me actually look at the workflow so I describe the Claude node and its tools accurately." | fix: Add a skill that requires querying the live n8n workflow structure before drafting any client-facing claims about how a pipeline works. | refact-website/89b69588
+- [F-078] skill.absent · rework · (no skill) | Agent grouped benefit measures by 'Impact Category' and presented it as the SQCD pillar Rachel asked for, requiring a full rework (new SqcdPillar type, per-measure field, editor UI) after being challenged; no skill enforces verifying domain-term mappings… | quote: "That's the real answer, and it's not flattering to what I built. Let me confirm by checking the old prototype's SQCD layout (Rachel's reference point):" | fix: Add a skill/checklist step requiring cross-checking client terminology against existing prototype/spec definitions before mapping a UI feature to an existing data field. | sapartners-exos-app/340379e0
+
+**Expectation:** New skill requires grep/read of live source and a confirmed-vs-unconfirmed list before any client-facing claim or targeted edit, cutting no-skill skill.absent reworks.
+
+**Verdict:** still collecting
+<!-- radar:expectation id=2026-W31-base-verify-before-claim metric=findings.skill.absent baseline=23 target=16 window=4w -->
