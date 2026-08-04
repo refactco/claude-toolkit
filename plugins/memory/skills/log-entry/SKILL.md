@@ -46,7 +46,8 @@ Tracker writes on the mount. The schema is `memory-model.md` in refact-memory (�
    - `release` — flat `version:` and `link:` keys; highlights as body sections.
    - `concern`/`opportunity` — name the client impact and the owner in the body.
 5. **Relations:** correcting a wrong entry? Add `supersedes:` with the replaced path(s) — never edit or delete the old entry (retraction convention, memory-model §3.5). Tracing to received material? Add `cites:` with `evidence/` paths.
-6. **Commit and push** on the refact-memory clone — direct commit to `main` is correct for human-gated session writes (writer set, refact-memory `AGENTS.md`):
+6. **Lint, commit, push** on the refact-memory clone — direct commit to `main` is correct for human-gated session writes (writer set, refact-memory `AGENTS.md`):
+   - Lint before committing: `python3 <clone>/lint/envelope_lint.py` — the same check CI runs; fix what it flags (relation paths in `cites:`/`supersedes:` are **repo-root-relative**, `companies/…`). The clone's pre-commit hook runs it too; never bypass with `--no-verify`.
    - Stage and commit `context(<company>/<project>): <what>` under your operator's own git identity.
    - `git -C <clone> push`. Rejected (non-fast-forward)? `git -C <clone> pull --rebase --autostash`, then push once more. Still failing? Give the human the exact commands to run — never leave the commit silently local. (This mirrors the VPS executor's `write_and_push()` discipline.)
 

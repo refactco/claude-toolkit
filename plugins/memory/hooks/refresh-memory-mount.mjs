@@ -75,6 +75,23 @@ function main() {
     return;
   }
 
+  // Wire the clone's own pre-commit envelope lint (the same check CI runs) so
+  // hand commits fail before they exist. Config-only, idempotent, silent;
+  // skipped when the clone doesn't ship lint/hooks yet.
+  try {
+    if (fs.existsSync(path.join(clone, "lint", "hooks", "pre-commit"))) {
+      let cur = null;
+      try {
+        cur = git(clone, ["config", "core.hooksPath"]);
+      } catch {
+        /* unset */
+      }
+      if (cur !== "lint/hooks") git(clone, ["config", "core.hooksPath", "lint/hooks"]);
+    }
+  } catch {
+    /* best-effort — CI remains the backstop */
+  }
+
   // Wrong-branch warning: a leftover PR checkout makes every repo's mount on
   // this machine serve branch content. Warn and stop — pulling a stray branch
   // is never what freshness means.

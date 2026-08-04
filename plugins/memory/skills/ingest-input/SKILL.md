@@ -58,7 +58,8 @@ Capture what arrived as **evidence** *before* acting on it — agents work from 
    ```
 
 4. **Binaries land as received** — never transcode a PDF/XLSX/image to Markdown; put the bytes under `evidence/files/<yyyy-mm-dd-slug>/` and list them in `attachments:`.
-5. **Commit and push** on the refact-memory clone:
+5. **Lint, commit, push** on the refact-memory clone:
+   - Lint before committing: `python3 <clone>/lint/envelope_lint.py` — the same check CI runs; fix what it flags (relation paths are **repo-root-relative**, `companies/…`). The clone's pre-commit hook runs it too; never bypass with `--no-verify`.
    - Stage and commit `context(<company>/<project>): ingest <slug>` under your operator's own git identity.
    - `git -C <clone> push`. Rejected (non-fast-forward)? `git -C <clone> pull --rebase --autostash`, then push once more. Still failing? Give the human the exact commands to run — never leave the commit silently local.
 6. **Surface the next move** — trackable work → `open-ticket`; changed truth → `update-canonical-record`.

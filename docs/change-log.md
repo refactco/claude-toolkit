@@ -33,9 +33,13 @@ mirroring the VPS executor's `write_and_push()` (refact-control
   stale pull, offline soft-fail + clean tree, unpushed warning, wrong-branch warning,
   concurrent runs).
 - **Write discipline in every mount-writing skill**: confirm the clone is on `main` (any other
-  branch ⇒ stop and tell the human), pull `--rebase --autostash` before writing, then commit
+  branch ⇒ stop and tell the human), pull `--rebase --autostash` before writing, lint
+  (`python3 <clone>/lint/envelope_lint.py` — the same check refact-memory CI runs; caught a
+  real repo-root-relative `cites:` mistake on day one), then commit
   `context(<company>/<project>): …`, then push — rejected push ⇒ pull-rebase and retry once;
-  never leave a commit silently local.
+  never leave a commit silently local. The hook also wires the clone's committed pre-commit
+  shim (`git config core.hooksPath lint/hooks`, silent + idempotent) so hand commits get the
+  same gate; fixture suite is now 11 scenarios.
 
 Versions: memory 1.0.0 (new), marketplace 2.12.0.
 

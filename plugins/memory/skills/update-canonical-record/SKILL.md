@@ -27,7 +27,8 @@ The canonical record lives on the mount: **`memory/project.md`** (the standing o
 4. **Bump `last-verified:`** on every touched knowledge file, even for trivial edits — that is what the date means.
 5. If the change conflicts with existing text, record the contradiction rather than silently overwriting — note both and flag for a human.
 6. If this finalizes a decision, also record it via `log-entry --type decision`.
-7. **Commit and push** on the refact-memory clone:
+7. **Lint, commit, push** on the refact-memory clone:
+   - Lint before committing: `python3 <clone>/lint/envelope_lint.py` — the same check CI runs; fix what it flags (relation paths are **repo-root-relative**, `companies/…`). The clone's pre-commit hook runs it too; never bypass with `--no-verify`.
    - Stage and commit `context(<company>/<project>): <what>` under your operator's own git identity (slugs from the mount path).
    - `git -C <clone> push`. Rejected (non-fast-forward)? `git -C <clone> pull --rebase --autostash`, then push once more. Still failing? Give the human the exact commands to run — never leave the commit silently local.
 

@@ -50,9 +50,9 @@ A single file can update several targets; some update none — flip the flag reg
 
 Change `processed: false` to `processed: true` in the evidence envelope. Touch nothing else in the file.
 
-### 4. Commit, push, and report
+### 4. Lint, commit, push, and report
 
-One commit on the refact-memory clone: stage and commit `context(<company>/<project>): process N inputs` under your operator's own git identity (slugs from the mount path: `realpath memory` → `…/companies/<company>[/projects/<project>]`). Then `git -C <clone> push` — rejected? `pull --rebase --autostash` and push once more; still failing? Give the human the exact commands — never leave the commit silently local. Finish with a concise summary: files processed, entries written, knowledge docs touched.
+One commit on the refact-memory clone: first lint (`python3 <clone>/lint/envelope_lint.py` — the same check CI runs; relation paths are repo-root-relative), then stage and commit `context(<company>/<project>): process N inputs` under your operator's own git identity (slugs from the mount path: `realpath memory` → `…/companies/<company>[/projects/<project>]`). Then `git -C <clone> push` — rejected? `pull --rebase --autostash` and push once more; still failing? Give the human the exact commands — never leave the commit silently local. Finish with a concise summary: files processed, entries written, knowledge docs touched.
 
 ## Guardrails
 
