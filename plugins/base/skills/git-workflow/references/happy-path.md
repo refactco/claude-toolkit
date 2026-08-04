@@ -122,6 +122,7 @@ PR body template:
 - <1–3 bullets — what changed>
 
 ## Why
+- Refs asana#<gid>          <!-- or: Closes asana#<gid> — see "The task reference" below -->
 - <link the ticket; explain the motivation if non-obvious>
 
 ## Test plan
@@ -131,6 +132,29 @@ PR body template:
 ## Notes
 - <migrations, follow-ups, anything reviewers should know>
 ```
+
+### The task reference — include it whenever a ticket exists
+
+The first `## Why` bullet is a **machine-readable pointer to the ticket**, not decoration. Refact
+Control watches merged PRs and mirrors their state onto the ticket — moving it to In Progress,
+commenting when it hits staging, closing it when the work lands. That reference is how a PR is
+matched to its task; without one the PR falls back to the branch name, and if that has no
+`<ticket>` segment either, the ticket silently stays out of date.
+
+| Form | Meaning on merge to the base branch |
+|---|---|
+| `Refs asana#<gid>` | Link only — the task is updated and commented, never auto-closed |
+| `Closes asana#<gid>` | This merge finishes the task — it is closed automatically |
+
+- **Default to `Refs`.** Use `Closes` only when merging this PR genuinely completes the whole
+  ticket — not when it is one of several PRs against it.
+- `<gid>` is the numeric Asana task id (the long number in the task URL). Trackers other than
+  Asana keep the same shape with their own prefix (`linear#`, `jira#`); Refact Control reads the
+  `asana#` form.
+- Deliberately **not** GitHub's `Closes #123` syntax — that would auto-close a GitHub *issue*.
+- Keep `<ticket>` in the branch name too (Step 3). It is the fallback match when a PR body has no
+  reference, so the two conventions back each other up.
+- Genuinely no ticket (a one-off chore)? Omit the line rather than inventing a gid.
 
 After opening: report the PR URL, and if CI fails, surface the failing job output — never silently
 re-run or rewrite history to mask it.
