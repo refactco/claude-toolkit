@@ -20,9 +20,9 @@ Locally-ingested evidence carries `processed: false` in its envelope. "Processin
 
 ## Workflow
 
-### 0. Pull first
+### 0. On main, then pull
 
-Refresh the refact-memory clone before reading or writing (resolve it: `realpath memory` → the clone root is the directory above `companies/`): `git -C <clone> pull --rebase --autostash`. Offline or pull fails? Proceed on the existing clone and say so.
+Confirm the refact-memory clone is on `main` (`git -C <clone> rev-parse --abbrev-ref HEAD`; resolve it: `realpath memory` → the clone root is the directory above `companies/`). Any other branch ⇒ stop and tell the human — the mount is serving branch content. Then refresh before reading or writing: `git -C <clone> pull --rebase --autostash`. Offline or pull fails? Proceed on the existing clone and say so.
 
 ### 1. Find unprocessed files
 

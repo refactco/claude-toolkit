@@ -75,6 +75,37 @@ function main() {
     return;
   }
 
+  // Wrong-branch warning: a leftover PR checkout makes every repo's mount on
+  // this machine serve branch content. Warn and stop — pulling a stray branch
+  // is never what freshness means.
+  try {
+    const head = git(clone, ["rev-parse", "--abbrev-ref", "HEAD"]);
+    let def = null;
+    try {
+      def = git(clone, ["symbolic-ref", "--short", "refs/remotes/origin/HEAD"]).replace(/^origin\//, "");
+    } catch {
+      // origin/HEAD unset (fresh/odd clone) — take the first default-branch
+      // name origin actually has; none found ⇒ skip the check, never guess.
+      for (const cand of ["main", "master"]) {
+        try {
+          git(clone, ["show-ref", "--verify", "--quiet", `refs/remotes/origin/${cand}`]);
+          def = cand;
+          break;
+        } catch {
+          /* try next */
+        }
+      }
+    }
+    if (def && head !== def) {
+      say(
+        `refact-memory: clone is on branch '${head}', not '${def}' — the mount is serving branch content; fix: git -C ${clone} checkout ${def} && git -C ${clone} pull`,
+      );
+      return;
+    }
+  } catch {
+    /* unusual state — stay quiet rather than noisy */
+  }
+
   // Staleness gate: skip the network entirely when the clone fetched recently.
   const maxAgeHours = Number(process.env.REFACT_MEMORY_PULL_MAX_AGE_HOURS) || DEFAULT_MAX_AGE_HOURS;
   let stale = true;

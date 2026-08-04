@@ -25,13 +25,17 @@ mirroring the VPS executor's `write_and_push()` (refact-control
 
 - **SessionStart hook** `hooks/refresh-memory-mount.mjs`: staleness-gated (4h default,
   `REFACT_MEMORY_PULL_MAX_AGE_HOURS`) `git pull --rebase --autostash` on the shared local
-  refact-memory clone, plus a warn-only unpushed-commits line. Exits silently with no mount or
-  under `REFACT_MEMORY_READONLY`; every failure path is one line + exit 0. Verified against 9
-  fixture scenarios (readonly guard, no mount, dangling link, fresh gate skips network, stale
-  pull, offline soft-fail + clean tree, unpushed warning, concurrent runs).
-- **Write discipline in every mount-writing skill**: pull `--rebase --autostash` before writing,
-  then commit `context(<company>/<project>): …`, then push — rejected push ⇒ pull-rebase and
-  retry once; never leave a commit silently local.
+  refact-memory clone, a warn-only unpushed-commits line, and a wrong-branch warning (a
+  leftover PR checkout makes every mount on the machine serve branch content — a failure mode
+  that actually occurred during this change's own memory write). Exits silently with no mount
+  or under `REFACT_MEMORY_READONLY`; every failure path is one line + exit 0. Verified against
+  10 fixture scenarios (readonly guard, no mount, dangling link, fresh gate skips network,
+  stale pull, offline soft-fail + clean tree, unpushed warning, wrong-branch warning,
+  concurrent runs).
+- **Write discipline in every mount-writing skill**: confirm the clone is on `main` (any other
+  branch ⇒ stop and tell the human), pull `--rebase --autostash` before writing, then commit
+  `context(<company>/<project>): …`, then push — rejected push ⇒ pull-rebase and retry once;
+  never leave a commit silently local.
 
 Versions: memory 1.0.0 (new), marketplace 2.12.0.
 

@@ -37,7 +37,7 @@ Capture what arrived as **evidence** *before* acting on it — agents work from 
 
    Agent chat history is **not** evidence — the VPS captures sessions already.
 
-2. **Pull first** — refresh the refact-memory clone before writing (the clone root is the directory above `companies/` in the resolved mount path): `git -C <clone> pull --rebase --autostash`. Offline or pull fails? Proceed on the existing clone and say so.
+2. **On main, then pull** — confirm the refact-memory clone is on `main` (`git -C <clone> rev-parse --abbrev-ref HEAD`; the clone root is the directory above `companies/` in the resolved mount path). Any other branch ⇒ stop and tell the human — the mount is serving branch content. Then refresh before writing: `git -C <clone> pull --rebase --autostash`. Offline or pull fails? Proceed on the existing clone and say so.
 3. **Write the file** — body **verbatim** (normalize to Markdown only where the format demands it; never paraphrase), envelope on top:
 
    ```yaml

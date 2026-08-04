@@ -21,7 +21,7 @@ Tracker writes on the mount. The schema is `memory-model.md` in refact-memory (�
 ## Steps
 
 1. **Type** (argument or inferred): `note | update | milestone | decision | delivery | concern | opportunity | company-change | release | meeting | agenda`.
-2. **Pull first** — refresh the refact-memory clone before writing (the clone root is the directory above `companies/` in the resolved mount path): `git -C <clone> pull --rebase --autostash`. Offline or pull fails? Proceed on the existing clone and say so.
+2. **On main, then pull** — confirm the refact-memory clone is on `main` (`git -C <clone> rev-parse --abbrev-ref HEAD`; the clone root is the directory above `companies/` in the resolved mount path). Any other branch ⇒ stop and tell the human — the mount is serving branch content. Then refresh before writing: `git -C <clone> pull --rebase --autostash`. Offline or pull fails? Proceed on the existing clone and say so.
 3. **Write `memory/tracker/YYYY-MM-DD-<type>-<slug>.md`** (today's date unless the event has its own; short stable slug):
 
    ```yaml

@@ -21,7 +21,7 @@ The canonical record lives on the mount: **`memory/project.md`** (the standing o
 
 ## Steps
 
-1. **Pull first** — refresh the refact-memory clone before editing (resolve it: `realpath memory` → the clone root is the directory above `companies/`): `git -C <clone> pull --rebase --autostash`. Offline or pull fails? Proceed on the existing clone and say so.
+1. **On main, then pull** — confirm the refact-memory clone is on `main` (`git -C <clone> rev-parse --abbrev-ref HEAD`; resolve it: `realpath memory` → the clone root is the directory above `companies/`). Any other branch ⇒ stop and tell the human — the mount is serving branch content. Then refresh before editing: `git -C <clone> pull --rebase --autostash`. Offline or pull fails? Proceed on the existing clone and say so.
 2. Orient on `memory/project.md` — it names which knowledge doc is canonical for the area you're touching.
 3. Make the **smallest edit** that captures the new truth. Cite the source — an evidence path (add it to `cites:`), a tracker entry, a PR.
 4. **Bump `last-verified:`** on every touched knowledge file, even for trivial edits — that is what the date means.
