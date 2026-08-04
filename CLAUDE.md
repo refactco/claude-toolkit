@@ -24,12 +24,12 @@ package manager, and no test runner. It ships declarative JSON manifests, markdo
 slash command, and hooks that Claude Code loads at runtime. "Building" here means editing
 these files and bumping versions.
 
-It ships **8 plugins** ("skill packs"), so a project installs only the capabilities it needs.
+It ships **9 plugins** ("skill packs"), so a project installs only the capabilities it needs.
 
 ## Layout
 
 ```
-.claude-plugin/marketplace.json       # marketplace manifest — lists all 8 plugins
+.claude-plugin/marketplace.json       # marketplace manifest — lists all 9 plugins
 plugins/
   base/         git-workflow, code-development, extract-learnings, asana,
                 sync-env-vars, update-project-config, setup-refact-control-mcp-server,
@@ -48,6 +48,10 @@ plugins/
                 .lsp.json (PHP)  +  hooks/check-intelephense.sh (SessionStart)
   testing/      tdd, tdd-plan, red-green-refactor, backfill-tests, integration-tests
   migrate/      migrate-to-marketplace
+  memory/       ingest-input, process-docs, log-entry, open-ticket, close-ticket,
+                project-status, update-canonical-record
+                hooks/hooks.json + refresh-memory-mount.mjs (SessionStart, pull the
+                refact-memory clone when stale + warn on unpushed local commits)
 docs/plugin-marketplace-plan.md       # the full plan + the 50-skill triage decision
 docs/change-log.md                    # running change log
 ```
