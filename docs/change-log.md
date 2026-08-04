@@ -7,6 +7,34 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-08-04 — New `memory` pack: the 7 mount-workflow skills + the freshness hook (Phase 1 of the memory-pack rollout)
+
+Adds the ninth pack, `memory` (enabled as `memory@refact-os`). It packages the 7 memory-workflow
+skills rebuilt in refact-control — `ingest-input`, `process-docs`, `log-entry`, `open-ticket`,
+`close-ticket`, `project-status` (+ its `scan-status.mjs`, now resolving the mount from the
+working directory instead of the script location), `update-canonical-record` — generalized per
+the rollout spec (refact-control `memory/knowledge/memory-pack-rollout-spec.md` §2): mount-relative
+paths only, repo-agnostic bootstrap wording, the `REFACT_MEMORY_READONLY` self-gate in every
+skill, Asana board resolved from `.refact-os.json` (null ⇒ say so and stop), the
+`update-canonical-record` live-working-documents guardrail, and `import-chat-history` dropped
+org-wide.
+
+Two laptop-freshness additions ride along (folded into the rollout by masoud, 2026-08-04),
+mirroring the VPS executor's `write_and_push()` (refact-control
+`apps/coding-agent/app/memory_repo.py`):
+
+- **SessionStart hook** `hooks/refresh-memory-mount.mjs`: staleness-gated (4h default,
+  `REFACT_MEMORY_PULL_MAX_AGE_HOURS`) `git pull --rebase --autostash` on the shared local
+  refact-memory clone, plus a warn-only unpushed-commits line. Exits silently with no mount or
+  under `REFACT_MEMORY_READONLY`; every failure path is one line + exit 0. Verified against 9
+  fixture scenarios (readonly guard, no mount, dangling link, fresh gate skips network, stale
+  pull, offline soft-fail + clean tree, unpushed warning, concurrent runs).
+- **Write discipline in every mount-writing skill**: pull `--rebase --autostash` before writing,
+  then commit `context(<company>/<project>): …`, then push — rejected push ⇒ pull-rebase and
+  retry once; never leave a commit silently local.
+
+Versions: memory 1.0.0 (new), marketplace 2.12.0.
+
 ## 2026-07-09 — sync-env-vars: restore the 5-char secret preview (team feedback on the audit fix)
 
 The audit flagged a doc/script contradiction (SKILL.md promised 2-char masking; the script

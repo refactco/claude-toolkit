@@ -1,6 +1,6 @@
 {
   "name": "refact-os",
-  "version": "2.11.2",
+  "version": "2.12.0",
   "owner": {
     "name": "Refact Developer",
     "email": "dev@refact.co"
@@ -160,6 +160,26 @@
         "scaffold",
         "marketplace",
         "adopt"
+      ]
+    },
+    {
+      "name": "memory",
+      "version": "1.0.0",
+      "source": "./plugins/memory",
+      "description": "Memory workflows on the refact-memory mount: ingest evidence, tracker entries, canonical-record edits, ticket anchor + outcome, status scan — plus a SessionStart hook that keeps the local clone fresh.",
+      "author": {
+        "name": "Refact Developer",
+        "email": "dev@refact.co"
+      },
+      "keywords": [
+        "refact",
+        "skills",
+        "memory",
+        "evidence",
+        "tracker",
+        "knowledge",
+        "mount",
+        "asana"
       ]
     }
   ]
