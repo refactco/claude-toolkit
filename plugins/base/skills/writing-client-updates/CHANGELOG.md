@@ -14,5 +14,5 @@ Newest first. Written by the Skill Analyzer; verdicts are filled in by code.
 
 **Expectation:** No client update asserts merge/deploy/release status without a corresponding executed-and-observed tool action.
 
-**Verdict:** still collecting
+**Verdict:** better — findings.skill.failed fell 1 → 0, target 0, G1 held
 <!-- radar:expectation id=2026-W31-base-writing-client-updates metric=findings.skill.failed baseline=1 target=0 window=4w -->
