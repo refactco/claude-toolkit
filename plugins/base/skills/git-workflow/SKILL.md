@@ -58,6 +58,7 @@ git add <paths>                             # explicit paths — never `git add 
 git commit -m "<type>(<scope>): <subject>"  # Conventional Commits
 git push -u origin feat/<ticket>-<slug>
 gh pr create --base <base> --title "…" --body "…"   # Summary / Why / Test plan
+# ^ first Why bullet: `Refs asana#<gid>` (or `Closes asana#<gid>`) — how tooling matches PR → ticket
 ```
 
 Then report the PR URL and whether CI passed. **Detect the base, don't assume it** — if it stays
