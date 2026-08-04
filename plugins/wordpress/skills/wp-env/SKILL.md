@@ -1,5 +1,6 @@
 ---
 name: wp-env
+version: 1.1.0
 description: Manage the local WordPress stack via wp-env — setup, pull plugins/mu-plugins/db from staging, reset, custom local domain.
 pattern: procedure
 when_to_use: /refact wp-env setup [--with-tests] | pull [plugins|mu-plugins|db] | reset | domain <host>.
@@ -14,6 +15,7 @@ Use this reference when the user invokes any of:
 
 - `/refact wp-env setup [--with-tests]` — bring up a fresh local WordPress stack and, in the same flow, optionally pull plugins/mu-plugins + DB from staging and set a local domain. Idempotent: each sub-step is verified independently and skipped silently if already met, so re-running on a fully-configured project is a no-op. By default, the tests instance is stopped to save resources; pass `--with-tests` to keep it running.
 - `/refact wp-env pull` — alias for **pull plugins + mu-plugins + db** (staging → local).
+> **Media/uploads are never pulled locally.** No `pull` variant syncs `wp-content/uploads/` (it is routinely 10–50GB). After a DB import, image requests will 404/500 by design until Step 2d Phase 6's uploads fallback is configured — this is expected, not a bug. Don't spend time diagnosing missing-media 500s as if the pull were broken.
 - `/refact wp-env pull plugins`
 - `/refact wp-env pull mu-plugins`
 - `/refact wp-env pull db`
@@ -211,7 +213,7 @@ The values prompted for here persist into `.refact-os.json`, so the next teammat
    - Preflight is shared: if Step 2a's SSH check fails, surface and stop the checklist here.
 
 2. **Pull staging DB.**
-   - Skip silently if `npm run wp:cli -- option get siteurl` returns anything other than wp-env's default (`http://localhost:8888` or `https://localhost:8888`). Any non-default value means the DB has already been imported.
+   - Skip silently if `npm run wp:cli -- option get siteurl` returns anything other than a wp-env default (`http://localhost:8888` / `https://localhost:8888`) **or** the configured `.refact-os.json` › `wpEnv.localDomain` value. On a fresh install where `WP_HOME`/`WP_SITEURL` bake in a configured local domain, siteurl reads as that domain even though no DB has been imported — so compare against the wp-env defaults *and* the configured local domain, not localhost:8888 alone. Only a value matching neither means the DB has already been imported.
    - Otherwise ask: *"Pull the staging database now? This rewrites local URLs from `<STAGING_URL>` → `<LOCAL_URL>` and resets the admin password. [Y/n]"*. On yes, run Step 2d (`pull db`). On no, mark as user-deferred.
 
 3. **Set a local domain.**
@@ -280,6 +282,14 @@ ssh ${SSH_OPTS} "${SSH_TARGET}" "test -d '${DOC_ROOT}/wp-content' && echo ok"
 ```
 
 If it doesn't print `ok`, stop. Common causes: wrong port (on WP Engine, port `2222` is SFTP — use `22` for the SSH Gateway), SSH key not registered with the host, doc root path wrong.
+
+Also verify the SSH key is actually loaded in the agent **before** any export/import work begins:
+
+```bash
+ssh-add -l
+```
+
+If this reports "The agent has no identities" (or the required key isn't listed), stop early. A passphrase-protected key will otherwise block the whole pull with no automated recovery. Tell the user to load the key in their own terminal (`ssh-add <path-to-key>`, entering the passphrase there) and re-run once `ssh-add -l` shows it. Never attempt to supply the passphrase from this flow.
 
 > **Production guard.** This flow only ever pulls from **staging**. If the user explicitly asks to pull from production, refuse and explain the safer path: pull staging instead, or have the user export a sanitized DB from prod manually. Production WP-CLI requires explicit owner approval.
 
@@ -386,6 +396,16 @@ ssh ${SSH_OPTS} "${SSH_TARGET}" \
 
 `wp db tables --all-tables-with-prefix` returns only the tables that match the configured `$table_prefix`, cleanly skipping the default `wp_*` leftovers.
 
+#### Phase 2.5 — Guard against a core version downgrade
+
+Before importing, compare the WordPress core version running on staging to the core pin in `.wp-env.json`:
+
+```bash
+ssh ${SSH_OPTS} "${SSH_TARGET}" "cd '${DOC_ROOT}' && wp core version"
+```
+
+If staging's core version is **newer** than `.wp-env.json`'s `core` pin (e.g. staging on WordPress 7.0.2 while `.wp-env.json` pins `WordPress/WordPress#6.8`), the imported DB will carry a higher `db_version` than the local install. Running `wp core update-db` in that state silently **downgrades** the schema. Stop and ask the user before importing: either bump the `core` pin in `.wp-env.json` to match staging, or confirm they accept the mismatch. Never run `wp core update-db` across a diverging version without explicit user confirmation.
+
 If the prefix is non-standard, rename it to `wp_` so wp-env can read the tables:
 
 ```bash
@@ -413,7 +433,7 @@ Run search-replace for **all** known URL variants of the staging and production 
 
 - The staging `url` from `.refact-os.json`
 - The WP Engine `*.wpenginepowered.com` variant (if hosting is `wpengine`)
-- The production `url` from `.refact-os.json`
+- The production `url` from `.refact-os.json` — **both** the `www` and the bare/apex (non-www) form. Staging DBs commonly carry the apex domain in inline editorial links; replacing only the `www` variant leaves thousands of posts and options still pointing at production. Run a search-replace for each production hostname variant explicitly.
 
 ```bash
 npx wp-env run cli wp search-replace "${STAGING_URL}" "${LOCAL_URL}" \
@@ -857,6 +877,13 @@ Front the wp-env stack with a Caddy reverse proxy so the local site answers on `
 
    # If already running:
    caddy reload --config ~/.refact/Caddyfile --adapter caddyfile
+   ```
+
+   **Never pipe `caddy start` through `tail`/`grep` or into another command.** `caddy start` forks a daemon that inherits this shell's stdout; a pipe keeps the daemon attached to the wrapper task, so the command hangs — and killing that hung task kills Caddy, taking the local site down. Redirect its output to a file instead and verify separately:
+
+   ```bash
+   caddy start --config ~/.refact/Caddyfile --adapter caddyfile > /tmp/caddy-start.log 2>&1
+   pgrep -x caddy >/dev/null && echo "caddy running"
    ```
 
    Detect "already running" with `pgrep -x caddy` or `caddy list-modules` exit status. Don't try both — pick one and stick with it.
