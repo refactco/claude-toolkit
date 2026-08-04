@@ -1,5 +1,6 @@
 ---
 name: plugin-update
+version: 1.1.0
 description: Safely update WordPress plugins one at a time on staging with changelog-driven QA (error, functional, visual) and auto-rollback — promoting to production only on a human-approved pass.
 pattern: procedure
 requires_approval: true
@@ -103,6 +104,7 @@ After Setup, the consuming project gains (all at the repo root, **not** deployed
    node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/wp.mjs staging -- core version
    ```
    Prints a version → green. `Permission denied (publickey)` → the local SSH public key isn't registered with the host; print `~/.ssh/id_ed25519.pub` and tell the user to add it (Kinsta: MyKinsta → Your Settings → SSH Keys), then re-run. Asks for a password → switch the host user to key-based auth.
+   > **Managed-host SSH quoting (WP Engine).** Some managed SSH gateways (e.g. WP Engine) re-parse the command line and **strip one layer of quoting**, which silently breaks remote wp-cli invocations that rely on raw quoting — this has silently broken the `data-integrity.mjs` HARD rollback gate and `mint-admin-session.mjs` entirely. On such hosts, remote wp-cli commands must be **base64-encoded and decoded remotely**, not raw-quoted. Verify the data-integrity capture round-trips correctly during Preflight on a managed host before trusting any gate.
 3. **Pick the subcommand.** `check` → run E1 only and stop. `setup` → Setup mode (S1). `execute` (or none) → if `lib/config.mjs` finds a config → Execute (E1); otherwise tell the user to run Setup first.
 
 ---
@@ -170,7 +172,7 @@ The baseline checklist is one representative URL per **page type**, run on **eve
 ```bash
 node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/discover-routes.mjs --env staging
 ```
-It finds the sitemap (via `robots.txt`, falling back to common paths), takes one representative per type, adds home/search/404, and **HTTP-verifies each path** against the target env. **Show the proposed list to the human and get confirmation** before saving — only the human knows which types are business-critical, and for visual baselines they should swap newest-post representatives for **evergreen** ones (sitemaps list newest-first). Record them in `qa.routes` (`{ name, path, pageType }`; `path` is relative to the env `url`). Pick **specific, stable** URLs so screenshots are reproducible.
+It finds the sitemap (via `robots.txt`, falling back to common paths), takes one representative per type, adds home/search/404, and **HTTP-verifies each path** against the target env. **Detect MultiSite first** (`node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/wp.mjs staging -- site list`): if this is a MultiSite network, the main site's sitemap alone leaves every subsite unQA'd — a plugin update could break a creator microsite and still pass green. Require **at least one baseline route per distinct subsite/theme**, not just the main site's sitemap, and record them in `qa.routes` alongside the main-site routes. **Show the proposed list to the human and get confirmation** before saving — only the human knows which types are business-critical, and for visual baselines they should swap newest-post representatives for **evergreen** ones (sitemaps list newest-first). Record them in `qa.routes` (`{ name, path, pageType }`; `path` is relative to the env `url`). Pick **specific, stable** URLs so screenshots are reproducible.
 
 ### S6 — Detect site-specific flows + visual masks
 
@@ -217,7 +219,7 @@ npm run plugin-update:visual:update      # baseline screenshots → tests/e2e/__
 npm run plugin-update:forms:update       # forms + required fields per route → forms-baseline.json
 npm run plugin-update:links:update       # accepted pre-existing broken links → broken-links-baseline.json
 ```
-Eyeball the captured PNGs — a baseline of a broken page poisons every future diff. Sanity-check `forms-baseline.json` (it should list the real forms). Then hand off to the **git-workflow** skill to branch/commit the config, the Playwright setup, the npm-script + devDep changes, and the baselines. **Stop** and tell the human setup is complete; the next run executes the loop.
+Eyeball the captured PNGs — a baseline of a broken page poisons every future diff. Sanity-check `forms-baseline.json` (it should list the real forms). Capture a **pre-existing JS-error baseline** the same way (like the broken-links baseline): the health check must gate on **baseline-delta**, comparing against the captured pre-existing errors, **not** assert an absolute zero JS-error count. A site with pre-existing console errors (e.g. `Unexpected token ';'`, `analytics is not defined`) would otherwise auto-roll-back on *every* future plugin update — only errors the update *newly* introduces may gate. Then hand off to the **git-workflow** skill to branch/commit the config, the Playwright setup, the npm-script + devDep changes, and the baselines. **Stop** and tell the human setup is complete; the next run executes the loop.
 
 ---
 
@@ -275,6 +277,8 @@ node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/wp.mjs staging -- plugin
 ```
 Use the **read-back version** as `<to>` for the promotion (E10). One plugin only. If the update errors outright → immediate fail → rollback (E10-fail).
 
+> **Premium / off-directory plugins can't be version-pinned.** `--version=<to>` routes through the WordPress.org API, so it fails outright for premium/off-directory plugins (e.g. Gravity Forms) — there's nothing to pin against. For those, fall back to the **unpinned** `node ${CLAUDE_PLUGIN_ROOT}/skills/plugin-update/scripts/wp.mjs staging -- plugin update <slug>`, then read back the landed version and use that read-back value as `<to>` for promotion. Flag that this plugin was updated unpinned so E11 promotes the same read-back version.
+
 ### E7 — Bust cache
 Host object/page cache + any CDN in front, or QA screenshots read stale HTML:
 ```bash
@@ -306,6 +310,11 @@ npm run plugin-update:admin        # authenticated: wp-admin + block-editor + pl
                                    #    PLUGIN_UPDATE_SETTINGS_PAGE to the updated plugin's settings screen)
 # SOFT (flag for a human — never auto-rollback):
 npm run plugin-update:visual          # viewport screenshot diff vs committed baselines
+# Note: visual.spec.ts must bound its `waitForLoadState("networkidle")` with an explicit
+#   timeout — pages with streaming/podcast embeds or persistent connections never reach
+#   networkidle, so an unbounded wait hangs until the full 90s test timeout instead of
+#   letting the `.catch()` fall through. If visual runs stall to the test budget, patch
+#   the load-state wait to pass an explicit timeout.
 npm run plugin-update:forms-submit    # real form submit (generic), data stamped QA-TEST. SOFT: a live
                                       #   captcha/anti-spam block → inconclusive (never a fail). Has side
                                       #   effects (real entry/notification) — runs staging AND prod (E10).
