@@ -7,6 +7,20 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-08-18 — preflight-refact-config hook: match the namespaced `/base:refact` command
+
+The `UserPromptSubmit` hook `plugins/base/hooks/preflight-refact-config.mjs` still tested the
+prompt against a bare `/refact`. The command ships namespaced as `/base:refact`, so the test
+never passed for the real command name and the missing-`.refact-os.json` note never appeared —
+the behaviour `CLAUDE.md` describes ("the `preflight-refact-config.mjs` hook **warns** when it
+is missing before a `/base:refact` action") was unreachable. The prompt test now allows an
+optional `<plugin>:` prefix, so `/base:refact …` and the bare `/refact …` form both fire, while
+`/refactor` still does not. The note itself now names `/base:refact config`.
+Versions: base 1.8.1, marketplace 2.12.2 (the catalog entry for `base` also still read `1.7.0`
+after the 1.8.0 bump, so it is realigned here).
+
+---
+
 ## 2026-08-04 — New `memory` pack: the 7 mount-workflow skills + the freshness hook (Phase 1 of the memory-pack rollout)
 
 Adds the ninth pack, `memory` (enabled as `memory@refact-os`). It packages the 7 memory-workflow

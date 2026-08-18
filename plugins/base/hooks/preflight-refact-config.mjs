@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Claude Code UserPromptSubmit hook (base pack).
-// When a /refact action is invoked but the slim .refact-os.json is missing,
+// When a /base:refact action is invoked but the slim .refact-os.json is missing,
 // add a gentle note so the agent records project structure + tech stack first.
 // Never blocks: always exits 0.
 
@@ -21,8 +21,10 @@ process.stdin.on("end", () => {
   }
 
   const prompt = String(payload.prompt || "");
-  // Only react to an explicit /refact action.
-  if (!/(^|\s)\/refact(\s|$)/.test(prompt)) {
+  // Only react to an explicit refact action. The command ships as `/base:refact`,
+  // and Claude Code also accepts the bare `/refact` form when it is unambiguous,
+  // so allow an optional `<plugin>:` prefix. `/refactor` must not match.
+  if (!/(^|\s)\/(?:[\w-]+:)?refact(?=\s|$)/.test(prompt)) {
     process.exit(0);
   }
 
@@ -32,7 +34,7 @@ process.stdin.on("end", () => {
   if (!fs.existsSync(cfg)) {
     process.stdout.write(
       "Note: `.refact-os.json` was not found in this project. It should hold the canonical " +
-        "project structure + tech stack (no secrets). Run `/refact config` (the " +
+        "project structure + tech stack (no secrets). Run `/base:refact config` (the " +
         "update-project-config skill) to create it so the other skills know the stack.\n"
     );
   }
