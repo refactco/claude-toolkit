@@ -1,6 +1,6 @@
 {
   "name": "base",
-  "version": "1.9.3",
+  "version": "1.10.0",
   "description": "Refact base workflows for Claude Code and Codex.",
   "author": {
     "name": "Refact Developer",
@@ -17,7 +17,8 @@
     "client-updates",
     "typescript",
     "javascript",
-    "lsp"
+    "lsp",
+    "production"
   ],
   "skills": "./skills/",
   "interface": {

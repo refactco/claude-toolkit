@@ -28,6 +28,11 @@ For every code task, in order:
 3. **Add the code-specific gates** below before you push.
 4. **Open the PR** (via git-workflow) and report the URL + CI status.
 
+If the work also includes an authorized live data, setting, import, or job change,
+follow [safe-production-write](../safe-production-write/SKILL.md) before that
+mutation. Read-only checks and preparing a PR do not need a production approval.
+Opening a PR does not authorize applying its effects to production.
+
 ## Code-specific gates (what this skill adds)
 
 - **Run the project's checks locally before pushing.** Whatever the repo provides —
