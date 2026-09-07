@@ -10,6 +10,8 @@ sub_agents: []
 
 # Draft Discovery Proposal
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Draft a prospect proposal in Refact's house style: **discovery-first, fixed-price front
 door, client-owned deliverables, build phase priced off Discovery.** This skill is the
 *how*; the fillable skeleton is [`template.md`](template.md) in this folder — copy it and

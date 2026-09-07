@@ -10,6 +10,8 @@ sub_agents: []
 
 # Sync Env Vars
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 ## What This Skill Does
 
 Keep the two value sources for a project aligned:
@@ -32,7 +34,7 @@ The env file belongs next to the app that reads it (e.g. `dashboard/.env`), **no
 1. **Any existing `.env.example` or `.env`** — use its directory (the `.env.example` wins because it declares the keys).
 2. **Otherwise, the directory where env vars are read** — using the exact accessor patterns from "Codebase Discovery Search Method" below. The file goes in the top-level directory where those accessors live.
 
-If neither rule finds anything, it falls back to the repo root. Searches always ignore `node_modules`, `.git`, `.next`, `dist`, `build`, `vendor`, any WordPress app directory (detect it from the repo, or ask the user — e.g. `apps/<name>` in a monorepo), `.claude`, and `agent`. The `.claude` and `agent` root folders are tooling/skill directories — they are never var accessors and must not influence env file placement. The chosen path is printed as `Env location: <dir>` at the top of every run.
+If neither rule finds anything, it falls back to the repo root. Searches always ignore `node_modules`, `.git`, `.next`, `dist`, `build`, `vendor`, any WordPress app directory (detect it from the repo, or ask the user — e.g. `apps/<name>` in a monorepo), `.claude`, `.codex`, `.agents`, and `agent`. The `.claude`, `.codex`, `.agents`, and `agent` root folders are tooling/skill directories — they are never var accessors and must not influence env file placement. The chosen path is printed as `Env location: <dir>` at the top of every run.
 
 If a rule finds **more than one** candidate directory, the location is ambiguous: the script stops and lists them. Ask the user which one, then pin it explicitly:
 
@@ -227,6 +229,8 @@ rg --no-filename -o -r '$1' \
   <dir> \
   --glob '!<wordpress-app-dir>/**' \
   --glob '!.claude/**' \
+  --glob '!.codex/**' \
+  --glob '!.agents/**' \
   --glob '!agent/**' | sort -u
 ```
 

@@ -1,0 +1,29 @@
+{
+  "name": "testing",
+  "version": "1.3.0",
+  "description": "Refact testing workflows for Claude Code and Codex.",
+  "author": {
+    "name": "Refact Developer",
+    "email": "dev@refact.co"
+  },
+  "repository": "https://github.com/refactco/claude-toolkit",
+  "keywords": [
+    "refact",
+    "skills",
+    "testing",
+    "tdd",
+    "phpunit",
+    "wordpress",
+    "integration"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Refact Testing",
+    "shortDescription": "Use the Refact testing skill pack.",
+    "longDescription": "Shared Refact testing skills, scripts, and references. Requires the local tools and service connections described by each skill.",
+    "developerName": "Refact Developer",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Use the Refact testing skills for this project."
+  }
+}

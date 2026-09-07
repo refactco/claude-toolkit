@@ -10,6 +10,17 @@ sub_agents: []
 
 # Install WordPress Agent Skills Reference
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
+In **Codex**, the destination is the project's `.agents/skills/`, not
+`.claude/skills/`. Follow the same preflight and selected skill list below.
+After cloning, inspect the upstream installer's help for its current Codex
+target. Use that supported target and verify the actual destination. If it has
+no Codex target, copy only the selected self-contained skill folders from the
+built distribution into `.agents/skills/`, including their support files.
+Do not guess a `--targets` value or claim a Claude-directory install enables
+Codex skills. The `--targets=claude` example below is for Claude Code only.
+
 Use this reference when the user invokes `/refact install wp skills` (or asks to "add WordPress skills", "pull the WP agent skills", "install Gutenberg/block skills", etc.).
 
 ## Goal

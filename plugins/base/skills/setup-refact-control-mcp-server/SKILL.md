@@ -1,6 +1,6 @@
 ---
 name: setup-refact-control-mcp-server
-description: Wire the Refact Control MCP server (@refactco/refact-control-mcp-server, private on GitHub Packages) into a project's Claude Code — pull both secrets from 1Password and write a self-contained .mcp.json entry. No gh CLI, no .npmrc.
+description: Connect the private Refact Control MCP server to Claude Code or local Codex for project context. Read credentials from 1Password and use the active host's configuration format.
 pattern: procedure
 when_to_use: Setting up the Refact Control MCP server in a project so the agent gets read-only client/project context — "/setup-refact-control-mcp-server", "install the refact-control mcp server", "add refact context to this repo", "set up the refact-control MCP". Run in the target project, not in the refact-control repo itself.
 when_not_to_use: You're in the refact-control source repo and just want to run it locally from source (use `npm run dev` in apps/mcp-server); you're publishing a new version of the package (use publish-mcp-server); the project already has a working `refact-control` MCP entry.
@@ -9,6 +9,12 @@ sub_agents: []
 ---
 
 # Setup Refact Control MCP Server
+
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
+For **Codex**, follow [Codex setup](references/codex.md). Use the credential
+lookup in step 1 below, but do not apply the Claude `.mcp.json` or
+`enabledMcpjsonServers` steps. The remaining setup applies to **Claude Code**.
 
 Add the **Refact Control MCP server** to *this* project's Claude Code so the agent can read
 client/project context (clients, projects, decisions, concerns, milestones, stack, etc.).

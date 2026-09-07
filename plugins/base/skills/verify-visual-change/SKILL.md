@@ -11,6 +11,8 @@ sub_agents: []
 
 # Verify a visual change before claiming it done
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Do not guess from source alone and ship. Confirm the component renders, change it, then measure the result in a real browser.
 
 ## 1. Confirm the component actually renders

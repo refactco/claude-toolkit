@@ -10,6 +10,8 @@ sub_agents: []
 
 # Extract Learnings
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Write down **non-obvious** things from the current chat — user preferences, project conventions, recurring mistakes, hard-won setup recipes — before they're lost.
 
 > **This skill is the project's memory of record, and it takes precedence over personal/global agent memory.** Capture durable *project* facts here, in `docs/context/learnings.md` — do **not** also write the same fact to `~/.claude/projects/<dir>/memory/`. The repo is the shared brain; per-user memory is not.

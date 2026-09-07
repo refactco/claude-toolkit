@@ -1,0 +1,116 @@
+{
+  "name": "refact-os",
+  "interface": {
+    "displayName": "Refact Toolkit"
+  },
+  "plugins": [
+    {
+      "name": "base",
+      "source": {
+        "source": "local",
+        "path": "./plugins/base"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "client",
+      "source": {
+        "source": "local",
+        "path": "./plugins/client"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "ops",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ops"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "insights",
+      "source": {
+        "source": "local",
+        "path": "./plugins/insights"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "nextjs",
+      "source": {
+        "source": "local",
+        "path": "./plugins/nextjs"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "wordpress",
+      "source": {
+        "source": "local",
+        "path": "./plugins/wordpress"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "testing",
+      "source": {
+        "source": "local",
+        "path": "./plugins/testing"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "migrate",
+      "source": {
+        "source": "local",
+        "path": "./plugins/migrate"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "memory",
+      "source": {
+        "source": "local",
+        "path": "./plugins/memory"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -13,6 +13,8 @@ sub_agents: []
 
 # Setup Next.js App Reference
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Use this reference when the user asks to create a new Next.js application or bring an existing Next.js app into the project.
 
 ## Goal

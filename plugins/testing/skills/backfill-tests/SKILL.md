@@ -11,6 +11,8 @@ sub_agents: []
 
 # Backfill Tests — Characterization Tests for Existing Code
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 The code already exists — written before TDD — and you want a safety net under it. So instead of driving design (that's the TDD harness), you **characterize** the code's current observable behaviour and pin it with behaviour-driven unit tests. The result is a regression suite that lets the code be changed later with confidence.
 
 ## What this skill does NOT do

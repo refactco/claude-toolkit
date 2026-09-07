@@ -15,6 +15,8 @@ sub_agents: []
 
 # Update Canonical Record
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 **Spawned/unattended runs: if `REFACT_MEMORY_READONLY` is set in your environment, stop — the mount is read-only for you; durable output goes in your run report / the propose→approve path.**
 
 The canonical record lives on the mount: **`memory/project.md`** (the standing overview; `memory/company.md` at company level) and the knowledge docs it names as current truth. Requires the mount: if `memory/` is missing or dangling, run the repo's link script (`npm run link-memory` or `node scripts/link-memory.mjs` — see the First-run section in `AGENTS.md`).

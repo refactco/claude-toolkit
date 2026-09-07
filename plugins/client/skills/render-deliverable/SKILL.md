@@ -10,6 +10,8 @@ sub_agents: []
 
 # Render Deliverable
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Turn a markdown deliverable into a polished, print-ready document using the shared
 Refact design system — editorial Swiss layout, Inter + Source Serif 4, claret accent on
 warm cream, with a full print stylesheet (running header, page numbers, page breaks).

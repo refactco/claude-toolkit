@@ -14,6 +14,8 @@ sub_agents: []
 
 # Log Entry
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 **Spawned/unattended runs: if `REFACT_MEMORY_READONLY` is set in your environment, stop — the mount is read-only for you; durable output goes in your run report / the propose→approve path.**
 
 Tracker writes on the mount. The schema is `memory-model.md` in refact-memory (§3.2 tracker, §3.3 vocabularies) — this skill applies it. Requires the mount: if `memory/` is missing or dangling, run the repo's link script (`npm run link-memory` or `node scripts/link-memory.mjs` — see the First-run section in `AGENTS.md`). Your company/project slugs come from the mount path: `realpath memory` → `…/companies/<company>[/projects/<project>]`.

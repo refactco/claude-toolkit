@@ -14,6 +14,8 @@ sub_agents: []
 
 # Close Ticket
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 **Spawned/unattended runs: if `REFACT_MEMORY_READONLY` is set in your environment, stop — durable output goes in your run report / the propose→approve path.**
 
 The durable residue of a closed ticket is a **tracker entry** (memory-model §6.1); Asana keeps the task history. Nothing under `task/` is ever committed.

@@ -15,6 +15,8 @@ references:
 
 # Google Search Console (GSC)
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 This skill is the single entry point for everything Search Console. It shares one
 auth + config model across every action, then splits into focused references for
 each capability. **Load the reference that matches the task** — don't read them

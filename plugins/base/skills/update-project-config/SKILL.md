@@ -10,6 +10,8 @@ sub_agents: []
 
 # Update Project Config
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 ## What this file is
 
 `.refact-os.json` is a **slim** project-context file. It holds only two top-level keys:

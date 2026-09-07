@@ -10,6 +10,8 @@ sub_agents: []
 
 # Status Reference
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 **Spawned/unattended runs: if `REFACT_MEMORY_READONLY` is set in your environment, do not use this skill — your spawn already received a memory digest at mount time.**
 
 Use this when the user asks "what's the status of the project context?" (or what's pending / unprocessed).

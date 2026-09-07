@@ -10,6 +10,8 @@ sub_agents: []
 
 # Google Analytics 4 (GA4)
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Single entry point for GA4 **data**. Shares one auth + config model with the `gsc`
 and `gtm` skills (same Google account, same 1Password item, same one-time login).
 

@@ -1,10 +1,17 @@
 {
   "name": "nextjs",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Next.js: scaffold or adopt an app, run/diagnose it, and set up Vercel or Netlify deploys.",
   "author": {
     "name": "Refact Developer",
     "email": "dev@refact.co"
   },
-  "keywords": ["refact", "skills", "nextjs", "vercel", "netlify", "deploy"]
+  "keywords": [
+    "refact",
+    "skills",
+    "nextjs",
+    "vercel",
+    "netlify",
+    "deploy"
+  ]
 }

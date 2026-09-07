@@ -10,6 +10,8 @@ sub_agents: []
 
 # Integration Tests — Decide What's Worth It, Then Build It
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 The `backfill-tests` skill characterizes maintained WordPress code with **unit** tests. When a surface's correctness depends on a **complex** third-party object graph — a full `WC_Cart` with line items, coupons, taxes; a `MeprUser` and its transaction/subscription objects — backfill refuses to fake it (a faithful fake would reimplement a chunk of the library) and marks it `🔌 integration`, deferring it to "a separate integration suite this skill does not build."
 
 **This is that skill.** Its input is the `🔌 integration` rows in backfill's `COVERAGE.md`. But it does **not** blindly write an integration test for every one — integration tests are slow, need the real plugin present, and flake more, so building them indiscriminately produces a brittle suite nobody trusts. The heart of this skill is a **decision gate** (step 2): *which `🔌` surfaces is integration testing actually worth it for?* Only the ones that pass the gate get built. The rest are deferred with a reason and a cheaper alternative noted (a contract test, a staging/manual check).

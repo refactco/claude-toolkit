@@ -15,6 +15,8 @@ sub_agents: []
 
 # Open Ticket
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 **Spawned/unattended runs: if `REFACT_MEMORY_READONLY` is set in your environment, stop — durable output goes in your run report / the propose→approve path.**
 
 **Asana is the system of record for work items** (memory-model §1/§6.1); `memory/task/` is a gitignored local cache of it, refreshed by the repo's link script. A work item without an Asana anchor is a hard stop for execution — this skill's job is to guarantee the anchor.

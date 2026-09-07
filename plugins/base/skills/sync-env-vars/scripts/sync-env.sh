@@ -158,14 +158,14 @@ ENV_ACCESSOR_PATTERNS=(
 # Print the top-level segments (first path component under CWD, "." for files at
 # the root) of every file that reads an env var. Used only when no .env or
 # .env.example exists yet, to place the file where env vars are actually used.
-# .cursor, .claude, and agents are excluded: they contain tooling/skill files
+# .cursor, .claude, .codex, .agents, and agent contain tooling/skill files
 # that reference accessor patterns as documentation, not actual app code.
 find_accessor_top_segments() {
   command -v rg >/dev/null 2>&1 || return 0
   rg -l --no-messages "${ENV_ACCESSOR_PATTERNS[@]}" \
     -g '!node_modules' -g '!.git' -g '!.next' -g '!dist' -g '!build' \
     -g '!vendor' -g '!apps/wordpress/**' \
-    -g '!.cursor/**' -g '!.claude/**' -g '!agent/**' . 2>/dev/null \
+    -g '!.cursor/**' -g '!.claude/**' -g '!.codex/**' -g '!.agents/**' -g '!agent/**' . 2>/dev/null \
     | sed -e 's#^\./##' \
     | awk -F/ '{ if (NF > 1) print $1; else print "." }' \
     | sort -u

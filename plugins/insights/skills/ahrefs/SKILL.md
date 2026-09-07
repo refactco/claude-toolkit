@@ -14,6 +14,8 @@ references:
 
 # Ahrefs
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Ahrefs is **read-only / diagnostic**: it reports SEO data and *detects* Site Audit
 issues, but every **fix lands in the site code** — in the app directory (detect it
 from the repo, or ask the user — e.g. `apps/<name>` in a monorepo; Next.js or
