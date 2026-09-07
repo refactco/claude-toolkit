@@ -57,7 +57,10 @@ block below is only a skeleton. When they differ, `happy-path.md` wins.
 git fetch origin && git switch <base> && git pull --ff-only origin <base>
 git switch -c feat/<ticket>-<slug>          # feat | fix | chore | docs | content | refactor + kebab slug
 git add <paths>                             # explicit paths — never `git add -A`
+# Immediately before EVERY commit: verify branch + review the complete staged diff.
+node <skill-dir>/scripts/check-state.mjs --branch <work-branch> --base <base> --commit --staged-path <file> &&
 git commit -m "<type>(<scope>): <subject>"  # Conventional Commits
+node <skill-dir>/scripts/check-state.mjs --branch <work-branch> --base <base> &&
 git push -u origin feat/<ticket>-<slug>
 gh pr create --base <base> --title "…" --body "…"   # Summary / Why / Test plan
 # ^ first Why bullet: `Refs asana#<gid>` (or `Closes asana#<gid>`) — how tooling matches PR → ticket
@@ -69,6 +72,12 @@ unclear after the checks in the block above, ask once and record the answer in `
 ## Hard rules (never — these apply on every run, whatever file is open)
 
 - **Never commit or push to the base branch** — branch first, always, even for a one-word fix.
+- **Recheck immediately before every commit and push**, including after a merge,
+  checkout, or resumed session. A successful preflight is not a current branch check.
+- **Commit only the requested changes.** Review every staged hunk; a path can contain
+  another person's work. Preserve unrelated changes and isolate the task when needed.
+- **Merge only within the user's authorized scope.** Opening a PR does not authorize
+  merging it. Earlier authorization for the same merge remains valid.
 - **Never open a PR into `main`** when the repo integrates via a separate branch (e.g. `stage` /
   `develop`) — unless the user asks for a `stage → main` promotion.
 - **Never force-push, `git reset --hard`, `git clean -fd`, or delete a branch** without explicit
