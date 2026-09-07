@@ -191,3 +191,5 @@ The sync script updates both catalog versions, Codex metadata, and shared runtim
 notes. Commit the generated files. Users need no build step when installing.
 See [AGENTS.md](AGENTS.md) for the source layout and [docs/codex.md](docs/codex.md)
 for runtime differences.
+
+Pilot check 3: found the right repository without being told its name.
