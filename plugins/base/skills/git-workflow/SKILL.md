@@ -10,6 +10,8 @@ sub_agents: []
 
 # Git Workflow
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 This skill handles **all the git** for you. Say what you want in plain words — the agent does the
 right thing and keeps the shared project safe. Every committed change (code, docs, content,
 config, deliverable) passes through here.

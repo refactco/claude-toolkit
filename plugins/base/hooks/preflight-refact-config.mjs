@@ -22,7 +22,7 @@ process.stdin.on("end", () => {
 
   const prompt = String(payload.prompt || "");
   // Only react to an explicit /refact action.
-  if (!/(^|\s)\/refact(\s|$)/.test(prompt)) {
+  if (!/(^|\s)\/(?:base:)?refact(\s|$)/.test(prompt)) {
     process.exit(0);
   }
 

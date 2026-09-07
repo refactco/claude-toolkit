@@ -1,0 +1,28 @@
+{
+  "name": "client",
+  "version": "1.2.0",
+  "description": "Refact client workflows for Claude Code and Codex.",
+  "author": {
+    "name": "Refact Developer",
+    "email": "dev@refact.co"
+  },
+  "repository": "https://github.com/refactco/claude-toolkit",
+  "keywords": [
+    "refact",
+    "skills",
+    "client",
+    "proposal",
+    "deliverable",
+    "pdf"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Refact Client",
+    "shortDescription": "Use the Refact client skill pack.",
+    "longDescription": "Shared Refact client skills, scripts, and references. Requires the local tools and service connections described by each skill.",
+    "developerName": "Refact Developer",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Use the Refact client skills for this project."
+  }
+}

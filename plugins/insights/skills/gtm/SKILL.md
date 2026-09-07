@@ -10,6 +10,8 @@ sub_agents: []
 
 # Google Tag Manager (GTM)
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Read-only access to the **live (published) container configuration**. Use it to
 audit what's actually deployed — GTM holds *tag configuration*, not analytics
 **data** (for numbers, use the `ga4` skill).

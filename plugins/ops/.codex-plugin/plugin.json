@@ -1,0 +1,29 @@
+{
+  "name": "ops",
+  "version": "1.2.0",
+  "description": "Refact ops workflows for Claude Code and Codex.",
+  "author": {
+    "name": "Refact Developer",
+    "email": "dev@refact.co"
+  },
+  "repository": "https://github.com/refactco/claude-toolkit",
+  "keywords": [
+    "refact",
+    "skills",
+    "cloudflare",
+    "sentry",
+    "ops",
+    "waf",
+    "dns"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Refact Ops",
+    "shortDescription": "Use the Refact ops skill pack.",
+    "longDescription": "Shared Refact ops skills, scripts, and references. Requires the local tools and service connections described by each skill.",
+    "developerName": "Refact Developer",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Use the Refact ops skills for this project."
+  }
+}

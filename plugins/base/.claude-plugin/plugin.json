@@ -1,6 +1,6 @@
 {
   "name": "base",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "Base toolkit: git workflow, code-dev gates, Asana, env sync, learnings, client updates, slim project config, Refact Control MCP setup + the /base:refact command + TS/JS LSP.",
   "author": {
     "name": "Refact Developer",
@@ -17,5 +17,6 @@
     "typescript",
     "javascript",
     "lsp"
-  ]
+  ],
+  "hooks": "./hooks/claude-hooks.json"
 }

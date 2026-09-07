@@ -13,9 +13,13 @@ model: sonnet
 
 # PageSpeed & Core Web Vitals
 
-> **Forked execution**: this skill runs in an isolated sub-agent context
-> (`context: fork`) — the scripts do all scoring, and big Lighthouse/CrUX JSON stays
-> out of the main conversation. There are no mid-flow user questions here; if the API
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
+> **Execution**: Claude Code uses the `context: fork` settings above. In Codex,
+> use an available subagent with the same procedure, or run the scripts directly
+> and save large results to files. The active host chooses the model. The scripts
+> do all scoring, and big Lighthouse/CrUX JSON stays out of the main conversation.
+> There are no mid-flow user questions here; if the API
 > key or config is missing, report exactly what's missing (and the Prerequisites steps)
 > back to the main conversation instead of asking.
 

@@ -10,6 +10,8 @@ sub_agents: []
 
 # Sentry Triage
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Use this when a ticket says something like "review the Sentry logs and fix what we can,
 ignore what we can't so it doesn't fill our quota." The job has three moves: **inventory**
 (what's firing and how much), **fix what's ours**, and **mute what isn't** so the quota

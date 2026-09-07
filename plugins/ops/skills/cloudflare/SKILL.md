@@ -19,6 +19,8 @@ references:
 
 # Cloudflare Skill — Refact
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Use the decision trees below to find the right workflow, then load the relevant references.
 
 ## How to Use This Skill

@@ -1,10 +1,21 @@
 {
   "name": "insights",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Site insights: SEO (Ahrefs, Search Console), web analytics (GA4), tag management (GTM), and PageSpeed/Core Web Vitals.",
   "author": {
     "name": "Refact Developer",
     "email": "dev@refact.co"
   },
-  "keywords": ["refact", "skills", "insights", "seo", "analytics", "ahrefs", "ga4", "search-console", "gtm", "pagespeed"]
+  "keywords": [
+    "refact",
+    "skills",
+    "insights",
+    "seo",
+    "analytics",
+    "ahrefs",
+    "ga4",
+    "search-console",
+    "gtm",
+    "pagespeed"
+  ]
 }

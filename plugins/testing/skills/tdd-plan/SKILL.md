@@ -11,6 +11,8 @@ sub_agents: []
 
 # TDD Plan — Slice & Plan (Phase 1)
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Turn a request into a set of **thin vertical slices**, each captured as a markdown execution plan in `plans/`. A good slice is the smallest change in system behaviour that is independently valuable and verifiable through tests. The plan you write here is the contract the `red-green-refactor` skill executes next — so make it precise.
 
 **Slicing is the hardest and most valuable judgement in TDD.** "Sequencing the tests properly is a skill — pick tests that drive you quickly to the salient points in the design." Take your time here.

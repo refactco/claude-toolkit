@@ -10,6 +10,8 @@ sub_agents: []
 
 # wp-env Reference
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Use this reference when the user invokes any of:
 
 - `/refact wp-env setup [--with-tests]` — bring up a fresh local WordPress stack and, in the same flow, optionally pull plugins/mu-plugins + DB from staging and set a local domain. Idempotent: each sub-step is verified independently and skipped silently if already met, so re-running on a fully-configured project is a no-op. By default, the tests instance is stopped to save resources; pass `--with-tests` to keep it running.

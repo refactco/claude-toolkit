@@ -1,0 +1,30 @@
+{
+  "name": "wordpress",
+  "version": "1.2.0",
+  "description": "Refact wordpress workflows for Claude Code and Codex.",
+  "author": {
+    "name": "Refact Developer",
+    "email": "dev@refact.co"
+  },
+  "repository": "https://github.com/refactco/claude-toolkit",
+  "keywords": [
+    "refact",
+    "skills",
+    "wordpress",
+    "wp-env",
+    "kinsta",
+    "wpengine",
+    "php",
+    "lsp"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Refact WordPress",
+    "shortDescription": "Use the Refact wordpress skill pack.",
+    "longDescription": "Shared Refact wordpress skills, scripts, and references. Requires the local tools and service connections described by each skill.",
+    "developerName": "Refact Developer",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Use the Refact wordpress skills for this project."
+  }
+}

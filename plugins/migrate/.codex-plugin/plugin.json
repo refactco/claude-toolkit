@@ -1,0 +1,28 @@
+{
+  "name": "migrate",
+  "version": "1.2.0",
+  "description": "Refact migrate workflows for Claude Code and Codex.",
+  "author": {
+    "name": "Refact Developer",
+    "email": "dev@refact.co"
+  },
+  "repository": "https://github.com/refactco/claude-toolkit",
+  "keywords": [
+    "refact",
+    "skills",
+    "migration",
+    "scaffold",
+    "marketplace",
+    "adopt"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Refact Migrate",
+    "shortDescription": "Use the Refact migrate skill pack.",
+    "longDescription": "Shared Refact migrate skills, scripts, and references. Requires the local tools and service connections described by each skill.",
+    "developerName": "Refact Developer",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Use the Refact migrate skills for this project."
+  }
+}

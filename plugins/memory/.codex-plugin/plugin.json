@@ -1,0 +1,30 @@
+{
+  "name": "memory",
+  "version": "1.1.0",
+  "description": "Refact memory workflows for Claude Code and Codex.",
+  "author": {
+    "name": "Refact Developer",
+    "email": "dev@refact.co"
+  },
+  "repository": "https://github.com/refactco/claude-toolkit",
+  "keywords": [
+    "refact",
+    "skills",
+    "memory",
+    "evidence",
+    "tracker",
+    "knowledge",
+    "mount",
+    "asana"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Refact Memory",
+    "shortDescription": "Use the Refact memory skill pack.",
+    "longDescription": "Shared Refact memory skills, scripts, and references. Requires the local tools and service connections described by each skill.",
+    "developerName": "Refact Developer",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Use the Refact memory skills for this project."
+  }
+}

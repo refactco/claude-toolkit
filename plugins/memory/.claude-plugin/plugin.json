@@ -1,7 +1,7 @@
 {
   "name": "memory",
-  "version": "1.0.0",
-  "description": "Memory workflows on the refact-memory mount: ingest evidence, tracker entries, canonical-record edits, ticket anchor + outcome, status scan — plus a SessionStart hook that keeps the local clone fresh.",
+  "version": "1.1.0",
+  "description": "Memory workflows on the refact-memory mount: ingest evidence, tracker entries, canonical-record edits, ticket anchor + outcome, status scan \u2014 plus a SessionStart hook that keeps the local clone fresh.",
   "author": {
     "name": "Refact Developer",
     "email": "dev@refact.co"
@@ -15,5 +15,6 @@
     "knowledge",
     "mount",
     "asana"
-  ]
+  ],
+  "hooks": "./hooks/claude-hooks.json"
 }

@@ -12,6 +12,8 @@ sub_agents: []
 
 # Netlify Deploy Setup Reference
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Use this reference when the user explicitly wants a Next.js app linked or configured for Netlify. Do not run this automatically for every Next.js project.
 
 ## Goal

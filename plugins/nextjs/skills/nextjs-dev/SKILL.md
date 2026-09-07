@@ -10,6 +10,8 @@ sub_agents: []
 
 # Next.js Development Reference
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Use this reference for day-to-day development work in an existing Next.js app.
 
 ## Goal

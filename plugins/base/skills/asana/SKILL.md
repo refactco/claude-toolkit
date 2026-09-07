@@ -11,6 +11,8 @@ sub_agents: []
 
 # Asana Skill Reference
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Use this skill whenever the user invokes `/asana` or asks to:
 
 - Sync all Asana tickets locally

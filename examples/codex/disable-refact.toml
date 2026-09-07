@@ -1,0 +1,28 @@
+# Merge the desired tables into this project's .codex/config.toml.
+# Project config loads only in trusted projects. Start a new task after editing.
+[plugins."base@refact-os"]
+enabled = false
+
+[plugins."client@refact-os"]
+enabled = false
+
+[plugins."ops@refact-os"]
+enabled = false
+
+[plugins."insights@refact-os"]
+enabled = false
+
+[plugins."nextjs@refact-os"]
+enabled = false
+
+[plugins."wordpress@refact-os"]
+enabled = false
+
+[plugins."testing@refact-os"]
+enabled = false
+
+[plugins."migrate@refact-os"]
+enabled = false
+
+[plugins."memory@refact-os"]
+enabled = false

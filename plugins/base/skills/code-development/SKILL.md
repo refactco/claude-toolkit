@@ -10,6 +10,8 @@ sub_agents: []
 
 # Code Development Skill
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 A thin layer over the base **`git-workflow`** skill, for changes to product code. All the
 git — branching, commits, pushing, opening the PR, recovering from blockers — lives in
 `git-workflow`. This skill only adds the parts that are specific to code.

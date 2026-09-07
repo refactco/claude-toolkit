@@ -11,6 +11,20 @@ requires_approval: true
 
 # Migrate to marketplace
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
+## Codex target
+
+For a Codex migration, use `AGENTS.md` as the default contract in steps 1 and 4.
+Keep existing Claude hooks and settings unless the approved scaffold cleanup
+explicitly includes them; Codex's base pack does not replace transcript hooks.
+In step 10, use `codex plugin marketplace add refactco/claude-toolkit`, install
+the selected packs with `codex plugin add <pack>@refact-os`, and merge
+`[plugins."<pack>@refact-os"]` tables with `enabled = true` or `false` in the
+project's `.codex/config.toml`. Start a new Codex task. Do not write Claude
+enablement settings for a Codex-only migration. The backup, drift review,
+secret preservation, and explicit approval rules below still apply.
+
 Move a **refact-os-scaffolded** repo off the npm scaffolder and onto the **plugin marketplace**.
 The old model bundled skills under `agent/skills/` with generated `.claude/` + `.cursor/` copies;
 the new model installs skills as packs (`/plugin install <pack>@refact-os`). This skill does the

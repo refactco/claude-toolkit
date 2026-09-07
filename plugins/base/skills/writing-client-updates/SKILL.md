@@ -11,6 +11,8 @@ sub_agents: []
 
 # Writing Client Updates
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Draft a client-facing update that is clear, structured, and confident — email or Slack.
 
 ## How to use this skill

@@ -1,17 +1,26 @@
 ---
 name: manage-plugins
-description: "Install or update the refact-os marketplace packs — all of them, the ones this project needs, or a single named pack. Refreshes the catalog, then installs/updates via the claude plugin CLI and reminds you to restart. This is about the /refact toolkit packs, not a WordPress site's plugins."
+description: "Install, update, enable, or disable refact-os toolkit packs in Claude Code or Codex. Supports one pack, selected project packs, and project-specific enablement. This is about the Refact toolkit, not a WordPress site's plugins."
 pattern: procedure
 when_to_use: "The user wants to install or update the refact-os marketplace packs (the /refact toolkit) — \"install the plugins\", \"update the plugins\", \"/refact install plugins\", \"/refact update plugins\", \"get the latest packs\", \"am I on the latest refact-os packs\", or install/update a single named pack (\"install wordpress\", \"update the base pack\")."
-when_not_to_use: "Updating a WordPress SITE's plugins (ACF, Yoast, …) — use the wordpress plugin-update skill / /plugin-update. Migrating a scaffolded repo onto the marketplace — use migrate-to-marketplace. Only turning a pack on/off for this project — edit .claude/settings.json enabledPlugins (no install needed)."
+when_not_to_use: "Updating a WordPress SITE's plugins (ACF, Yoast, …) — use the wordpress plugin-update skill. Migrating a scaffolded repo onto the marketplace — use migrate-to-marketplace."
 next_skills: []
 sub_agents: []
 ---
 
 # Manage plugins (refact-os packs)
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
+## Select the active host first
+
+For **Codex**, read and follow [the Codex procedure](references/codex.md), then
+stop. It covers installation, updates, and per-project enablement. The remaining
+procedure below applies to **Claude Code** only. Do not select a host merely
+because its CLI happens to be installed on the computer.
+
 Install or update the **refact-os marketplace packs** — `base`, `wordpress`, `ops`, `insights`,
-`nextjs`, `client`, `testing`, `migrate`. These are Claude Code plugins from the `refact-os`
+`nextjs`, `client`, `testing`, `migrate`, `memory`. These are Claude Code plugins from the `refact-os`
 marketplace, **not** a WordPress site's plugins (for those, use the wordpress `plugin-update` skill).
 
 > **Am I the right skill?** This manages **refact-os marketplace packs** (Claude Code plugins:

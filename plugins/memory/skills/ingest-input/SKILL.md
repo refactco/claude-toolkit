@@ -17,6 +17,8 @@ sub_agents: []
 
 # Ingest Input
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 **Spawned/unattended runs: if `REFACT_MEMORY_READONLY` is set in your environment, stop — the mount is read-only for you; durable output goes in your run report / the propose→approve path.**
 
 Capture what arrived as **evidence** *before* acting on it — agents work from saved files, not chat memory. Schema: refact-memory `memory-model.md` (§3.2 evidence, §6.2 ingest table). Requires the mount: if `memory/` is missing or dangling, run the repo's link script (`npm run link-memory` or `node scripts/link-memory.mjs` — see the First-run section in `AGENTS.md`). Your company/project slugs come from the mount path: `realpath memory` → `…/companies/<company>[/projects/<project>]`.

@@ -11,6 +11,8 @@ sub_agents: []
 
 # plugin-update Reference
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Use this reference when the user asks to **check for and safely apply WordPress plugin updates** — e.g. "are there plugin updates?", "update the plugins", "safely update WPForms", "run the plugin update QA loop".
 
 It runs the full loop for **one plugin at a time**: read the changelog → draft a targeted QA checklist → snapshot → update **on staging** → QA (three layered signals) → **pass** promotes the *same* version to production (human-gated) or **fail** rolls back on staging. It never updates production blind, and never updates more than one plugin per cycle so rollback scope stays clean.

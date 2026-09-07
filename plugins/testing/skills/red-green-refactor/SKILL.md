@@ -10,6 +10,8 @@ sub_agents: []
 
 # Red-Green-Refactor — Unit-Loop TDD (Phase 2)
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Develop **one slice** test-first: a failing unit test sets the next goal, the minimum code makes it pass, and a refactor-on-green cleans it up. Repeat until the slice's behaviour — its acceptance criterion — is met. This harness runs **unit tests only** (WordPress PHPUnit via wp-env); there is no automated end-to-end / browser layer.
 
 **Read `references/red-green-refactor-philosophy.md` now** if you have not this session — it is the authoritative rulebook, and everything below is a summary of it. For detecting, setting up, and running the project's unit tooling (WordPress wp-env + PHPUnit), read `references/test-strategy.md`.

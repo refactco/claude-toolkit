@@ -7,6 +7,22 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-09-07 — Codex support with shared skills
+
+Adds native Codex manifests for all nine packs and a `.agents/plugins/marketplace.json`
+with the same `refact-os` identity. Both clients load the same skill files. The new
+`refact-toolkit` skill provides a common entry point; `/base:refact` is a thin Claude
+wrapper. Shared runtime notes cover path resolution, skill calls, and agent briefs.
+
+Adds Codex-specific plugin management and Refact Control setup guidance, project
+on/off examples, and a release metadata generator. Claude hooks move to explicit
+`hooks/claude-hooks.json` declarations, so Codex does not run the transcript uploader
+or language-server installers. Fixes the existing base catalog/version mismatch and
+accepts `/base:refact` in the Claude preflight. Validation now runs in CI.
+
+Versions: marketplace 2.13.0; base 1.9.0; client/ops/insights/wordpress/migrate 1.2.0;
+nextjs/memory 1.1.0; testing 1.3.0. Total: 9 packs, 42 skills.
+
 ## 2026-08-04 — New `memory` pack: the 7 mount-workflow skills + the freshness hook (Phase 1 of the memory-pack rollout)
 
 Adds the ninth pack, `memory` (enabled as `memory@refact-os`). It packages the 7 memory-workflow

@@ -11,6 +11,8 @@ sub_agents: []
 
 # WP Engine Auto-Deploy Reference
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 Use this reference when the user invokes any of:
 
 - `/refact setup wpengine auto-deploy`

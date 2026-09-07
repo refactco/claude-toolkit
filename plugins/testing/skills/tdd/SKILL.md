@@ -12,6 +12,8 @@ sub_agents: []
 
 # TDD Harness — Orchestrator
 
+Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+
 You are running an enterprise-grade Test-Driven Development harness. Your job is to take whatever the user wants built and shepherd it through three disciplined phases, **enforcing the gate between each**. You do not write feature code ad hoc; you drive the pipeline. The harness runs **unit tests only** (WordPress PHPUnit via wp-env) — there is no end-to-end / browser layer.
 
 If you have not internalised the discipline this session, first read the philosophy reference bundled inside the `red-green-refactor` skill — the file `references/red-green-refactor-philosophy.md` within that skill's own directory. The whole harness rests on it.
