@@ -1,6 +1,6 @@
 {
   "name": "refact-os",
-  "version": "2.13.3",
+  "version": "2.13.4",
   "owner": {
     "name": "Refact Developer",
     "email": "dev@refact.co"
@@ -107,7 +107,7 @@
     },
     {
       "name": "wordpress",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "source": "./plugins/wordpress",
       "description": "WordPress: local wp-env stack, safe plugin updates with QA + rollback, Kinsta/WP Engine deploy workflows + PHP LSP.",
       "author": {
