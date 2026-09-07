@@ -44,7 +44,7 @@ Use a temporary Python environment and install `requirements-dev.txt`, then run:
 ```bash
 node scripts/sync-codex.mjs --check
 python scripts/check-plugins.py
-node --test tests/plugin-support.test.mjs
+node --test tests/*.test.mjs
 ```
 
 For installation changes, verify catalog discovery and installation with Codex.

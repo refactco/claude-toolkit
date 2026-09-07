@@ -26,8 +26,11 @@ git rev-parse --abbrev-ref HEAD     # what branch am I on?
 git remote -v                       # confirm origin exists
 ```
 
-If the tree is dirty with **unrelated** changes, stop and ask how to proceed (keep on their own
-branch / set aside / discard). Do not fold their in-progress work into your commit.
+If the tree contains unrelated changes, preserve them and use a separate worktree
+from the intended base. This also works when no human is available. If this task
+needs uncommitted work, inspect its diff and transfer only the required changes.
+Ask only when ownership or required scope is still unclear; never discard or stash
+the whole tree as an automatic recovery.
 
 ## Step 1b — Determine the base branch
 
@@ -64,8 +67,9 @@ merging or rebasing on your own.
 | Content / non-code edits | `content/<slug>` | `content/pricing-page-copy` |
 | Refactor (no behaviour change) | `refactor/<slug>` | `refactor/split-git-skill` |
 
-- `<ticket>` is the issue / Asana / Linear ID when one exists. If there's no ticket, ask before
-  omitting it — sometimes one needs creating first.
+- `<ticket>` is the issue / Asana / Linear ID when one exists. Look in the request
+  and project context. If this is a one-off change without a ticket, use a descriptive
+  slug and omit the task reference. Do not invent or create a ticket to unblock Git.
 - `<slug>` is lowercase kebab-case, ≤ 5 words, describing the change.
 - **One branch per ticket / request, not per sub-feature.** Multiple deliverables for the same
   request belong on one branch. New work added to an in-progress task stays on the current branch;
@@ -99,9 +103,35 @@ the contributor just describes what they changed.
 - If a pre-commit hook fails, **fix the cause and re-commit** — never bypass it with `--no-verify`
   or `--no-gpg-sign`.
 
+**Immediately before every commit**, including a second commit in the same session:
+
+1. Run `git rev-parse --abbrev-ref HEAD` and compare with the intended work branch
+   and shared base. After a PR merge, the checkout may have moved to the base.
+2. Inspect `git diff --cached` in full. Every staged hunk must belong to this task.
+   Explicit paths alone are not proof: one file can contain mixed edits. Do not use
+   `git commit -- <paths>` as an ownership check; it can include unstaged content
+   from those files. Isolate mixed work before staging it.
+3. Run the bundled check, then commit only if it succeeds. Replace `<skill-dir>`
+   with the absolute directory of the loaded git-workflow skill. List each reviewed
+   repository-relative file separately; do not pass directories or glob patterns.
+
+   ```bash
+   node <skill-dir>/scripts/check-state.mjs --branch <work-branch> --base <base> \
+     --commit --staged-path src/example.ts --staged-path tests/example.test.ts &&
+   git commit -m "fix(example): explain the change"
+   ```
+
+The check is silent on success and never changes Git state. It detects branch
+changes and unexpected staged files; it cannot establish hunk ownership or stop
+another process changing the checkout afterward. Use an isolated worktree when
+other agents or tools may edit the same checkout. Repeat the checks after a
+failed hook or any change to the branch or index. A matching branch needs no
+additional user confirmation.
+
 ## Step 5 — Push
 
 ```bash
+node <skill-dir>/scripts/check-state.mjs --branch <work-branch> --base <base> &&
 git push -u origin feat/<ticket>-<slug>
 ```
 
@@ -158,6 +188,10 @@ matched to its task; without one the PR falls back to the branch name, and if th
 
 After opening: report the PR URL, and if CI fails, surface the failing job output — never silently
 re-run or rewrite history to mask it.
+
+Opening or preparing a PR is not permission to merge it. Follow authorization
+already given for this task; do not ask again for the same approved merge, and do
+not extend that approval to unrelated work or a different PR.
 
 ## Step 7 — Respond to review
 
