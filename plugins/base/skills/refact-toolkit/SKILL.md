@@ -13,6 +13,7 @@ Match the requested outcome to an installed skill:
 |---|---|---|
 | Record project structure and stack | update-project-config | base |
 | Git branch, commit, or PR workflow | git-workflow | base |
+| Prepare and execute an authorized live data, settings, or job change | safe-production-write | base |
 | Sync or work with Asana tasks | asana | base |
 | Connect Refact Control | setup-refact-control-mcp-server | base |
 | Install or update toolkit packs | manage-plugins | base |

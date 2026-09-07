@@ -1,8 +1,8 @@
 ---
 name: wp-env
-description: Manage the local WordPress stack via wp-env — setup, pull plugins/mu-plugins/db from staging, reset, custom local domain.
+description: Set up local WordPress with wp-env, bring profiles or content to local, and sync local plugins, mu-plugins, and the database from staging with a preview that preserves local files.
 pattern: procedure
-when_to_use: /refact wp-env setup [--with-tests] | pull [plugins|mu-plugins|db] | reset | domain <host>.
+when_to_use: 'Local WordPress setup; bring profiles to local; sync local with staging; /refact wp-env setup, pull plugins, pull mu-plugins, pull db, reset, or domain.'
 when_not_to_use: Non-WordPress projects.
 next_skills: []
 sub_agents: []
@@ -12,7 +12,12 @@ sub_agents: []
 
 Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
 
-Use this reference when the user invokes any of:
+Use this reference for local WordPress requests such as “bring profiles to local”
+or “sync local with staging”, as well as these commands. Infer the requested
+content and file scope from the task; importing profiles does not authorize
+changing staging settings or enabling production jobs.
+
+Use the matching flow:
 
 - `/refact wp-env setup [--with-tests]` — bring up a fresh local WordPress stack and, in the same flow, optionally pull plugins/mu-plugins + DB from staging and set a local domain. Idempotent: each sub-step is verified independently and skipped silently if already met, so re-running on a fully-configured project is a no-op. By default, the tests instance is stopped to save resources; pass `--with-tests` to keep it running.
 - `/refact wp-env pull` — alias for **pull plugins + mu-plugins + db** (staging → local).
@@ -208,8 +213,9 @@ The values prompted for here persist into `.refact-os.json`, so the next teammat
 #### Checklist
 
 1. **Pull plugins + mu-plugins from staging.**
-   - Skip silently if `apps/wordpress/wp-content/plugins/` contains any directory other than `.gitkeep` (i.e. there's already at least one plugin checked in or pulled).
-   - Otherwise ask: *"Pull plugins and mu-plugins from staging now? [Y/n]"*. On yes, run Step 2b (`pull plugins`) followed by Step 2c (`pull mu-plugins`). On no, mark as user-deferred and continue.
+   - Check the DB's required plugin files, including network-active plugins, and the required mu-plugin inventory using [file-pull checks](references/file-pulls.md). One tracked plugin or a non-empty directory is not enough. If a staging DB import is planned, check its requirements too; recheck after import.
+   - Skip the automatic file pull only when the inventory is known and all required files are present. An explicit sync request still gets a preview because presence does not prove matching versions.
+   - If files are missing and the pull is already requested, run Steps 2b and 2c within that scope. For an optional setup addition, ask once. In an unattended run, keep it deferred when authorization is missing; an absent answer is not approval.
    - Preflight is shared: if Step 2a's SSH check fails, surface and stop the checklist here.
 
 2. **Pull staging DB.**
@@ -287,74 +293,40 @@ If it doesn't print `ok`, stop. Common causes: wrong port (on WP Engine, port `2
 
 ### 2b. Pull `plugins`
 
+Follow [file-pull checks](references/file-pulls.md) for inventory, exclusions,
+preview, and verification. Resolve `<script>` to this skill's packaged
+`scripts/pull-files.mjs` (Node.js 18+ and rsync). Start with a read-only preview:
+
 ```bash
-rsync -avz --delete \
-  -e "ssh ${SSH_OPTS}" \
-  --exclude='index.php' \
-  --exclude='disable-emails/' \
-  "${SSH_TARGET}:${DOC_ROOT}/wp-content/plugins/" \
-  apps/wordpress/wp-content/plugins/
+node "<script>" --kind plugins \
+  --source "${SSH_TARGET}:${DOC_ROOT}/wp-content/plugins/" \
+  --destination apps/wordpress/wp-content/plugins --port "${SSH_PORT}"
 ```
 
-Notes:
+The default preserves existing files and local-only files. Review the preview,
+then add `--apply` for an already-authorized pull. `--overwrite` and `--delete`
+are separate opt-ins, each requiring a new `--backup-dir` outside the synced tree.
+Do not enable either because a run is headless. Dropping `--delete` alone does not
+protect local edits from overwrites.
 
-- `--delete` mirrors staging exactly. Warn the user once: "this removes any local-only plugins under `apps/wordpress/wp-content/plugins/`. Confirm?" If they decline, drop `--delete`.
-- `disable-emails/` is excluded because it is a local-only plugin installed by Step 1f — it doesn't exist on staging and must survive the sync.
-- Some hosts inject plugins that don't belong in the repo (e.g. `kinsta-mu-plugins` lives in `mu-plugins/`, not here, so it shouldn't appear; but check). Don't auto-exclude anything beyond `index.php` and `disable-emails/` without asking.
-- After the rsync, remind the user to inspect `git status` for new tracked paths in `apps/wordpress/wp-content/plugins/`. If something new should reach the host on deploy, the nested `apps/wordpress/.gitignore` needs an explicit `!` exception — see the project's deploy skill (`setup-kinsta-deploy` or `setup-wpengine-deploy`) § "Adding new tracked files under `apps/wordpress/`".
+The helper always excludes `index.php` and local-only `disable-emails/`.
+Add documented project exclusions with repeatable `--exclude` arguments. Review
+Git status after the pull. Follow the project's deploy rules when new plugin
+files need an explicit Git ignore exception; do not stage the whole pulled tree.
 
 ### 2c. Pull `mu-plugins`
 
-Build the rsync exclude list from two sources: local-only files that must never be deleted by `--delete`, and host-injected system mu-plugins that aren't useful locally. Read `hosting` from `.refact-os.json` › `stack.wordpress.hosting` to select the right set.
+Use the same helper and review procedure with `--kind mu-plugins`, the detected
+mu-plugin source/destination paths, and `--hosting wpengine` or `--hosting kinsta`
+from the project config. The helper protects `index.php` and local-only
+`0[0-9]-wp-env-*.php` helpers even during an explicitly requested deletion.
+It also applies the known host-specific exclusions listed in the reference.
 
-**Always exclude (local-only wp-env helpers):**
-
-The `0[0-9]-wp-env-*.php` prefix range is reserved for mu-plugins this skill writes (URL rewriter, local-config bridge, uploads fallback, etc.). They're all gitignored and must never deploy or be overwritten by a staging pull.
-
-```
---exclude='index.php'
---exclude='00-wp-env-*.php'
---exclude='01-wp-env-*.php'
---exclude='02-wp-env-*.php'
---exclude='03-wp-env-*.php'
---exclude='04-wp-env-*.php'
---exclude='05-wp-env-*.php'
---exclude='06-wp-env-*.php'
---exclude='07-wp-env-*.php'
---exclude='08-wp-env-*.php'
---exclude='09-wp-env-*.php'
-```
-
-(rsync's `--exclude` doesn't support POSIX character classes like `0[0-9]-…` — list each prefix explicitly, or pass `--filter='- 0[0-9]-wp-env-*.php'` which does support globs.)
-
-**Host-specific excludes:**
-
-| Hosting | Exclude patterns |
-|---|---|
-| `kinsta` | `kinsta-mu-plugins/`, `kinsta-mu-plugins.php` |
-| `wpengine` | `mu-plugin.php`, `force-strong-passwords/`, `slt-force-strong-passwords.php`, `wpe-cache-plugin*`, `wpe-update-source-selector*`, `wpe-wp-sign-on-plugin*`, `wpengine-common/`, `wpengine-security-auditor.php` |
-| Other | Ask the user if unrecognized system mu-plugins are detected |
-
-Example for a WP Engine project:
-
-```bash
-rsync -avz --delete \
-  -e "ssh ${SSH_OPTS}" \
-  --exclude='index.php' \
-  --filter='- 0[0-9]-wp-env-*.php' \
-  --exclude='mu-plugin.php' \
-  --exclude='force-strong-passwords/' \
-  --exclude='slt-force-strong-passwords.php' \
-  --exclude='wpe-cache-plugin*' \
-  --exclude='wpe-update-source-selector*' \
-  --exclude='wpe-wp-sign-on-plugin*' \
-  --exclude='wpengine-common/' \
-  --exclude='wpengine-security-auditor.php' \
-  "${SSH_TARGET}:${DOC_ROOT}/wp-content/mu-plugins/" \
-  apps/wordpress/wp-content/mu-plugins/
-```
-
-These host-injected mu-plugins are managed server-side; they aren't useful locally and shouldn't end up in git. If you spot an unrecognized system mu-plugin (owned by `root` or `nobody`, or matching a known hosting vendor pattern), ask the user before adding it to the exclude list.
+Git deletion history is evidence to inspect, not an automatic exclusion rule.
+A file removed from version control may still be a staging dependency. Reuse a
+needed staging file instead of inventing a replacement. Exclude it only when
+project instructions or a confirmed decision say it must stay absent locally;
+record the reason and pass the same exclusion to preview and apply.
 
 ### 2d. Pull `db`
 
@@ -1039,5 +1011,5 @@ After reset, the user typically wants `/refact wp-env pull db` to restore stagin
 
 - `git status` shows large, unexpected diffs after `pull plugins` (e.g. an entire vendored plugin you didn't know was there) → surface before staging the changes.
 - The staging URL from `.refact-os.json` doesn't match the user's stated staging URL → resolve before running `search-replace`.
-- A pull would `--delete` a local-only plugin that looks like work-in-progress (no matching commit history) → ask first.
+- A preview shows an overwrite or deletion beyond the approved scope → preserve the local files and ask about that concrete change. Existing authorization remains valid for the scope it covers.
 - The user asks to point this flow at a different remote (e.g. "pull from dev instead") → that's an architectural change; confirm whether to add a `dev` environment under `.refact-os.json` › `stack.wordpress.environments` or treat it as a one-off prompt.
