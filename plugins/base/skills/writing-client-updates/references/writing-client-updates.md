@@ -12,7 +12,7 @@ Run this before you write a word of the draft. It is a check on your notes, not 
 
 ### Confirm the recipient before you name them
 
-Find the client contact in the project docs and use the name and the role the docs give. Do not take a name from a chat message, a commit, an email address, or your own memory of the account. If the docs name no contact, ask who the update is for. Do not guess a first name, and do not address someone who was only mentioned in passing. A greeting to a person who does not exist undoes the confidence the rest of the message is trying to build.
+Find the client contact in project memory and use the name and the role it gives. Do not take a name from a chat message, a commit, an email address, or your own recollection of the account. If project memory names no contact, ask who the update is for. Do not guess a first name, and do not address someone who was only mentioned in passing. A greeting to a person who does not exist undoes the confidence the rest of the message is trying to build.
 
 ### State only what the source says, and mark the rest
 
