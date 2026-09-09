@@ -3,7 +3,7 @@
 Use simple English, short sentences, and common words. Keep exact commands and
 file names accurate. Explain a required technical term in plain English.
 
-This repository is a plugin marketplace for Claude Code and Codex. It has nine
+This repository is a plugin marketplace for Claude Code and Codex. It has ten
 packs under `plugins/`, with shared skills and helper files. It is not a web app.
 
 ## Source files

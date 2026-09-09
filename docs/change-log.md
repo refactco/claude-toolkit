@@ -7,6 +7,20 @@ Plan: see `docs/plugin-marketplace-plan.md`.
 
 ---
 
+## 2026-09-09 — Plain English as an optional pack
+
+Adds `plain-english@refact-os` with one shared skill for Claude Code and Codex.
+The pack has its own install and on/off settings. It has no Base dependency,
+hooks, or external service setup. Instructions keep useful detail and the original
+meaning when simplifying explanations and rewrites.
+
+Adds source notices, install guidance, writing examples, and review criteria.
+Both marketplace catalogs include the pack. Base's plugin manager lists the new
+pack and reads the current catalog when disabling all packs.
+
+Versions: marketplace 2.16.0; plain-english 1.0.0; base 1.11.1.
+Total: 10 packs, 44 skills.
+
 ## 2026-09-07 — Codex support with shared skills
 
 Adds native Codex manifests for all nine packs and a `.agents/plugins/marketplace.json`

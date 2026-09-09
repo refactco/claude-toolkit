@@ -1,6 +1,6 @@
 # Use Refact Toolkit in Codex
 
-The toolkit has nine optional packs. Install `base` to get the common workflows
+The toolkit has ten optional packs. Install `base` to get the common workflows
 and the `refact-toolkit` entry skill. Add other packs when a project needs them.
 
 ## Install from GitHub
@@ -25,6 +25,7 @@ Examples for optional packs:
 codex plugin add wordpress@refact-os
 codex plugin add client@refact-os
 codex plugin add testing@refact-os
+codex plugin add plain-english@refact-os
 ```
 
 ## Use it
@@ -56,7 +57,10 @@ enabled = false
 The exact key includes both the pack and marketplace: `base@refact-os`, not
 just `base`. Set `enabled = true` to enable an already installed pack in the
 project. Each pack is independent: turning off `base` does not turn off `client`.
-Use [the full example](../examples/codex/disable-refact.toml) to disable all nine.
+Use [the full example](../examples/codex/disable-refact.toml) to disable every pack.
+
+The [Plain English pack](../plugins/plain-english/README.md) works on its own.
+It does not require Base or a project configuration file.
 
 Codex reads project config only for **trusted projects**. Start a new task after
 changing the file. Do not rely on a note in `AGENTS.md` as a replacement for the

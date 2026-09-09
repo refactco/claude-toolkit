@@ -1,6 +1,6 @@
 # Refact Toolkit — Claude Code and Codex
 
-A **plugin marketplace** with **9 installable packs** and **42 shared skills** for Claude Code and Codex.
+A **plugin marketplace** with **10 installable packs** and **44 shared skills** for Claude Code and Codex.
 Install only the capabilities a project needs; turn packs on or off independently.
 
 ## Install in Codex
@@ -23,7 +23,7 @@ enabled = false
 
 This requires a trusted project and a new task. Each pack has its own switch.
 See [the Codex guide](docs/codex.md) for usage, updates, local development, and
-[all nine disable settings](examples/codex/disable-refact.toml).
+[all pack disable settings](examples/codex/disable-refact.toml).
 
 ## Install in Claude Code
 
@@ -81,6 +81,7 @@ Codex uses the `refact-toolkit` entry skill.
 | **testing** | `/plugin install testing@refact-os` | TDD harness (`tdd` → `tdd-plan` → `red-green-refactor`), WordPress characterization + integration tests |
 | **migrate** | `/plugin install migrate@refact-os` | one-time move of a refact-os-scaffolded repo (`agent/skills`, `.cursor` adapters) onto these installable packs |
 | **memory** | `/plugin install memory@refact-os` | evidence, project memory, ticket records, and status scans |
+| **plain-english** | `/plugin install plain-english@refact-os` | clear explanations and rewrites that keep the original meaning; no Base dependency |
 
 Start with **base** — it carries the `/base:refact` menu command and the always-useful git / env /
 project-config skills.
@@ -92,7 +93,7 @@ Both clients can use skills for relevant requests. You can also select a skill e
 
 | Pack | Skills |
 |---|---|
-| **base** | `asana`, `code-development`, `extract-learnings`, `git-workflow`, `setup-refact-control-mcp-server`, `sync-env-vars`, `update-project-config`, `writing-client-updates`, `manage-plugins`, `verify-visual-change`, `refact-toolkit` — plus the `/base:refact` command |
+| **base** | `asana`, `code-development`, `extract-learnings`, `git-workflow`, `safe-production-write`, `setup-refact-control-mcp-server`, `sync-env-vars`, `update-project-config`, `writing-client-updates`, `manage-plugins`, `verify-visual-change`, `refact-toolkit` — plus the `/base:refact` command |
 | **client** | `draft-discovery-proposal`, `render-deliverable` |
 | **ops** | `cloudflare`, `sentry` |
 | **insights** | `ahrefs`, `ga4`, `gsc`, `gtm`, `pagespeed` |
@@ -101,6 +102,7 @@ Both clients can use skills for relevant requests. You can also select a skill e
 | **testing** | `tdd`, `tdd-plan`, `red-green-refactor`, `backfill-tests`, `integration-tests` |
 | **migrate** | `migrate-to-marketplace` |
 | **memory** | `ingest-input`, `process-docs`, `log-entry`, `open-ticket`, `close-ticket`, `project-status`, `update-canonical-record` |
+| **plain-english** | `plain-english` — [usage and on/off settings](plugins/plain-english/README.md) |
 
 ## Enable or disable a Claude Code pack (per project)
 
@@ -183,7 +185,7 @@ Bump the changed pack versions in their Claude manifests, then run:
 node scripts/sync-codex.mjs
 node scripts/sync-codex.mjs --check
 python scripts/check-plugins.py
-node --test tests/plugin-support.test.mjs
+node --test tests/*.test.mjs
 ```
 
 The Python check needs `requirements-dev.txt` in a development environment.

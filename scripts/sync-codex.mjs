@@ -42,25 +42,29 @@ const entries = catalog.plugins.map((entry) => {
   if (source.name !== entry.name) throw new Error(`Plugin name mismatch: ${entry.name}`);
   // The pack manifest owns the version. Both catalogs are derived from it.
   entry.version = source.version;
-  const label = `Refact ${entry.name === 'nextjs' ? 'Next.js' : entry.name === 'wordpress'
+  const plainEnglish = entry.name === 'plain-english';
+  const label = `Refact ${plainEnglish ? 'Plain English' : entry.name === 'nextjs' ? 'Next.js' : entry.name === 'wordpress'
     ? 'WordPress' : entry.name[0].toUpperCase() + entry.name.slice(1)}`;
   emit(join(pack, '.codex-plugin/plugin.json'), json({
     name: source.name,
     version: source.version,
-    description: `Refact ${entry.name} workflows for Claude Code and Codex.`,
+    description: plainEnglish ? source.description : `Refact ${entry.name} workflows for Claude Code and Codex.`,
     author: source.author,
     repository: 'https://github.com/refactco/claude-toolkit',
     keywords: source.keywords,
     skills: './skills/',
     interface: {
       displayName: label,
-      shortDescription: `Use the Refact ${entry.name} skill pack.`,
-      longDescription: `Shared Refact ${entry.name} skills, scripts, and references. `
+      shortDescription: plainEnglish ? 'Clear English without losing meaning.' : `Use the Refact ${entry.name} skill pack.`,
+      longDescription: plainEnglish ? source.description + ' Works on its own without extra tools or service connections.'
+        : `Shared Refact ${entry.name} skills, scripts, and references. `
         + 'Requires the local tools and service connections described by each skill.',
       developerName: source.author.name,
       category: 'Productivity',
       capabilities: [],
-      defaultPrompt: `Use the Refact ${entry.name} skills for this project.`,
+      defaultPrompt: plainEnglish
+        ? ['Use $plain-english to explain this clearly while keeping the original meaning.']
+        : `Use the Refact ${entry.name} skills for this project.`,
     },
   }));
   emit(join(pack, 'references/plugin-runtime.md'), runtime);

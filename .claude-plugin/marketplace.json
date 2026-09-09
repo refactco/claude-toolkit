@@ -1,6 +1,6 @@
 {
   "name": "refact-os",
-  "version": "2.15.0",
+  "version": "2.16.0",
   "owner": {
     "name": "Refact Developer",
     "email": "dev@refact.co"
@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "base",
-      "version": "1.11.0",
+      "version": "1.11.1",
       "source": "./plugins/base",
       "description": "Base toolkit: git workflow, code-dev gates, safe production writes, Asana, env sync, learnings, client updates, slim project config, Refact Control MCP setup + the /base:refact command + TS/JS LSP.",
       "author": {
@@ -181,6 +181,24 @@
         "knowledge",
         "mount",
         "asana"
+      ]
+    },
+    {
+      "name": "plain-english",
+      "version": "1.0.0",
+      "source": "./plugins/plain-english",
+      "description": "Clear English for explanations, updates, and rewrites. Adapts to the reader and keeps facts, uncertainty, and useful detail.",
+      "author": {
+        "name": "Refact Developer",
+        "email": "dev@refact.co"
+      },
+      "keywords": [
+        "refact",
+        "skills",
+        "plain-english",
+        "writing",
+        "explanations",
+        "accessibility"
       ]
     }
   ]
