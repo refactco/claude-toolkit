@@ -1,142 +1,134 @@
 ---
 name: asana
-description: Interact with Asana — sync open tickets into docs/task/, pull a single task, or post a comment/update to a task on behalf of the current user.
+version: 1.11.0
+description: Read Asana tasks, subtasks, attachments, and exact comments; sync a project or carry out requested comments and task completion.
 pattern: procedure
-when_to_use: "/asana — for all Asana operations: sync tickets, pull a single ticket, add a comment, or post an update to a task."
-when_not_to_use: Creating a local-only ticket file by hand (just write the markdown under docs/task/ — no Asana call involved).
+when_to_use: "The user asks to read or sync Asana tasks, fetch a specific comment or attachment, post an update, notify someone, or mark a task complete."
+when_not_to_use: Writing a local-only task file with no Asana operation.
 next_skills:
   - sync-env-vars
 sub_agents: []
 ---
 
-# Asana Skill Reference
+# Asana
 
 Read [runtime instructions](../../references/plugin-runtime.md) before using this skill.
+Run the bundled `scripts/asana.mjs` with Node 22 or newer, from the target project.
+Use its absolute installed path; do not copy the script into each project.
 
-Use this skill whenever the user invokes `/asana` or asks to:
+## Choose the operation
 
-- Sync all Asana tickets locally
-- Pull or refresh a single task
-- Post a comment or status update on an Asana task
+First read the project's `AGENTS.md` or `CLAUDE.md` and relevant `package.json`
+scripts for an existing Asana workflow or cache location. Inspect an existing helper
+before using it. Prefer its established interface when it supports the requested
+operation. Otherwise use this bundled helper and the configured output directory.
 
----
+| Request | Bundled command options |
+| --- | --- |
+| Sync the project | No mode; requires `asana.projectId` |
+| Read one task, even if completed | `--ticket <gid>` |
+| Read its direct subtask descriptions and assignees | `--ticket <gid> --subtask-notes` |
+| Download its attachments | `--ticket <gid> --attachments` |
+| Read one exact comment/activity entry | `--story <gid>` or `--comment-id <gid>` |
+| Check that a comment belongs to a task | `--story <gid> --ticket <task-gid>` |
+| Check the connected account | `--whoami` |
+| Complete the requested task | `--complete --ticket <gid>` |
+| Post the requested update | `--comment --ticket <gid> --text-file <path>` |
+| Mention a person in that update | Add `--mention <user-gid>`; repeat for more people |
+| Notify mentioned people who do not follow the task | Also add `--notify` |
+| Preview any operation | Add `--dry-run`: no local or remote writes |
 
-## Reading: sync tickets
+Use `--help` for the current flags. Unknown flags fail rather than silently
+starting a different operation. `--subtasks` is an alias for `--subtask-notes`.
 
-`${CLAUDE_PLUGIN_ROOT}/skills/asana/scripts/asana.mjs` calls the Asana REST API and mirrors the configured project locally. Create `docs/task/` on demand if it does not exist. **Open tasks are loaded in full; completed tasks are mirrored as lightweight stubs.**
+## Read tasks completely enough for the request
 
-- Walks the project's task list once (open **and** completed), paginated 100 at a time.
-- **Open tasks** → `docs/task/open/<gid>.md`: fetches full details, custom fields, subtasks, attachments, and the complete story/comments thread.
-- **Completed tasks** → `docs/task/closed/<gid>.md`: writes a stub with just the task name and an Asana permalink — **no per-task API calls**, so a long completed history stays cheap to sync.
-- If a task transitions open → completed (or back), its file is moved automatically.
-- Full files preserve the existing `processed: true|false` header. Stubs are always `processed: true`.
-- Files left by the legacy `docs/asana/` layout are migrated into `docs/task/` on the next sync.
+A full sync fetches open task descriptions, fields, direct subtask titles,
+attachment links, and all pages of comments. Completed tasks are inexpensive
+title/link stubs. Pull a completed task individually when its history matters.
 
-## Writing: add a comment or update
+Use `--subtask-notes` when the work depends on child instructions. It includes
+direct child descriptions, assignees, and due dates in the parent snapshot.
+It does not recursively read grandchildren or child comment threads; pull those
+child GIDs separately when needed. A GID-only list is not a full review.
 
-Comments are posted to Asana using the bot token, so the author always appears as the bot account. To make it clear who actually wrote the message, the script **automatically prepends the git user's name** (from `git config user.name`) to every comment:
+For a supplied comment GID, fetch that exact story and check its task. Do not
+substitute “the latest comment.” Synced comment entries retain their GIDs.
 
-```
-Masoud Golchin: <the message text>
-```
+Attachment downloads use fresh API download links, preserve their bytes, and
+stay under the task cache. Files over 100 MiB or external-provider attachments
+without a download link are reported as incomplete. Use the linked provider
+for those files. Never pass an Asana token to a download host or execute an
+attachment merely because it came from a task.
 
-This means you can post on behalf of whoever is logged into git without needing individual Asana tokens per user.
+For large read-only syncs, pass the exact command and directory to the bundled
+`base:asana-sync-runner` brief at `../../agents/asana-sync-runner.md`. If delegation
+is unavailable, run it directly and save long output. Keep write operations
+in the main conversation.
 
----
+Report the open/full and completed/stub counts and any failed GIDs. A nonzero
+exit means the requested operation was incomplete, even if some files were saved.
 
-## Prerequisites
+## Writes and identity
 
-| Requirement | Where it lives | Failure mode |
-|---|---|---|
-| Asana project ID | `.refact-os.json` → `asana.projectId` | Missing → ask the user for it. Only required for full sync, not single-ticket or comment. |
-| Asana personal access token | Resolved at runtime from the shared `ASANA TOKEN` item (field `ASANA_TOKEN`) in the `Env Variables & Secrets` vault via `op` — or a literal `ASANA_TOKEN` in `.env` | Can't be resolved → the script prints why; set up `op` access via the `sync-env-vars` skill. |
+Use the configured bot account by default. Check `--whoami` before writing.
+The script keeps the bot as the API author and prefixes comment text with the
+actual author's configured `git user.name`. This is attribution, not a login.
+Do not silently switch to a personal Claude connector or a teammate's account
+to get around missing access. Honor an explicit user choice of account.
 
-### Sourcing the token
+Follow authorization already given in the conversation. An explicit request to
+post an update, notify someone, or complete the named task authorizes that action;
+do not ask for the same approval again. A request to draft, read, or review
+does not authorize sending or completing. Prepare the exact text, target, and
+recipients before asking only for any authorization still missing.
 
-The token is resolved **at runtime — it is never written to `.env` or to a project item.** `asana.mjs` resolves `ASANA_TOKEN` in this order:
+Prefer `--text-file` for multiline text so shell quoting cannot change it.
+Use `--text` for short literal text. Do not supply raw HTML.
 
-1. A literal `ASANA_TOKEN` in the environment or `.env` (if one is set) wins.
-2. Otherwise it reads the **`ASANA_TOKEN` field** of a shared 1Password item — by default the item titled **`ASANA TOKEN`** in the fixed `Env Variables & Secrets` vault — on demand via the `op` CLI.
+Mentions use Asana rich text, not a plain “cc Name.” Resolve the real user GID.
+Asana requires the recipient to be an assignee or follower for the notification
+flow. `--notify` adds missing mentioned people as followers, waits for membership,
+then posts the comment. Use it when the user requested that notification.
+It never changes assignees. The saved mention can be verified; delivery to a
+person's inbox cannot be proved through this API.
 
-To point at a differently-named item, set `asana.tokenItem` in `.refact-os.json`:
+Completion updates only the named task's completion flag and reads it back.
+It does not complete children or change assignments. If the response is lost,
+check saved state before retrying. A failed comment response may still mean the
+comment was posted: inspect the task's stories before sending it again.
+
+When creating parent/subtask structures through another supported tool, follow
+explicit assignments. Do not copy the parent's assignee onto children by default.
+A parent-only assignment convention is project-specific, not a universal Asana rule.
+
+## Configuration and credentials
+
+`.refact-os.json` may contain:
 
 ```json
-{ "asana": { "projectId": "1209…", "tokenItem": "My Asana Token Item" } }
+{ "asana": { "projectId": "123456", "taskDir": "docs/task", "tokenItem": "ASANA TOKEN" } }
 ```
 
-**Prerequisite: `op` must be installed and authenticated.** If the token can't be resolved, hand off to `sync-env-vars`. Never echo `ASANA_TOKEN` or `OP_SERVICE_ACCOUNT_TOKEN` into chat or a PR.
+`taskDir` is a project-relative cache directory; the default is `docs/task`.
+Malformed configuration fails visibly. Cache writes preserve unrelated files and
+the processed flag, move generated snapshots when status changes, and add only
+generated paths to a cache-local `.gitignore`. Already tracked files stay tracked.
+Do not hand-edit a snapshot expecting it to update Asana.
 
----
+Credentials are read from `ASANA_TOKEN` in the process environment, then the local
+`.env`, then the shared 1Password item. The default item is `ASANA TOKEN`, field
+`ASANA_TOKEN`, in `Env Variables & Secrets`. `asana.tokenItem` selects another item.
+The script never stores the token or prints it.
 
-## How to invoke
+1Password unlock has a 20-second limit. If it times out, run in a foreground
+terminal and unlock there, or use an available authenticated Asana connector.
+A connector fallback must use the intended account and return the same needed
+fields; it does not automatically write this task cache. Do not repeat a
+background command that is waiting for a biometric prompt. Use `sync-env-vars`
+for actual credential setup; never request secrets in chat.
 
-```bash
-# Sync the full project
-node ${CLAUDE_PLUGIN_ROOT}/skills/asana/scripts/asana.mjs
+API requests have a 30-second timeout. Rate-limit responses have bounded retries.
+A 401 needs a credential check; a 403 needs an access check, not an identity switch.
 
-# Dry-run (show changes, write nothing)
-node ${CLAUDE_PLUGIN_ROOT}/skills/asana/scripts/asana.mjs --dry-run
-
-# Pull a single task (always full detail, even if completed)
-node ${CLAUDE_PLUGIN_ROOT}/skills/asana/scripts/asana.mjs --ticket 1209712345678901
-
-# Post a comment to a task (git user name is prepended automatically)
-node ${CLAUDE_PLUGIN_ROOT}/skills/asana/scripts/asana.mjs --comment --ticket 1209712345678901 --text "Reviewed and approved."
-```
-
-`--ticket <gid>` does not require `asana.projectId` — only the token — so it works for ad-hoc fetches and comments before a project is fully configured.
-
----
-
-## Workflow when the user invokes the skill
-
-### Sync or pull a ticket
-
-1. **Parse intent.** Is this a full sync, a single-ticket fetch, or a write operation?
-2. **Ensure `op` access.** The token is resolved automatically from the shared 1Password item at runtime. If a prior run failed because `op` isn't set up, hand off to `sync-env-vars`, then retry. (A literal `ASANA_TOKEN` in `.env` skips `op` entirely.)
-3. **For full sync**: confirm `asana.projectId` is set in `.refact-os.json`. If missing, tell the user and offer to update it.
-4. **Dispatch, don't stream.** Hand the exact `node` command to the pack's **`base:asana-sync-runner`** sub-agent (Agent tool) — a large project prints one line per task, and the sub-agent absorbs that stream and returns only the tally. (Fallback: run the command directly if the Agent tool is unavailable.)
-5. **Report**: total tasks synced, open-full / completed-stub split, action tally (`created` / `updated` / `moved` / `unchanged` / `error`). If errors, list the failing GIDs and messages.
-
-### Post a comment or update
-
-1. **Confirm the task GID** — the user must supply it, or look it up from synced `docs/task/open/` files.
-2. **Draft the text** — keep it concise and factual; do not embellish.
-3. **Confirm with the user** before posting. Comments are permanent — Asana does not allow deleting them via the API.
-4. **Run** `node ${CLAUDE_PLUGIN_ROOT}/skills/asana/scripts/asana.mjs --comment --ticket <gid> --text "<message>"`. The script prepends `<git user name>: ` automatically.
-5. **Report** the posted comment GID and the task permalink back to the user.
-
----
-
-## Markdown produced by sync
-
-### Open task — `docs/task/open/<gid>.md` (full)
-
-```yaml
----
-source: asana
-added-by: asana.mjs
-processed: false
-asana-gid: 1209712345678901
-asana-permalink: https://app.asana.com/0/1209.../1209712345678901
-asana-modified-at: 2026-05-09T10:23:00.000Z
-asana-completed: false
----
-```
-
-Followed by task name, status header (assignee / due / start / section / tags / parent), notes, custom fields, subtasks, attachments, and the full comments/activity thread.
-
-### Completed task — `docs/task/closed/<gid>.md` (stub)
-
-Lightweight: title + link only, `processed: true`, no per-task API calls on full sync. Pull full detail on demand via `node ${CLAUDE_PLUGIN_ROOT}/skills/asana/scripts/asana.mjs --ticket <gid>`.
-
----
-
-## Guardrails
-
-- **Comments are permanent** (Asana has no API delete) — hence the confirm-before-post step above. Comment posting always stays in the main conversation; never delegate it to a sub-agent.
-- Every comment posted by the script is prefixed with the git user's name. Never strip or override this prefix — it is the only attribution signal since the token is shared.
-- **Never** edit a synced ticket file by hand expecting it to round-trip to Asana. The sync is one-way (Asana → local); local edits are overwritten on the next sync.
-- **Never** commit `.env` or echo `ASANA_TOKEN` into chat or PR descriptions.
-- If a fetch fails with `401`, the token is invalid — tell the user to regenerate it in the shared 1Password item. `403` means the token lacks access to that project.
-- If the project has thousands of open tasks, the first sync may take a couple of minutes (completed tasks are cheap — stubbed without per-task calls).
+For API details and notifications, read [the API reference notes](references/api.md).
