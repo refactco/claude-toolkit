@@ -1,6 +1,6 @@
 {
   "name": "refact-os",
-  "version": "2.16.0",
+  "version": "2.17.0",
   "owner": {
     "name": "Refact Developer",
     "email": "dev@refact.co"
@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "base",
-      "version": "1.11.1",
+      "version": "1.12.0",
       "source": "./plugins/base",
       "description": "Base toolkit: git workflow, code-dev gates, safe production writes, Asana, env sync, learnings, client updates, slim project config, Refact Control MCP setup + the /base:refact command + TS/JS LSP.",
       "author": {

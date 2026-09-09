@@ -6,6 +6,35 @@ This guide is for any developer or designer at Refact who needs to send a client
 
 A client reading your update should come away knowing four things without having to ask follow up questions. They should know where things stand right now, what we found when we looked into it, what they need to do if anything, and what we are doing next. Everything else is supporting detail.
 
+## Pre-draft fact check
+
+Run this before you write a word of the draft. It is a check on your notes, not a part of the message. Nothing in this section is meant to end up in the update as extra text, so it does not compete with the length guidance below.
+
+### Confirm the recipient before you name them
+
+Find the client contact in project memory and use the name and the role it gives. Do not take a name from a chat message, a commit, an email address, or your own recollection of the account. If project memory names no contact, ask who the update is for. Do not guess a first name, and do not address someone who was only mentioned in passing. A greeting to a person who does not exist undoes the confidence the rest of the message is trying to build.
+
+### State only what the source says, and mark the rest
+
+Every fact, name, number, date, URL, quote, and contract clause in the draft must appear in the source material you were given: the notes, the transcript, the ticket, the document, or a file you opened. If it is not there, do one of two things. Leave it out, or mark it as an assumption in the same sentence with a few words such as "we believe" or "this looks like". Never present an inference as a checked fact, and never attribute a claim to a person unless that person actually said it in the source.
+
+Keep the marking short. If being honest about an unverified claim would take a paragraph of hedging, the claim is not ready to send. Cut it, and say what you will confirm and when. That is shorter than the hedge and more useful to the client.
+
+Read the whole source, not the first claim in it. When someone points you at a handoff document, a report, or a pull request, check every factual claim in it before you draft from it. Checking only the claim the person named first is how a real error survives into the client's inbox and the client finds it for you.
+
+Status words are facts too. A pull request that is only open is open. Do not call it merged, deployed, on staging, or released. Write "the fix is in review as a pull request" rather than "the fix is heading to staging" when nothing has been merged. The same rule applies to anything else that has a state, such as an invoice, an access request, or a ticket.
+
+### Confirm who asked for this work before you choose the opening
+
+Ask one question before you write the headline: did the client raise this, or did we find it ourselves? The answer changes the first sentence.
+
+- The client raised it. Answer their question in the headline. "The search bar is working again as of this morning."
+- We found it ourselves. Say that we found it, then say where it stands. "While reviewing the caching layer we found that search results were being served from a stale cache. That is fixed as of this morning."
+
+Framing our own finding as something the client asked for reads as an answer to a question they never asked, and it usually forces a full rewrite once someone notices.
+
+Check who the message is really for as well. A request to prepare something for a colleague to send on a ticket is an internal message, not a client update, and it opens differently. If the notes do not tell you which case you are in, ask.
+
 ## Match the length to the update
 
 Let the update earn its length. A short, simple situation gets a short update. A complex one gets a longer one. The structure below is a checklist of what to consider, not a set of sections you must all fill. If a step has nothing real behind it, leave it out rather than padding it with filler. A two sentence message that fully answers the client is a success, not an incomplete one. Never stretch a small update into a long report to make it look thorough, and never invent detail the raw notes do not contain. When in doubt, err on the side of shorter.
