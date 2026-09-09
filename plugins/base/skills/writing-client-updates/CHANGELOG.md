@@ -2,6 +2,25 @@
 
 Newest first. Written by the Skill Analyzer; verdicts are filled in by code.
 
+## 1.2.0 — 2026-09-09 — minor — Skill Analyzer 2026-W35
+
+**Change:** Added a pre-draft fact check that runs before the draft: confirm the recipient from the project docs, state only what the source material says and mark inferences as assumptions, read the whole referenced source rather than the first claim in it, and confirm whether the client asked for the work or we found it ourselves before choosing the opening.
+
+**Why:** Client-update drafts named contacts who do not exist, attributed unstated claims to real people, and framed internally-found work as a client request. Each one forced a redraft, three times in three sessions.
+
+**Evidence:**
+- [F-010] skill.missing-instruction · rework · base:writing-client-updates v1.1.0 | A claim was attributed to a named client contact and a workspace account was asserted, neither stated in the source. | quote: "Nina said nobody on their side has n8n access, but there **is** an account under `jordan@credaily.com` on the workspace" | fix: Confirm the recipient and every attributed claim against the project docs before naming either. | credaily-website · jamalisaeed
+- [F-078] skill.missing-instruction · rework · base:writing-client-updates v1.1.0 | The draft had to be rewritten after review rather than checked before presenting. | quote: "Want it tighter (it's on the long side for an Asana comment)" | fix: Run the checks before drafting, not after the first draft is shown. | stlouis-website · Saeed Jamali
+- [F-081] skill.missing-instruction · rework · base:writing-client-updates v1.1.0 | An unverified finding was stated to the client as settled fact. | quote: "The mechanism is gone: no plugin, no cache, no database, no settings screen." | fix: State only what the source says; mark an inference as an assumption in the same sentence. | stlouis-website · ali-karimii
+- [F-082] skill.missing-instruction · rework · base:writing-client-updates v1.1.0 | Internally-discovered work prepared for a colleague to send was framed as a client-requested update. | quote: "also prepare an internal message and tell about preload and caching so I can send it on task." | fix: Confirm who asked for the work, and who the message is really for, before choosing the opening. | stlouis-website · ali-karimii
+
+**Collision check:** The ~120-word first-draft ceiling and the merge/deploy guard shipped in 1.1.0 are unchanged and still steps 5 and 6. The fact check is a pre-draft gate on the notes, not a section of the message, and it caps assumption marking at a few words: an unverified claim that would need a paragraph of hedging is cut instead. So it removes rewrite passes without adding length. Steps 4 and 5 of SKILL.md had run together on one line since 1.1.0; the numbering is repaired and "offer to tighten" moved to the end of the list, where it belongs in the order of work.
+
+**Expectation:** No client update names an unconfirmed contact, states an unmarked inference as fact, or opens internally-found work as a client request.
+
+**Verdict:** still collecting
+<!-- radar:expectation id=2026-W35-base-writing-client-updates metric=findings.skill.missing-instruction baseline=3 target=1 window=4w -->
+
 ## 1.1.0 — 2026-07-29 — minor — Skill Analyzer 2026-W31
 
 **Change:** Added a guard forbidding merge/deploy/release claims without an observed tool action and a first-draft length ceiling.
