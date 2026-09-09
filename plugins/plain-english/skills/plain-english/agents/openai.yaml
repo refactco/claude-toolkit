@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plain English"
+  short_description: "Clear English without losing meaning"
+  default_prompt: "Use $plain-english to explain this clearly while keeping the facts and uncertainty."

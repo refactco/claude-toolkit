@@ -20,7 +20,7 @@ procedure below applies to **Claude Code** only. Do not select a host merely
 because its CLI happens to be installed on the computer.
 
 Install or update the **refact-os marketplace packs** — `base`, `wordpress`, `ops`, `insights`,
-`nextjs`, `client`, `testing`, `migrate`, `memory`. These are Claude Code plugins from the `refact-os`
+`nextjs`, `client`, `testing`, `migrate`, `memory`, `plain-english`. These are Claude Code plugins from the `refact-os`
 marketplace, **not** a WordPress site's plugins (for those, use the wordpress `plugin-update` skill).
 
 > **Am I the right skill?** This manages **refact-os marketplace packs** (Claude Code plugins:

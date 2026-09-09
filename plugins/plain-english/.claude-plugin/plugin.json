@@ -1,0 +1,17 @@
+{
+  "name": "plain-english",
+  "version": "1.0.0",
+  "description": "Clear English for explanations, updates, and rewrites. Adapts to the reader and keeps facts, uncertainty, and useful detail.",
+  "author": {
+    "name": "Refact Developer",
+    "email": "dev@refact.co"
+  },
+  "keywords": [
+    "refact",
+    "skills",
+    "plain-english",
+    "writing",
+    "explanations",
+    "accessibility"
+  ]
+}

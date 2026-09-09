@@ -68,5 +68,5 @@ For a personal rule in that project, exclude `.codex/config.toml` through
 remove or ignore a file already shared with the team without the user's request.
 
 Do not bypass disabled skills by reading the plugin cache. If the user wants
-all Refact packs disabled, write an `enabled = false` table for each of the nine
-pack IDs, not a wildcard key.
+all Refact packs disabled, read the current catalog and write an `enabled = false`
+table for each pack ID, not a wildcard key.

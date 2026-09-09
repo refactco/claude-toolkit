@@ -26,3 +26,6 @@ enabled = false
 
 [plugins."memory@refact-os"]
 enabled = false
+
+[plugins."plain-english@refact-os"]
+enabled = false

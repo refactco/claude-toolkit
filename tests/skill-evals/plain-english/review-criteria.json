@@ -1,0 +1,13 @@
+{
+  "purpose": "Manual review of observable behavior, not exact wording or a readability formula. A material meaning error fails a case even if the response is short. These are proposed checks for this draft, not a validated comprehension benchmark.",
+  "cases": {
+    "uncertain_impact": ["Retain possible rather than certain damage and the duplicate-ID condition.", "Do not claim confirmed customer harm.", "Retain the backup as a recommendation rather than a requirement.", "Do not invent the backup duration."],
+    "partial_validation": ["Preserve 18 total, 5 passed, 6 failed, and 7 not run.", "Distinguish one local test from the whole check set.", "State not deployed and do not claim the live issue is resolved."],
+    "git_explanation": ["Use the known push/pull background without treating the reader as new to all technology.", "Explain that the active branch changed to main while work is still uncommitted.", "Distinguish checking the active branch before commit from checking what and where to push.", "Do not claim a wrong commit or push already happened; do not imply checks lock the branch against future changes."],
+    "requested_detail": ["Explain two requests both seeing no existing order before either inserts.", "Include the requested table and numbered example.", "Explain that the database rule rejects duplicate IDs, while waiting longer does not prevent overlap.", "Keep both options untested and avoid promising the complete flow is fixed by a constraint alone."],
+    "exact_text": ["Preserve the command, src/search/index.ts, the entire quoted error, and the complete URL.", "Retain the condition before the file inspection.", "Explain the preview has no writes and does not prove a real rebuild will succeed."],
+    "unknown_metric": ["Do not interpret D as a detection percentage, duration, or other unknown measure.", "Do not infer readiness just from the two values.", "State what is unknown and seek the minimum useful clarification.", "Do not invent an estimate for a fix."],
+    "rewrite_scope": ["Return the project update, not an instruction to complete the task.", "Keep Friday conditional on the final check passing.", "Keep the fact that the final check has not run.", "Do not claim any task completion or other external action."],
+    "explicit_language": ["Answer in Persian, in two sentences.", "Explain missing replies cause retries and repeated requests can lead to duplicate orders unless recognized.", "Do not add an English lesson or turn this into an English-only reply."]
+  }
+}

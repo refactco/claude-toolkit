@@ -1,0 +1,34 @@
+[
+  {
+    "id": "uncertain_impact",
+    "response": "Moving the data may damage stored records if some records share the same ID. We have not confirmed any effect on customers.\n\nWe recommend making a backup, a saved copy of the data, before the change goes live. We do not yet know how long the backup will take."
+  },
+  {
+    "id": "partial_validation",
+    "response": "Of the 18 checks, five passed, six failed, and seven have not run.\n\nThe fix passed one test on a local machine. It has not been applied to the live system. We do not yet know whether the live issue is fixed."
+  },
+  {
+    "id": "git_explanation",
+    "response": "We should check Git again because the active branch can change while you work. The branch you started on may no longer be active.\n\nYou started on `feature/plain-english`. Another tool changed the active branch to `main`. Your edits are still uncommitted. This means they have not been saved in a commit, which is a record of changes in Git's history.\n\nIf you make a commit now, your edits could be saved on `main` instead of `feature/plain-english`. Before committing, check the active branch and the changes that the commit will include.\n\nBefore pushing, check the commits you will send and the branch they will go to. A push sends saved commits, not uncommitted edits. Checking again helps you catch a branch change before sharing the work.\n\nNothing has been committed or pushed yet. The branch change has happened, but your edits have not been saved in a commit or sent by a push."
+  },
+  {
+    "id": "requested_detail",
+    "response": "Checking first can still produce duplicates because the check and the insert happen in separate steps. Two requests can both find that the order is missing before either request saves it.\n\nThe check answers, “Does this order exist now?” It does not guarantee that the order will still be missing when the insert happens.\n\nThis is a **race condition**. That means the result depends on how the steps from different requests overlap in time. Each request can follow the current code correctly, yet together they can create a duplicate.\n\nFor example, suppose the order has not been stored yet:\n\n1. Two requests arrive for the same order.\n2. The first request checks the order ID. It finds no order with that ID.\n3. Before the first request inserts the order, the second request checks the same ID. It also finds no order.\n4. The first request inserts the order.\n5. The second request inserts the order too. Its earlier check passed, even though the order now exists.\n6. The database now contains two orders with the same ID.\n\nThe two options address this in different ways:\n\n| Point | Option A: Add a database rule | Option B: Ask clients to wait longer |\n|---|---|---|\n| Current check | Keep it. | Keep it. |\n| Added protection | The database rejects repeated order IDs. | Clients wait longer before retrying. |\n| Can requests still overlap? | Yes. Both requests may still pass the first check. | Yes. Clients can still send overlapping requests. |\n| What happens in the example? | After one insert succeeds, the rule rejects the other insert with the same ID. | Both inserts can still succeed. |\n| What prevents duplicates? | The database rule enforces one stored order per ID. | Longer waits do not prevent every overlap. |\n| Tested here? | No. | No. |\n\nOption A addresses the gap between checking and inserting. The first check can remain useful, but the database rule provides the protection when requests overlap. The application would also need to handle the rejected attempt.\n\nOption B leaves that gap in place. Waiting longer may reduce some overlaps, but it does not make the separate check and insert safe from duplicates.\n\nThese are expected behaviors based on the proposed changes. Neither option has been tested here."
+  },
+  {
+    "id": "exact_text",
+    "response": "If the index check fails with `ERROR E_INDEX_409: write rejected`, look at `src/search/index.ts`.\n\nTo see what a rebuild would do without saving changes, run:\n\n`python3 tools/rebuild_index.py --dry-run --limit 25`\n\nFollow the [rebuild guide](https://example.test/docs/rebuild?mode=dry-run#limits) for instructions.\n\nThis preview does not prove that a real rebuild will succeed."
+  },
+  {
+    "id": "unknown_metric",
+    "response": "There is not enough information to say whether the review is ready to use. `D` is 0.28, below the stated target of 0.60. But we do not know what `D` measures or what makes the review ready.\n\nWe also cannot estimate how long a fix would take. We first need to know what the numbers mean, whether there is a problem, and what work is needed to address it."
+  },
+  {
+    "id": "rewrite_scope",
+    "response": "The release may go live on Friday if the final check passes. That check has not run yet."
+  },
+  {
+    "id": "explicit_language",
+    "response": "اگر سرویس پاسخی دریافت نکند، همان درخواست را دوباره می‌فرستد. دریافت‌کننده باید درخواست‌های تکراری را تشخیص دهد تا برای یک خرید، دو سفارش ثبت نشود."
+  }
+]

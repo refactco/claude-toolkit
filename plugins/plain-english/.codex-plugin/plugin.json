@@ -1,0 +1,30 @@
+{
+  "name": "plain-english",
+  "version": "1.0.0",
+  "description": "Clear English for explanations, updates, and rewrites. Adapts to the reader and keeps facts, uncertainty, and useful detail.",
+  "author": {
+    "name": "Refact Developer",
+    "email": "dev@refact.co"
+  },
+  "repository": "https://github.com/refactco/claude-toolkit",
+  "keywords": [
+    "refact",
+    "skills",
+    "plain-english",
+    "writing",
+    "explanations",
+    "accessibility"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Refact Plain English",
+    "shortDescription": "Clear English without losing meaning.",
+    "longDescription": "Clear English for explanations, updates, and rewrites. Adapts to the reader and keeps facts, uncertainty, and useful detail. Works on its own without extra tools or service connections.",
+    "developerName": "Refact Developer",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": [
+      "Use $plain-english to explain this clearly while keeping the original meaning."
+    ]
+  }
+}
